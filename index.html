@@ -169,12 +169,56 @@ ol.st li{margin:4px 0}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}}
 .warnTxt{color:var(--shu)}
 .linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--shu);text-decoration:underline;cursor:pointer}
+/* mode switch */
+.modes{display:inline-flex;background:rgba(255,255,255,.12);border-radius:10px;padding:3px;gap:2px}
+.modes button{border:0;background:none;color:#fff;padding:0 16px;min-height:38px;border-radius:8px;cursor:pointer;font-weight:500;font-size:15px;opacity:.8}
+.modes button[aria-pressed=true]{background:#fff;color:#1d3557;opacity:1}
+/* practice path */
+.pintro{margin:0 0 10px;font-size:14px}
+.plv{font-size:12.5px;font-weight:700;color:var(--mute);margin:14px 0 6px;display:flex;justify-content:space-between}
+.pitem{border:1px solid var(--line);border-radius:10px;background:var(--bg);margin:6px 0;overflow:hidden}
+.pitem.cur{border-color:var(--shu);box-shadow:inset 0 0 0 1px var(--shu)}
+.pitem>button{all:unset;box-sizing:border-box;display:flex;gap:10px;align-items:center;width:100%;padding:8px 10px;cursor:pointer;min-height:48px}
+.pitem>button:focus-visible{outline:2px solid var(--shu);outline-offset:-2px}
+.pnum{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--chip);font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.pitem.made .pnum{background:var(--ok);color:#fff}
+.pitem .pt{display:block;font-weight:500;line-height:1.25}
+.pitem .ps{display:block;font-size:12.5px;color:var(--mute);line-height:1.3}
+.pbody{padding:0 12px 12px 46px;font-size:13.5px}
+.pbody ol{margin:6px 0;padding-left:18px}.pbody li{margin:3px 0}
+.pbody label{display:flex;gap:8px;align-items:center;margin-top:8px;cursor:pointer}
+.pbody input[type=checkbox]{width:20px;height:20px;accent-color:var(--ok)}
+/* shape editor */
+.qshapes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-bottom:8px}
+.qshapes button{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:4px 2px 3px;cursor:pointer;display:grid;justify-items:center;gap:1px;font-size:11.5px;line-height:1.15;min-height:44px}
+.qshapes svg{width:30px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round}
+#planEd{width:100%;height:250px;display:block;background:var(--field);border:1px solid var(--line);border-radius:10px;touch-action:none;user-select:none}
+#planEd .poly{fill:light-dark(#f4ecdc,#2a251c);stroke:var(--ink);stroke-width:2;vector-effect:non-scaling-stroke}
+#planEd .poly.bad{stroke:var(--shu);fill:light-dark(#fbe3dd,#3a201b)}
+#planEd .inner{fill:none;stroke:var(--mute);stroke-width:1;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+#planEd .open{stroke:var(--shu);stroke-width:3;stroke-dasharray:6 4;vector-effect:non-scaling-stroke}
+#planEd text{fill:var(--ink);pointer-events:none;font-family:inherit}
+#planEd text.ang{fill:var(--mute)}
+#planEd .vh{fill:var(--bg);stroke:var(--shu);stroke-width:2.5;vector-effect:non-scaling-stroke;cursor:grab}
+#planEd .vh:hover,#planEd .vh.on{fill:var(--shu)}
+#planEd .add{fill:var(--bg);stroke:var(--mute);stroke-width:1;vector-effect:non-scaling-stroke;cursor:pointer}
+#planEd .add+text{fill:var(--mute)}
+.sides{margin-top:8px;font-size:13px}
+.sides th{font-size:12px;color:var(--mute);font-weight:500;padding:2px 4px;border:0}
+.sides td{padding:2px 4px;border:0;vertical-align:middle}
+.sides td b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--chip);font-size:12px}
+.sides input[type=number]{padding:4px 6px;min-height:36px;font-size:15px;width:4.9em}
+.sides td:nth-child(3){white-space:nowrap}.sides td:nth-child(3) input{width:4.2em}
+.sides input[type=checkbox]{width:20px;height:20px;accent-color:var(--shu)}
+.sides .calc{color:var(--mute);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sides .rm{border:1px solid var(--line);background:var(--bg);border-radius:8px;min-height:32px;min-width:32px;cursor:pointer;color:var(--mute)}
 
 </style>
 </head>
 <body data-tab="model">
 <header class="top">
   <div class="brand"><div class="seal kj" aria-hidden="true">指物</div><div><h1>Sashimono Studio</h1><p>Japanese joinery furniture, drawn to size</p></div></div>
+  <nav class="modes" aria-label="Mode"><button data-m="design" aria-pressed="true">Design</button><button data-m="practice" aria-pressed="false">Practice</button></nav>
   <div class="summary" id="summary" aria-live="polite"></div>
 </header>
 <div class="app">
@@ -216,19 +260,28 @@ ol.st li{margin:4px 0}
     <section class="pane" id="tab-steps" role="tabpanel" aria-labelledby="t-steps"><div class="doc" id="steps"></div></section>
   </main>
   <aside id="design" aria-label="Design">
-    <div class="sec"><h2>Piece</h2>
+    <div class="sec" id="secPractice" hidden></div>
+    <div class="sec" id="secPiece"><h2>Piece</h2>
       <div class="kinds" id="kinds">
         <button class="kind" data-k="frame" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M3 8h38M3 11h38M7 11v17M37 11v17M7 15h30"/></svg>Table &amp; bench</button>
         <button class="kind" data-k="case" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M12 2h20v26H12zM12 10h20M12 18h20M10 28h24"/></svg>Shelf</button>
         <button class="kind" data-k="tansu" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M8 3h28v25H8zM8 11h28M8 19h28M22 3v8M19 15h6M19 23h6M14 7h3M27 7h3"/></svg>Tansu</button>
         <button class="kind" data-k="lattice" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M13 2h18v22H13zM13 9h18M13 16h18M19 2v22M25 2v22M8 28h11M25 28h11M15 24v4M29 24v4"/></svg>Screen &amp; lamp</button>
         <button class="kind" data-k="box" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M5 12h34v15H5zM4 8h36v4H4zM5 20h34"/></svg>Box &amp; chest</button>
+        <button class="kind" data-k="custom" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M8 27h28l4-12-18-12L4 15z"/><circle cx="8" cy="27" r="1.6"/><circle cx="36" cy="27" r="1.6"/><circle cx="40" cy="15" r="1.6"/><circle cx="22" cy="3" r="1.6"/><circle cx="4" cy="15" r="1.6"/></svg>Your own shape</button>
       </div>
-      <div class="row"><select id="preset" aria-label="Preset"></select></div>
-      <div class="row"><select id="practice" aria-label="Practice pieces"></select></div>
-      <p class="hint" id="learnHint" hidden style="margin:8px 0 0"></p>
+      <div class="row"><select id="preset" aria-label="Starting point"></select></div>
+      <p class="hint" id="customHint" hidden style="margin:8px 0 0">Draw any straight-sided shape below, such as a pentagon or a rectangle with a corner cut off to fit an awkward space. The studio works out the angled joints, cut list and steps.</p>
     </div>
-    <div class="sec"><h2>Your skill level</h2>
+    <div class="sec" id="shapeSec" hidden><h2>Shape · outside measurements</h2>
+      <div class="qshapes" id="qshapes" role="group" aria-label="Quick shapes"></div>
+      <svg id="planEd" role="img" aria-label="Plan of the shape. Drag the corners to change it."></svg>
+      <p class="hint warnTxt" id="planErr" hidden style="margin:6px 0 0"></p>
+      <div class="scroll"><table class="sides" id="sideTbl"></table></div>
+      <p class="hint" style="margin:6px 0 0">Drag a corner, or type the lengths and angles. Changing a length keeps all your angles: the opposite side stretches to suit. Changing an angle swings the side after it, and the next corner makes up the difference. Tap a <b>+</b> to add a corner.</p>
+      <div class="btns" style="margin-top:8px"><button class="btn" id="dlTpl">Download full-size template</button></div>
+    </div>
+    <div class="sec" id="secLevel"><h2>Your skill level</h2>
       <div class="levels" id="levels"></div>
       <p class="hint" id="lvlHint" style="margin:8px 0 0"></p>
     </div>
@@ -571,8 +624,8 @@ class Viewer{
       hp[i*3]=dx*t;hp[i*3+1]=dy*t;hp[i*3+2]=dz*t;
       const hx=P[0]+dx*t-off[0],hy=P[1]+dy*t-off[1],hz=P[2]+dz*t-off[2];
       const n0=nb[i*3],n1=nb[i*3+1],n2=nb[i*3+2];
-      const sp=part.wood||SPECIES.hinoki;const ga=part.grain,ta=part.thk,wa=3-ga-ta;
-      const pa=(wa===0?hx:wa===1?hy:hz)-part.rc[0],pb=(ta===0?hx:ta===1?hy:hz)-part.rc[1];const gl=ga===0?hx:ga===1?hy:hz;
+      const sp=part.wood||SPECIES.hinoki;const B0=part.B[0],B1=part.B[1],B2=part.B[2];
+      const pa=hx*B1[0]+hy*B1[1]+hz*B1[2]-part.rc[0],pb=hx*B2[0]+hy*B2[1]+hz*B2[2]-part.rc[1];const gl=hx*B0[0]+hy*B0[1]+hz*B0[2];
       const rr=Math.sqrt(pa*pa+pb*pb)+2.2*Math.sin(gl*0.011+part.seed)+0.8*Math.sin(gl*0.043+part.seed*1.7)+0.5*Math.sin(pa*0.3);
       const fpx=t*pxk,ring=part.ring||4;
       const a1=clamp((ring/fpx-2.2)/3,0,1),a2=clamp((ring*6/fpx-2.2)/3,0,1);
@@ -580,7 +633,7 @@ class Viewer{
       const ww=0.27+(w-0.27)*a1*0.9+(w2-0.25)*a2*0.35;
       const fib=sp.flat?0:0.03*Math.sin(pa*2.1+pb*1.3+part.seed*3)*a1;
       let cr=sp.col[0]+(sp.late[0]-sp.col[0])*ww,cg=sp.col[1]+(sp.late[1]-sp.col[1])*ww,cb=sp.col[2]+(sp.late[2]-sp.col[2])*ww;
-      const ng=ga===0?n0:ga===1?n1:n2;if(ng>0.7||ng<-0.7){cr*=0.86;cg*=0.84;cb*=0.82;}
+      const ng=n0*B0[0]+n1*B0[1]+n2*B0[2];if(ng>0.7||ng<-0.7){cr*=0.86;cg*=0.84;cb*=0.82;}
       let sh=0.50+0.52*Math.max(0,n0*key[0]+n1*key[1]+n2*key[2])+0.16*Math.max(0,n0*key2[0]+n1*key2[1]+n2*key2[2])+fib;
       if(sp.flat)sh=0.8+0.22*sh-0.11;
       if(n0*dx+n1*dy+n2*dz>0)sh*=0.6;
@@ -659,10 +712,12 @@ function finalizeModel(M){
     p.neg=p.rawNeg.map(r=>mkPrim(r.concat(clip))).filter(x=>x.ok);
     p.wood=p.species==='accent'?ac:p.species==='bamboo'?BAMBOO:p.species==='dowel'?DOWEL:p.species==='paper'?PAPER:sp;
     p.seed=rnd()*20;p.ring=p.species==='bamboo'?9:p.species==='paper'?400:3.2+rnd()*2.2;
-    if(p.bb){const wa=3-p.grain-p.thk;const c=[(bb[0]+bb[1])/2,(bb[2]+bb[3])/2,(bb[4]+bb[5])/2];
-      const tk=bb[2*p.thk+1]-bb[2*p.thk],wd=bb[2*wa+1]-bb[2*wa];
+    const AX=[[1,0,0],[0,1,0],[0,0,1]];p.B=p.basis||[AX[p.grain],AX[3-p.grain-p.thk],AX[p.thk]];
+    if(p.bb){const c=[(bb[0]+bb[1])/2,(bb[2]+bb[3])/2,(bb[4]+bb[5])/2];
+      const ext=v=>{let lo=1e30,hi=-1e30;for(const pr of p.pos)for(const x of pr.V){const t=vdot(x,v);if(t<lo)lo=t;if(t>hi)hi=t;}return hi-lo;};
+      const tk=ext(p.B[2]),wd=ext(p.B[1]);
       const R0=wd>tk*1.6?180+rnd()*200:tk*0.9+rnd()*tk;
-      p.rc=[c[wa]+(rnd()-0.5)*wd*0.3,c[p.thk]-R0];}
+      p.rc=[vdot(c,p.B[1])+(rnd()-0.5)*wd*0.3,vdot(c,p.B[2])-R0];}
     else p.rc=[0,0];
     p.dimsLWT=partLWT(p);
   }
@@ -673,7 +728,7 @@ function finalizeModel(M){
   return M;
 }
 function partLWT(p){
-  const b=p.bb;if(!b)return [0,0,0];const e=[b[1]-b[0],b[3]-b[2],b[5]-b[4]];const wa=3-p.grain-p.thk;
+  if(p.lwt)return p.lwt;const b=p.bb;if(!b)return [0,0,0];const e=[b[1]-b[0],b[3]-b[2],b[5]-b[4]];const wa=3-p.grain-p.thk;
   return [e[p.grain],e[wa],e[p.thk]];
 }
 
@@ -1342,7 +1397,278 @@ function genAndon(M,p,J){
   return finalizeModel(M);
 }
 
-const GENERATORS={frame:genFrame,case:genCase,tansu:genTansu,lattice:genLattice,box:genBox};
+// ================= YOUR OWN SHAPE: any straight-sided footprint =================
+const sub2=(a,b)=>[a[0]-b[0],a[1]-b[1]],add2=(a,b)=>[a[0]+b[0],a[1]+b[1]],sc2=(a,s)=>[a[0]*s,a[1]*s],dot2=(a,b)=>a[0]*b[0]+a[1]*b[1],len2=a=>Math.hypot(a[0],a[1]),
+  nrm2=a=>{const l=len2(a)||1;return [a[0]/l,a[1]/l];},crs2=(a,b)=>a[0]*b[1]-a[1]*b[0],to3=(a,z)=>[a[0],a[1],z||0];
+const sideLetter=i=>String.fromCharCode(65+i);
+function userErr(msg){const e=new Error(msg);e.user=true;return e;}
+function polyArea(P){let A=0;for(let i=0;i<P.length;i++){const p=P[i],q=P[(i+1)%P.length];A+=p[0]*q[1]-q[0]*p[1];}return A/2;}
+// interior angle at each corner, degrees (polygon anticlockwise)
+function polyAngles(P){const n=P.length;return P.map((p,i)=>{const u=nrm2(sub2(P[(i-1+n)%n],p)),v=nrm2(sub2(P[(i+1)%n],p));let a=Math.atan2(crs2(v,u),dot2(v,u))*180/Math.PI;if(a<0)a+=360;return a;});}
+function segX(a,b,c,d){const r=sub2(b,a),s=sub2(d,c),den=crs2(r,s);if(Math.abs(den)<1e-12)return false;const t=crs2(sub2(c,a),s)/den,u=crs2(sub2(c,a),r)/den;return t>1e-6&&t<1-1e-6&&u>1e-6&&u<1-1e-6;}
+function polySimple(P){const n=P.length;for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){if(j===i+1||(i===0&&j===n-1))continue;if(segX(P[i],P[(i+1)%n],P[j],P[(j+1)%n]))return false;}return true;}
+// each side as a line: n is the inward normal, points inside have n·x >= c
+function polyLines(P){const n=P.length;return P.map((a,i)=>{const b=P[(i+1)%n],e=nrm2(sub2(b,a));const nn=[-e[1],e[0]];return {a,b,e,n:nn,c:dot2(nn,a),L:len2(sub2(b,a))};});}
+function lineX(l1,d1,l2,d2){const det=l1.n[0]*l2.n[1]-l1.n[1]*l2.n[0];if(Math.abs(det)<1e-9)return null;const c1=l1.c+d1,c2=l2.c+d2;return [(c1*l2.n[1]-l1.n[1]*c2)/det,(l1.n[0]*c2-c1*l2.n[0])/det];}
+// shape with every side moved inward by its own distance (negative = outward)
+function offsetPoly(Ls,ds){const n=Ls.length,out=[];for(let i=0;i<n;i++){const j=(i-1+n)%n;out.push(lineX(Ls[j],ds[j],Ls[i],ds[i])||add2(Ls[i].a,sc2(Ls[i].n,ds[i])));}return out;}
+const hpIn=(l,d)=>[-l.n[0],-l.n[1],0,-(l.c+d)],hpOut=(l,d)=>[l.n[0],l.n[1],0,l.c+d];
+const zPl=(z0,z1)=>[[0,0,1,Math.max(z0,z1)],[0,0,-1,-Math.min(z0,z1)]];
+function linePl(p,q,keep){const e=nrm2(sub2(q,p));let m=[-e[1],e[0]];if(dot2(m,sub2(keep,p))>0)m=[-m[0],-m[1]];return [m[0],m[1],0,dot2(m,p)];}
+function inConvex(P,x){let s=0;for(let i=0;i<P.length;i++){const c=crs2(sub2(P[(i+1)%P.length],P[i]),sub2(x,P[i]));if(Math.abs(c)<1e-9)continue;const g=c>0?1:-1;if(!s)s=g;else if(g!==s)return false;}return true;}
+function dropCollinear(P){let Q=P.slice(),ch=true;while(ch&&Q.length>3){ch=false;for(let i=0;i<Q.length;i++){const a=Q[(i-1+Q.length)%Q.length],b=Q[i],c=Q[(i+1)%Q.length];if(Math.abs(crs2(sub2(b,a),sub2(c,b)))<1e-6*len2(sub2(c,a))||len2(sub2(b,a))<1e-6){Q.splice(i,1);ch=true;break;}}}return Q;}
+function isConvexPoly(P){const n=P.length;for(let i=0;i<n;i++){if(crs2(sub2(P[(i+1)%n],P[i]),sub2(P[(i+2)%n],P[(i+1)%n]))<-1e-7)return false;}return true;}
+function ptInTri(p,a,b,c){return crs2(sub2(b,a),sub2(p,a))>=-1e-9&&crs2(sub2(c,b),sub2(p,b))>=-1e-9&&crs2(sub2(a,c),sub2(p,c))>=-1e-9;}
+// split a shape with inward corners into as few convex pieces as practical (ear clipping, then merging)
+function convexParts(P0){
+  const P=dropCollinear(P0);if(isConvexPoly(P))return [P];
+  const idx=P.map((_,i)=>i),tris=[];let guard=0;
+  while(idx.length>3&&guard++<400){let cut=false;
+    for(let k=0;k<idx.length;k++){const i0=idx[(k-1+idx.length)%idx.length],i1=idx[k],i2=idx[(k+1)%idx.length];const a=P[i0],b=P[i1],c=P[i2];
+      if(crs2(sub2(b,a),sub2(c,b))<=1e-9)continue;let ins=false;for(const j of idx){if(j===i0||j===i1||j===i2)continue;if(ptInTri(P[j],a,b,c)){ins=true;break;}}
+      if(ins)continue;tris.push([i0,i1,i2]);idx.splice(k,1);cut=true;break;}
+    if(!cut)break;}
+  if(idx.length===3)tris.push(idx.slice());
+  const polys=tris;let merged=true;
+  while(merged){merged=false;
+    outer:for(let a=0;a<polys.length;a++)for(let b=a+1;b<polys.length;b++){const A=polys[a],B=polys[b];
+      for(let x=0;x<A.length;x++){const i=A[x],j=A[(x+1)%A.length];const y=B.indexOf(j);if(y<0||B[(y+1)%B.length]!==i)continue;
+        const m=[];for(let k=0;k<A.length;k++)m.push(A[(x+1+k)%A.length]);for(let k=2;k<B.length;k++)m.push(B[(y+k)%B.length]);
+        if(isConvexPoly(m.map(q=>P[q]))){polys[a]=m;polys.splice(b,1);merged=true;break outer;}}}}
+  return polys.map(ix=>ix.map(q=>P[q]));
+}
+const panelPrims=(poly,z0,z1)=>convexParts(poly).map(q=>polyPlanes(q,0,1,2,z0,z1));
+// oriented box and rod in a local frame (any orientation)
+const obox=(F,u0,u1,v0,v1,w0,w1)=>F.planes(BOX(u0,u1,v0,v1,w0,w1));
+function orod(F,round,s,len){return round?F.prism(ngon(8,s/2/Math.cos(Math.PI/8)),1,2,0,0,len):obox(F,0,len,-s/2,s/2,-s/2,s/2);}
+// grain direction for a panel: along the longest side
+function panelBasis(P){const Ls=polyLines(P);let best=Ls[0];for(const l of Ls)if(l.L>best.L)best=l;const g=best.e,w=[-g[1],g[0]];
+  const ext=v=>{const t=P.map(q=>dot2(q,v));return Math.max(...t)-Math.min(...t);};return {g,w,L:ext(g),W:ext(w)};}
+// stretches of a line u = const (along direction w) that lie inside a shape
+function chord(P,g,u){const w=[-g[1],g[0]],vs=[];for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length],ua=dot2(a,g)-u,ub=dot2(b,g)-u;if((ua<0)!==(ub<0)){const t=ua/(ua-ub);vs.push(dot2(add2(a,sc2(sub2(b,a),t)),w));}}
+  vs.sort((a,b)=>a-b);const out=[];for(let i=0;i+1<vs.length;i+=2)out.push([vs[i],vs[i+1]]);return out;}
+const fmtA=a=>{const r=Math.round(a*10)/10;return (Math.abs(r-Math.round(r))<0.05?Math.round(r):r.toFixed(1))+'°';};
+
+function genCustom(p){
+  const M=new Model('custom',p),J=p.J;
+  const P=p.pts.map(q=>q.slice()),n=P.length;
+  if(n<3)throw userErr('A shape needs at least three sides.');
+  if(polyArea(P)<=0||!polySimple(P))throw userErr('The sides of the shape cross each other. Drag the corners or change the angles to untangle it.');
+  const Ls=polyLines(P),ang=polyAngles(P),H=p.H;
+  for(let i=0;i<n;i++)if(Ls[i].L<20)throw userErr(`Side ${sideLetter(i)} is too short to build.`);
+  const E=M.E=clamp(0.25*Math.max(p.W,p.D,H),40,320);
+  M.shape={P,Ls,ang};
+  if(p.build==='table')return genPolyTable(M,p,P,Ls,ang);
+  const box=p.build!=='case',t=p.wallT;
+  const closed=P.map((_,i)=>box?true:!(p.open&&p.open[i]));
+  if(!closed.some(Boolean))throw userErr('Leave at least one side closed, or there is nothing to hold the shelves.');
+  const ds=closed.map(c=>c?t:0),I=offsetPoly(Ls,ds);M.shape.I=I;M.shape.closed=closed;
+  for(let i=0;i<n;i++){if(!closed[i])continue;const i1=(i+1)%n;if(dot2(sub2(I[i1],I[i]),Ls[i].e)<8)throw userErr(`Side ${sideLetter(i)} is too short for ${R(t)} mm walls. Make it longer or the walls thinner.`);}
+  for(let i=0;i<n;i++){const a=ang[i];if(closed[i]&&closed[(i-1+n)%n]&&(a<30||a>330))throw userErr(`The corner between sides ${sideLetter((i-1+n)%n)} and ${sideLetter(i)} is too sharp to mitre (${fmtA(a)}).`);}
+  let zw0=0,Hw,lid='none',lT=0,nailed=false;
+  if(box){lid=J.plid;lT=lid==='none'?0:p.lidT;nailed=J.pbottom==='kugi';zw0=nailed?p.bottomT:0;Hw=H-lT;}
+  else Hw=H-p.topT;
+  if(Hw-zw0<3*t)throw userErr('The piece is too low for its walls. Make it taller.');
+  // ---- walls, mitred where two walls meet, flush with the opening where a side is open
+  const walls=[],bev=[];
+  const endBevel=(i,atStart)=>{const l=Ls[i],v=atStart?i:(i+1)%n;const d=nrm2(sub2(I[v],P[v]));const e=atStart?l.e:sc2(l.e,-1);const b=Math.acos(clamp(dot2(d,e),-1,1))*180/Math.PI;return Math.abs(90-b);};
+  for(let i=0;i<n;i++){if(!closed[i]){walls.push(null);continue;}
+    const l=Ls[i],i1=(i+1)%n,endA=linePl(P[i],I[i],P[i1]),endB=linePl(P[i1],I[i1],P[i]);
+    const Lout=l.L,Lin=len2(sub2(I[i1],I[i])),out3=[-l.n[0],-l.n[1],0],b0=endBevel(i,true),b1=endBevel(i,false);bev[i]=[b0,b1];
+    const cutTxt=b=>b<0.3?'square':fmtA(b)+' off square';
+    walls[i]=M.add({name:'Wall '+sideLetter(i),key:'w'+R(Math.max(Lout,Lin))+'|'+R(b0*10)+'|'+R(b1*10),role:'wall',pos:[[hpIn(l,0),hpOut(l,t),endA,endB,...zPl(zw0,Hw)]],grain:0,thk:1,
+      basis:[[l.e[0],l.e[1],0],[0,0,1],out3],lwt:[Math.max(Lout,Lin),Hw-zw0,t],ex:vsc(out3,E*0.5),
+      note:`Ends ${b0<0.3&&b1<0.3?'square':cutTxt(b0)+' and '+cutTxt(b1)}; length is long point to long point`,geo:{i,endA,endB}});}
+  // ---- corner joints
+  const sl=(SPECIES[p.species]||{}).soft;
+  for(let i=0;i<n;i++){const h=(i-1+n)%n;if(!closed[i]||!closed[h])continue;
+    polyCornerJoint(M,{i,h,a:walls[h],b:walls[i],P,I,Ls,ang:ang[i],t,z0:zw0,z1:Hw,J:J.polyCorner,label:`Wall ${sideLetter(h)} ↔ wall ${sideLetter(i)}`});}
+  const mids=offsetPoly(Ls,closed.map(c=>c?t/2:0));
+  // vertical pins along the middle of every closed wall (bottom or top boards)
+  const wallPins=(zA,zB,st,pd)=>{const raws=[];for(let i=0;i<n;i++){if(!closed[i])continue;const a=mids[i],b=mids[(i+1)%n],L=len2(sub2(b,a)),k=Math.max(2,R(L/90));
+    for(let j=0;j<k;j++){const q=add2(a,sc2(sub2(b,a),(j+0.5)/k));raws.push(rod(WORLD,st.round,pd,0,1,2,q[0],q[1],zA,zB));}}return raws;};
+  const pb=panelBasis(P),pBasis=[to3(pb.g),to3(pb.w),[0,0,1]];
+  const near0=(()=>{for(let i=0;i<n;i++)if(closed[i]&&closed[(i-1+n)%n])return i;return closed.indexOf(true);})();
+  const clipAt=(q,r,z0,z1)=>[q[0]-r,q[0]+r,q[1]-r,q[1]+r,z0,z1];
+  if(box){
+    // ---- bottom
+    if(nailed){
+      const bot=M.add({name:'Bottom',role:'bottom',pos:panelPrims(P,0,p.bottomT),grain:0,thk:2,basis:pBasis,lwt:[pb.L,pb.W,p.bottomT],ex:[0,0,-E*0.5]});
+      const st=pinStock(p,'fine'),pd=finePin(st,t),pl=p.bottomT+Math.min(24,R(t*1.6));const raws=wallPins(0,pl,st,pd);
+      if(pd>t*0.45)stockWarn(M,`${pd} mm pins are thick for ${R(t)} mm walls and may split them. Split bamboo craft sticks into finer pins instead.`);
+      const pp=M.add({name:stockPartName('Bamboo pin (takekugi)',st),role:'pin',species:'bamboo',stockRole:'fine',note:st.key==='trad'?null:'Cut from '+st.short,pos:raws,grain:2,thk:0,small:true,prio:4,count:raws.length,lwt:[pl,pd,pd],ex:[0,0,-E*0.8]});
+      M.rec({conn:'pbottom',jointId:'kugi',parts:[walls[near0].id,walls[(near0-1+n)%n].id,bot.id,pp.id],ex:{[bot.id]:[0,0,-30],[pp.id]:[0,0,-60]},label:'Bottom ↔ walls',
+        dims:{bT:p.bottomT,n:raws.length,pl,pd,round:!!st.round,stk:st.key,stkName:st.name},clip:clipAt(P[near0],Math.max(70,4*t),-2,Math.min(Hw,110))});
+    }else{
+      const g=Math.max(4,R(t*0.4)),zg0=Math.max(6,R(t*0.5)),zg1=zg0+p.bottomT;
+      for(let i=0;i<n;i++){const w=walls[i];w.neg.push([hpIn(Ls[i],t-g),hpOut(Ls[i],t+0.5),w.geo.endA,w.geo.endB,...zPl(zg0,zg1)]);}
+      const bp=offsetPoly(Ls,P.map(()=>t-g+0.5)),bb2=panelBasis(bp);
+      const bot=M.add({name:'Bottom panel',role:'bottom',pos:panelPrims(bp,zg0,zg1),grain:0,thk:2,basis:pBasis,lwt:[bb2.L,bb2.W,p.bottomT],ex:[0,0,-E*0.4]});
+      M.rec({conn:'pbottom',jointId:'mizo',parts:[walls[near0].id,walls[(near0-1+n)%n].id,bot.id],ex:{[bot.id]:[0,0,-36]},label:'Bottom ↔ walls',
+        dims:{bT:p.bottomT,g,zg0,gap:1,poly:true},clip:clipAt(P[near0],Math.max(70,4*t),-2,Math.min(Hw,zg1+70))});
+    }
+    // ---- lid
+    if(lid==='sanbuta'){
+      const lp=M.add({name:'Lid',role:'lid',pos:panelPrims(P,Hw,H),grain:0,thk:2,basis:pBasis,lwt:[pb.L,pb.W,lT],ex:[0,0,E*1.1]});
+      const cw=clamp(R(lT*1.6),15,30),ch=clamp(R(lT*1.2),10,20),inner=offsetPoly(Ls,P.map(()=>t+1));
+      const us=inner.map(q=>dot2(q,pb.g)),u0=Math.min(...us),u1=Math.max(...us);const cl=[];
+      for(const f of [0.24,0.76]){const u=u0+(u1-u0)*f;const A=chord(inner,pb.g,u-cw/2),B=chord(inner,pb.g,u+cw/2);let best=null;
+        for(const a of A)for(const b of B){const v0=Math.max(a[0],b[0])+1,v1=Math.min(a[1],b[1])-1;if(v1-v0>25&&(!best||v1-v0>best[1]-best[0]))best=[v0,v1];}
+        if(!best)continue;const F=frame([0,0,0],to3(pb.g),to3(pb.w),[0,0,1]);
+        cl.push(M.add({name:'Lid batten (san)',key:'san',role:'cleat',pos:[obox(F,u-cw/2,u+cw/2,best[0],best[1],Hw-ch,Hw)],grain:1,thk:0,basis:[to3(pb.w),to3(pb.g),[0,0,1]],lwt:[best[1]-best[0],cw,ch],ex:[0,0,E*1.1]}));}
+      if(cl.length)M.rec({conn:'plid',jointId:'sanbuta',parts:[lp.id,cl[0].id,walls[near0].id,walls[(near0-1+n)%n].id],ex:{[lp.id]:[0,0,60],[cl[0].id]:[0,0,30]},label:'Lid',
+        dims:{lT,cw,ch,clear:1},clip:clipAt(P[near0],Math.max(90,5*t),Hw-70,H+2)});
+      else stockWarn(M,'The lid is too small for battens underneath; it will just sit on top.');
+    }
+  }else{
+    // ---- cabinet: top board pinned onto the walls, shelves housed in them
+    const ov=p.ov||0,topP=offsetPoly(Ls,P.map(()=>-ov)),tb=panelBasis(topP);
+    const top=M.add({name:'Top',role:'top',pos:panelPrims(topP,Hw,H),grain:0,thk:2,basis:pBasis,lwt:[tb.L,tb.W,p.topT],ex:[0,0,E*0.9]});
+    {const st=pinStock(p,'fine'),pd=finePin(st,t),pl=p.topT+Math.min(24,R(t*1.6));const raws=wallPins(H-pl,H,st,pd);
+      const pp=M.add({name:stockPartName('Bamboo pin (takekugi)',st),role:'pin',species:'bamboo',stockRole:'fine',note:st.key==='trad'?null:'Cut from '+st.short,pos:raws,grain:2,thk:0,small:true,prio:4,count:raws.length,lwt:[pl,pd,pd],ex:[0,0,E*1.3]});
+      if(pd>t*0.45)stockWarn(M,`${pd} mm pins are thick for ${R(t)} mm walls and may split them. Split bamboo craft sticks into finer pins instead.`);
+      M.rec({conn:'ptop',jointId:'tenita',parts:[walls[near0].id,top.id,pp.id],ex:{[top.id]:[0,0,40],[pp.id]:[0,0,80]},label:'Top ↔ walls',
+        dims:{tT:p.topT,ov,n:raws.length,pl,pd,round:!!st.round,stk:st.key,stkName:st.name},clip:clipAt(mids[near0],Math.max(70,4*t),Hw-60,H+2)});}
+    const hd=Math.max(4,R(t/3)),stop=clamp(R(t*0.6),6,12),sT=p.shelfT,set=2;
+    const zs=[p.baseH];const clear=Hw-(p.baseH+sT),ns=p.nShelves,gap=(clear-ns*sT)/(ns+1);
+    if(gap<40)throw userErr('The shelves are too close together. Use fewer shelves, a lower bottom shelf or a taller piece.');
+    for(let k=0;k<ns;k++)zs.push(p.baseH+sT+gap*(k+1)+sT*k);
+    const sp=offsetPoly(Ls,closed.map(c=>c?t-hd+0.5:set)),sb=panelBasis(sp);
+    zs.forEach((z,k)=>{
+      const sh=M.add({name:k?'Shelf':'Bottom shelf',key:k?'shelf':'bshelf',role:'shelf',pos:panelPrims(sp,z,z+sT),grain:0,thk:2,basis:pBasis,lwt:[sb.L,sb.W,sT],ex:[0,0,(k-zs.length/2)*E*0.2]});
+      for(let i=0;i<n;i++){if(!closed[i])continue;const w=walls[i],l=Ls[i];
+        const pl=[hpIn(l,t-hd),hpOut(l,t+0.5),w.geo.endA,w.geo.endB,...zPl(z,z+sT)];const opn=[];
+        for(const j of [(i-1+n)%n,(i+1)%n])if(!closed[j]){pl.push(hpIn(Ls[j],stop));opn.push(j);sh.neg.push([hpOut(l,t+0.5),hpIn(l,-1),hpOut(Ls[j],stop),hpIn(Ls[j],-1),...zPl(z-1,z+sT+1)]);}
+        w.neg.push(pl);
+        const q=opn.length?(opn[0]===(i-1+n)%n?I[i]:I[(i+1)%n]):add2(mids[i],sc2(sub2(mids[(i+1)%n],mids[i]),0.5));
+        M.rec({conn:'pshelf',jointId:'oire',parts:[sh.id,w.id],ex:{[sh.id]:[0,0,Math.min(60,gap*0.6)]},label:(k?'Shelf':'Bottom shelf')+' ↔ wall '+sideLetter(i),
+          dims:{d:t,hd,st:sT,Ds:R(len2(sub2(I[(i+1)%n],I[i]))),stop:opn.length?stop:0,shelfName:k?'Shelf':'Bottom shelf',poly:true},clip:clipAt(q,Math.max(60,4*t),z-45,z+sT+45)});}
+    });
+  }
+  // ---- dimensions for the general arrangement
+  const xs=P.map(q=>q[0]),ys=P.map(q=>q[1]);const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  M.dims.push({view:'front',side:'bottom',tier:0,pts:[[x0,y0,0],[x1,y0,0]]});
+  const zz=[0];if(zw0)zz.push(zw0);zz.push(Hw);if(H>Hw)zz.push(H);
+  M.dims.push({view:'front',side:'left',tier:0,pts:zz.map(z=>[x0,y0,z])});if(zz.length>2)M.dims.push({view:'front',side:'left',tier:1,pts:[[x0,y0,0],[x0,y0,H]]});
+  M.dims.push({view:'side',side:'bottom',tier:0,pts:[[x1,y0,0],[x1,y1,0]]});
+  M.dims.push({view:'top',side:'bottom',tier:0,pts:[[x0,y0,H],[x1,y0,H]]});
+  if(t<8)M.warn.push('Walls under 8 mm are delicate to mitre and pin by hand; 9 to 12 mm is comfortable for small boxes.');
+  const sharp=ang.filter((a,i)=>closed[i]&&closed[(i-1+n)%n]&&(a<60||a>300));
+  if(sharp.length)M.warn.push('Very sharp corners leave a thin, fragile tip on each mitre. Keys or a spline help hold them.');
+  M.bev=bev;
+  return finalizeModel(M);
+}
+
+// one mitred corner between wall a (side h) and wall b (side i)
+function polyCornerJoint(M,c){
+  const {i,h,a,b,P,I,Ls,t,z0,z1}=c,J=c.J,th=c.ang,convex=th<180,E=M.E;
+  const apex=convex?P[i]:I[i],tip=convex?I[i]:P[i],m=len2(sub2(tip,apex)),dir=nrm2(sub2(tip,apex)),phi=convex?th:360-th;
+  const midB=add2(add2(Ls[i].a,sc2(Ls[i].e,Ls[i].L/2)),sc2(Ls[i].n,t/2));let mN=[-dir[1],dir[0]];if(dot2(mN,sub2(midB,apex))<0)mN=[-mN[0],-mN[1]];
+  const fd=convex?0:t;// the faces that meet at the apex
+  const bevel=Math.abs(180-th)/2,hz=z1-z0;
+  const I0={conn:'polyCorner',jointId:J,parts:[a.id,b.id],ex:{},label:c.label,dims:{ang:Math.round(th*10)/10,bevel:Math.round(bevel*10)/10,face:Math.round((90-bevel)*10)/10,t,convex,aName:a.name,bName:b.name}};
+  const up=[0,0,1],out3=to3(sc2(dir,-1));
+  if(J==='tomeKugi'){
+    const st=pinStock(M.p,'fine'),pd=finePin(st,t),np=Math.max(2,R(hz/70)),raws=[];let plMax=0;
+    const C=add2(apex,sc2(dir,m*0.45));
+    for(let k=0;k<np;k++){const zc=z0+hz*(k+0.5)/np,fromA=k%2===0,d=fromA?mN:sc2(mN,-1),la=fromA?Ls[h]:Ls[i],lb=fromA?Ls[i]:Ls[h];
+      const ta=(dot2(la.n,C)-la.c-fd)/dot2(la.n,d);const S=sub2(C,sc2(d,Math.abs(ta)));
+      let tb=1e9;for(const dd of [0,t]){const den=dot2(lb.n,d);if(Math.abs(den)<1e-9)continue;const tt=(lb.c+dd-dot2(lb.n,C))/den;if(tt>0.5&&tt<tb)tb=tt;}
+      if(tb>1e8)tb=t;const pl=Math.max(t*0.8,Math.abs(ta)+Math.min(tb*0.8,t*1.6));plMax=Math.max(plMax,pl);
+      const U=to3(d),F=frame(to3(S,zc),U,up,vcross(U,up));raws.push(orod(F,st.round,pd,pl));}
+    for(const r of raws){a.neg.push(r);b.neg.push(r);}
+    if(pd>t*0.45)stockWarn(M,`${pd} mm pins are thick for ${R(t)} mm walls and may split them. Split bamboo craft sticks into finer pins instead.`);
+    const pp=M.add({name:stockPartName('Bamboo pin (takekugi)',st),role:'pin',species:'bamboo',stockRole:'fine',note:st.key==='trad'?null:'Cut from '+st.short,pos:raws,grain:0,thk:1,small:true,prio:4,count:np,
+      lwt:[Math.ceil(plMax),pd,pd],ex:vadd(b.ex,vsc(out3,E*0.3))});
+    I0.parts.push(pp.id);I0.ex[pp.id]=vsc(out3,t*2+24);I0.ex[b.id]=vsc(to3(mN),t*1.2+12);
+    Object.assign(I0.dims,{n:np,pl:Math.ceil(plMax),pd,round:!!st.round,stk:st.key,stkName:st.name});
+  }else if(J==='tomeKey'){
+    const kt=clamp(Math.round(t*0.3*2)/2,2.5,4),dk=Math.min(m*0.62,t*1.3),half=dk*Math.tan(phi/2*Math.PI/180),nk=Math.max(2,R(hz/(hz>250?100:55))),pp=[-dir[1],dir[0]];
+    const B=add2(apex,sc2(dir,dk)),tri=[sub2(apex,sc2(dir,0.01)),add2(B,sc2(pp,half)),sub2(B,sc2(pp,half))],raws=[];
+    for(let k=0;k<nk;k++){const zc=z0+hz*(k+0.5)/nk;const pr=polyPlanes(tri,0,1,2,zc-kt/2,zc+kt/2);raws.push(pr);a.neg.push(pr);b.neg.push(pr);}
+    const key=M.add({name:'Mitre key',role:'key',species:'accent',pos:raws,grain:0,thk:2,basis:[to3(pp),to3(dir),up],small:true,prio:3,count:nk,lwt:[R(2*half+4),R(dk+2),kt],ex:vadd(b.ex,vsc(out3,E*0.35))});
+    I0.parts.push(key.id);I0.ex[key.id]=vsc(out3,dk+26);I0.ex[b.id]=vsc(to3(mN),t*0.9+8);
+    Object.assign(I0.dims,{nk,kt,dk:Math.round(dk*10)/10,kl:R(2*half),sp:R(hz/nk)});
+  }else{
+    const st0=clamp(R(t*0.6),4,10),sw=clamp(Math.round(t/3*2)/2,2.5,6),s=m*(convex?0.55:0.45);
+    const qa=[a,b].map(w=>{const l=Ls[w.geo.i],i1=(w.geo.i+1)%P.length;return [P[w.geo.i],P[i1],I[i1],I[w.geo.i]];});
+    const inside=sd=>{for(const ss of [s-sw/2,s+sw/2]){const q=add2(apex,sc2(dir,ss));if(!inConvex(qa[1],add2(q,sc2(mN,sd)))||!inConvex(qa[0],sub2(q,sc2(mN,sd))))return false;}return true;};
+    let sd=t*0.9;while(sd>2&&!inside(sd))sd*=0.92;sd=Math.max(2,Math.round(sd*0.85*2)/2);
+    const F=frame(to3(add2(apex,sc2(dir,s)),0),to3(dir),to3(mN),up),sp=obox(F,-sw/2,sw/2,-sd,sd,z0+st0,z1-st0);
+    a.neg.push(sp);b.neg.push(sp);
+    const spl=M.add({name:'Mitre spline (yatoi-zane)',role:'spline',species:'accent',pos:[obox(F,-sw/2+0.2,sw/2-0.2,-sd+0.4,sd-0.4,z0+st0+1,z1-st0-1)],grain:0,thk:2,basis:[to3(mN),up,to3(dir)],small:true,prio:3,count:1,
+      lwt:[R(2*sd-1),R(hz-2*st0-2),sw],ex:vadd(b.ex,[0,0,E*0.4])});
+    I0.parts.push(spl.id);I0.ex[spl.id]=[0,0,hz*0.6+20];I0.ex[b.id]=vsc(to3(mN),sd+14);
+    Object.assign(I0.dims,{sw,sd,st0,pos:Math.round(s*10)/10,m:Math.round(m*10)/10,hz:R(hz-2*st0)});
+  }
+  const r=Math.max(55,3*t+20);
+  I0.clip=[apex[0]-r,apex[0]+r,apex[1]-r,apex[1]+r,z0-2,z0+Math.min(hz,Math.max(80,r*1.2))+2];
+  return M.rec(I0);
+}
+
+// ---------- table or stand on a straight-sided top: a leg at every corner, aprons between them
+function genPolyTable(M,p,P,Ls,ang){
+  const n=P.length,J=p.J,E=M.E;
+  if(ang.some(a=>a>179.5))throw userErr('A table needs a shape with no inward-pointing corners. Use a box or cabinet for L-shapes.');
+  if(ang.some(a=>a<45))throw userErr('A table corner sharper than 45° leaves no room for a leg.');
+  const H=p.H,tT=p.topT,ov=p.ov,L=p.legS,aH=p.apH,aT=p.apT,aI=p.apIn,zU=H-tT,zA0=zU-aH;
+  const legs=[],aprons=[];
+  for(let i=0;i<n;i++){const h=(i-1+n)%n;
+    const sec=[lineX(Ls[h],ov,Ls[i],ov),lineX(Ls[h],ov,Ls[i],ov+L),lineX(Ls[h],ov+L,Ls[i],ov+L),lineX(Ls[h],ov+L,Ls[i],ov)];
+    const bis=nrm2(sub2(sec[2],sec[0])),pr=[-bis[1],bis[0]],e1=sec.map(q=>dot2(q,bis)),e2=sec.map(q=>dot2(q,pr));
+    const w1=Math.max(...e1)-Math.min(...e1),w2=Math.max(...e2)-Math.min(...e2);
+    const sq=Math.abs(ang[i]-90)<0.5;
+    legs.push(M.add({name:'Leg',key:'leg'+R(ang[i]*10),role:'leg',pos:[[hpIn(Ls[h],ov),hpIn(Ls[i],ov),hpOut(Ls[h],ov+L),hpOut(Ls[i],ov+L),...zPl(0,zU)]],grain:2,thk:0,
+      basis:[[0,0,1],to3(pr),to3(bis)],lwt:[zU,Math.max(w1,w2),Math.min(w1,w2)],ex:vsc(to3(sc2(bis,-1)),E*0.45),
+      note:sq?'Square section; straight, rift-sawn':`Plane to a ${fmtA(ang[i])} diamond section: each face parallel to its apron`}));}
+  const tt=tenonThk(aT),shTop=Math.max(10,R(aH*0.15)),shBot=Math.max(6,R(aH*0.1)),tlMax=L-aI-(aT+tt)/2-1,tl=Math.max(8,Math.min(R(L*0.75),Math.floor(tlMax)));
+  if(tlMax<10)stockWarn(M,'The legs are thin for these aprons, so the tenons are short. Use thicker legs or thinner aprons.');
+  const c0=ov+aI+(aT-tt)/2,c1=c0+tt;
+  for(let i=0;i<n;i++){const h=(i-1+n)%n,j=(i+1)%n,l=Ls[i];
+    const s0=lineX(Ls[h],ov+L,l,ov+aI+aT/2),s1=lineX(Ls[j],ov+L,l,ov+aI+aT/2);const span=dot2(sub2(s1,s0),l.e);
+    if(span<40)throw userErr(`Side ${sideLetter(i)} is too short for the legs. Make it longer or the legs thinner.`);
+    const shA=Math.abs(90-Math.abs(180-ang[i])),shB=Math.abs(90-Math.abs(180-ang[j]));
+    const a=M.add({name:'Apron '+sideLetter(i),key:'ap'+R(span)+'|'+R(shA*10)+'|'+R(shB*10),role:'apron',pos:[[hpIn(l,ov+aI),hpOut(l,ov+aI+aT),hpIn(Ls[h],ov+L),hpIn(Ls[j],ov+L),...zPl(zA0,zU)]],grain:0,thk:1,
+      basis:[to3(l.e),[0,0,1],to3(sc2(l.n,-1))],lwt:[R(span+2*tl+aT*Math.tan(Math.max(shA,shB)*Math.PI/180)),aH,aT],ex:vsc(to3(sc2(l.n,-1)),E*0.5),
+      note:(shA<0.3&&shB<0.3)?'Straight grain; best face out':`Shoulders ${fmtA(shA)} and ${fmtA(shB)} off square; length includes tenons`});
+    aprons.push(a);
+    for(const [leg,lk,sh] of [[legs[i],Ls[h],shA],[legs[j],Ls[j],shB]]){
+      const ten=[hpIn(l,c0),hpOut(l,c1),hpOut(lk,ov+L),hpIn(lk,ov+L-tl),...zPl(zA0+shBot,zU-shTop)];
+      a.pos.push(ten);leg.neg.push(ten);
+      const I={conn:'pLegApron',jointId:J.pLegApron,parts:[a.id,leg.id],ex:{[a.id]:vsc(to3(lk.n),-(tl+30))},label:'Leg ↔ apron '+sideLetter(i),
+        dims:{stag:false,tt,th:aH-shTop-shBot,tl,d:L,rt:aT,rh:aH,mo:R(aI+(aT-tt)/2),shTop,shBot,miter:false,pr:0,postGrain:'h',railName:'Apron',postName:'Leg',shAng:Math.round(sh*10)/10}};
+      if(J.pLegApron==='komisen'){const st=pinStock(p,'peg');let ps=st.d||clamp(R(tt*0.8),5,10);
+        const q=lineX(lk,ov+L-tl*0.45,l,ov+aI+aT/2),S0=sub2(q,sc2(l.n,aI+aT/2)),U=to3(l.n),F=frame(to3(S0,(zA0+zU)/2+(shBot-shTop)/2),U,[0,0,1],vcross(U,[0,0,1]));
+        const pr=orod(F,st.round,ps,aI+(aT+tt)/2+4);a.neg.push(pr);leg.neg.push(pr);
+        const peg=M.add({name:stockPartName('Peg (komisen)',st),role:'peg',species:stockSpecies(st,'accent'),stockRole:'peg',note:st.key==='trad'?null:(st.round?'Cut from ':'Plane down from ')+st.short,pos:[pr],grain:0,thk:1,basis:[U,[0,0,1],vcross(U,[0,0,1])],small:true,prio:3,count:1,
+          lwt:[R(aI+(aT+tt)/2+4),ps,ps],ex:vadd(leg.ex,vsc(to3(sc2(l.n,-1)),E*0.3))});
+        I.parts.push(peg.id);I.ex[peg.id]=vsc(to3(sc2(l.n,-1)),40);
+        Object.assign(I.dims,{stk:st.key,stkName:st.name,round:!!st.round,ps,sp:R(tl*0.45),np:1,pegAxis:'t',pegSide:'side'});}
+      const cc=lineX(lk,ov+L,l,ov+aI+aT/2),r=Math.max(70,L*1.6);I.clip=[cc[0]-r,cc[0]+r,cc[1]-r,cc[1]+r,zA0-30,zU+4];
+      M.rec(I);}
+  }
+  // top, held down on hidden dowels in the apron tops
+  const pb=panelBasis(P);
+  const top=M.add({name:'Top',role:'top',pos:panelPrims(P,zU,H),grain:0,thk:2,basis:[to3(pb.g),to3(pb.w),[0,0,1]],lwt:[pb.L,pb.W,tT],ex:[0,0,E*0.8]});
+  const st=pinStock(p,'dowel'),dd=st.d||clamp(R(aT*0.4),6,10),move=pb.W*(SPECIES[p.species]||SPECIES.hinoki).coef*(p.mc||4),ext=Math.ceil(move/2+1);
+  const pins=[];let first=null;
+  for(let i=0;i<n;i++){const l=Ls[i],h=(i-1+n)%n,j=(i+1)%n;const s0=lineX(Ls[h],ov+L,l,ov+aI+aT/2),s1=lineX(Ls[j],ov+L,l,ov+aI+aT/2);
+    const k=dot2(sub2(s1,s0),l.e)>500?2:1;for(let q=0;q<k;q++){const c=add2(s0,sc2(sub2(s1,s0),(q+1)/(k+1)));
+      const pr=cylAx(2,c,dd/2,zU-16,zU+14,12);aprons[i].neg.push(pr);pins.push(pr);
+      const F=frame(to3(c,0),to3(pb.g),to3(pb.w),[0,0,1]);top.neg.push(obox(F,-dd/2,dd/2,-dd/2-ext,dd/2+ext,zU,zU+14.5));if(!first)first={c,a:aprons[i]};}}
+  const pp=M.add({name:stockPartName('Dowel (dabo)',st),role:'dowel',species:stockSpecies(st,'accent'),stockRole:'dowel',note:st.key==='trad'?null:'Cut from '+st.short,pos:pins,grain:2,thk:0,small:true,prio:3,count:pins.length,lwt:[30,dd,dd],ex:[0,0,E*0.5]});
+  M.rec({conn:'ptopAttach',jointId:'dabo',parts:[first.a.id,top.id,pp.id],ex:{[top.id]:[0,0,80],[pp.id]:[0,0,36]},label:'Top ↔ aprons',
+    dims:{stk:st.key,stkName:st.name,dd,len:30,inA:16,inT:14,slot:R(dd+2*ext),move:Math.round(move*10)/10,n:pins.length},clip:[first.c[0]-60,first.c[0]+60,first.c[1]-60,first.c[1]+60,zA0-4,H+4]});
+  M.move=move;
+  const xs=P.map(q=>q[0]),ys=P.map(q=>q[1]);const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  M.dims.push({view:'front',side:'bottom',tier:0,pts:[[x0,y0,0],[x1,y0,0]]});
+  M.dims.push({view:'front',side:'left',tier:0,pts:[[x0,y0,0],[x0,y0,zA0],[x0,y0,zU],[x0,y0,H]]});M.dims.push({view:'front',side:'left',tier:1,pts:[[x0,y0,0],[x0,y0,H]]});
+  M.dims.push({view:'side',side:'bottom',tier:0,pts:[[x1,y0,0],[x1,y1,0]]});
+  M.dims.push({view:'top',side:'bottom',tier:0,pts:[[x0,y0,H],[x1,y0,H]]});
+  return finalizeModel(M);
+}
+
+const GENERATORS={frame:genFrame,case:genCase,tansu:genTansu,lattice:genLattice,box:genBox,custom:genCustom};
 
 // ===== Joint library: metadata, parametric dimensions and instructions =====
 const LEVELS=['','Beginner','Intermediate','Advanced','Expert'];
@@ -1376,7 +1702,14 @@ const CONNS={
   kumiko:{label:'Kumiko lattice',opts:['aigaki']},
   feet:{label:'Stiles to feet',opts:['hira','komisen','kusabi']},
   base:{label:'Base board',opts:['panelGroove']},
-  panel:{label:'Lower panel',opts:['panelGroove']}
+  panel:{label:'Lower panel',opts:['panelGroove']},
+  polyCorner:{label:'Corners',opts:['tomeKugi','tomeKey','tomeYatoi']},
+  pbottom:{label:'Bottom',opts:['kugi','mizo']},
+  plid:{label:'Lid',opts:['none','sanbuta']},
+  pshelf:{label:'Shelves',opts:['oire']},
+  ptop:{label:'Top',opts:['tenita']},
+  pLegApron:{label:'Leg to apron',opts:['hira','komisen']},
+  ptopAttach:{label:'Top to frame',opts:['dabo']}
 };
 // joint ids are scoped per connection where names repeat (kusabi for rails vs shelves)
 const JOINTS={
@@ -1410,7 +1743,7 @@ const JOINTS={
   tsutsumi:{ro:'Tsutsumi-ari-gumi',kj:'包み蟻組',en:'Half-blind dovetail',lv:4,glue:'Glued',min:180,tools:['kebiki','sashi','knife','bevel','dozuki','nomi','shakuri','genno','clamps','glue'],
     what:d=>`A dovetail whose tails stop short of one face, hidden behind a ${d.lap} mm lap. That face stays clean. It is harder to cut than a through dovetail because the sockets are chopped blind.`},
   oire:{ro:'Oi-ire',kj:'追入れ',en:'Stopped housing',lv:1,glue:'Glued',min:45,tools:['kebiki','knife','sashi','dozuki','nomi','shakuri','glue','clamps'],
-    what:d=>`The whole end of the shelf sits in a ${d.hd} mm groove across the side. The groove stops ${d.stop} mm short of the front, so the joint is invisible from the front.`},
+    what:d=>`The whole ${d.poly?'edge':'end'} of the shelf sits in a ${d.hd} mm groove across the ${d.poly?'wall':'side'}.${d.stop?` The groove stops ${d.stop} mm short of the front, so the joint is invisible from the front.`:' The grooves in neighbouring walls meet inside the corners, where they stay hidden.'}`},
   skusabi:{ro:'Tōshi-hozo wari-kusabi',kj:'通しほぞ割楔',en:'Wedged through tenons',lv:3,glue:'Wedges glued',min:95,tools:['kebiki','sashi','knife','dozuki','muko','nomi','genno','flush'],
     what:d=>`The shelf ends in ${d.nt} through tenon${d.nt>1?'s':''}, wedged from outside the side. The joint is mechanically locked, and it puts a pattern of end grain on the outside faces.`},
   arigata:{ro:'Arigata oi-ire',kj:'蟻形追入れ',en:'Sliding dovetail housing',lv:4,glue:'Glued at the front only',min:110,tools:['kebiki','knife','bevel','dozuki','nomi','shakuri','arikanna','genno'],
@@ -1420,7 +1753,7 @@ const JOINTS={
   kugi:{ro:'Soko-ita takekugi-uchi',kj:'底板竹釘打ち',en:'Pinned bottom',lv:1,glue:'Glued',min:35,tools:['kiri','genno','kanna','glue'],
     what:()=>`The bottom board covers the underside of the walls and is pinned up into them with bamboo pins. It is simple and traditional, and the edges show on the sides.`},
   mizo:{ro:'Mizo-tsuki soko-ita',kj:'溝突き底板',en:'Floating bottom in a groove',lv:2,glue:'No glue',min:60,tools:['mizo','kebiki','kanna','nomi'],
-    what:()=>`The bottom panel sits in grooves in all four walls without glue, so it can move. Assemble it with the walls.`},
+    what:d=>`The bottom panel sits in grooves in all ${d&&d.poly?'the':'four'} walls without glue, so it can move. Assemble it with the walls.`},
   sanbuta:{ro:'Sanbuta',kj:'桟蓋',en:'Lid with locating battens',lv:1,glue:'Glued',min:60,tools:['kanna','dozuki','kiri','genno','glue','clamps'],
     what:()=>`A flat lid with two battens underneath that drop just inside the walls. The battens locate the lid and keep it from cupping.`},
   hashibami:{ro:'Hashibami',kj:'端喰',en:'Breadboard ends',lv:2,glue:'Glued at the centre only',min:120,tools:['kebiki','sashi','dozuki','mizo','kiwa','nomi','kiri','clamps'],
@@ -1438,7 +1771,15 @@ const JOINTS={
   panelGroove:{ro:'Mizo-ire',kj:'溝入れ',en:'Floating panel in grooves',lv:1,glue:'No glue',min:50,tools:['mizo','kebiki','kanna','nomi'],
     what:()=>`A thin panel sits loose in grooves in the surrounding members. It holds its place without glue and is free to move with the seasons.`},
   inro:{ro:'Inrō-buta',kj:'印籠蓋',en:'Fitted lipped lid',lv:3,glue:'Glued',min:240,tools:['kanna','dozuki','tome','nomi','kebiki','clamps','glue'],
-    what:d=>`Thin liners inside the walls stand ${d.lipH} mm proud and make a lip. The lid's mitred rim fits over the lip with an airtight, piston-like fit, as on a traditional inrō case.`}
+    what:d=>`Thin liners inside the walls stand ${d.lipH} mm proud and make a lip. The lid's mitred rim fits over the lip with an airtight, piston-like fit, as on a traditional inrō case.`},
+  tomeKugi:{ro:'Tome takekugi-uchi',kj:'留め竹釘打ち',en:'Mitre with bamboo pins',lv:1,glue:'Glued',min:45,tools:['bevel','kebiki','knife','dozuki','tome','kiri','genno','clamps','glue'],
+    what:d=>`The two walls meet on a mitre, each end cut at ${d.face}° to its face (${d.bevel}° off square), so the corner closes at ${d.ang}°. End grain glues poorly, so tapered bamboo pins are driven across the mitre${d.convex?', alternating from each face':' from the inside'}. It is the simplest way to join walls at any angle.`},
+  tomeKey:{ro:'Tome, keyed',kj:'留め',en:'Mitre with feather keys',lv:2,glue:'Glued',min:60,tools:['bevel','kebiki','knife','dozuki','tome','nomiS','clamps','glue'],
+    what:d=>`A glued mitre at ${d.ang}° reinforced with ${d.nk} thin keys of contrasting wood set into saw kerfs across the ${d.convex?'outside':'inside'} corner. The keys add long-grain glue area exactly where a mitre is weakest, and they make a clear pattern on the corners.`},
+  tomeYatoi:{ro:'Tome yatoi-zane',kj:'留め雇い実',en:'Mitre with hidden spline',lv:3,glue:'Glued',min:80,tools:['bevel','kebiki','knife','dozuki','tome','nomiS','shakuri','clamps','glue'],
+    what:d=>`A thin cross-grain spline sits in matching grooves cut into both mitre faces. It lines the corner up during glue-up and locks it, and because the grooves stop short of the top and bottom, nothing shows once it is together.`},
+  tenita:{ro:'Ten-ita takekugi-uchi',kj:'天板竹釘打ち',en:'Pinned top board',lv:1,glue:'Glued',min:40,tools:['kanna','kiri','genno','glue','clamps'],
+    what:d=>`The top board sits on the walls${d.ov?`, overhanging ${d.ov} mm all round,`:''} and is glued and pinned down into them with bamboo pins. The pins show as small dots on the top, in the manner of kiri boxes.`}
 };
 const SHELF_KEY={oire:'oire',kusabi:'skusabi',arigata:'arigata'};
 const jkey=(conn,id)=>conn==='shelf'?SHELF_KEY[id]:id;
@@ -1558,11 +1899,12 @@ function jointDoc(I,ctx){
     S.push(`Pare only the pins until the joint taps together with a block, then glue.`);
     break;
   case 'oire':
-    T.push(['Housing depth',f(d.hd)],['Housing width',f(d.st)],['Stopped from front',f(d.stop)]);
+    T.push(['Housing depth',f(d.hd)],['Housing width',f(d.st)],...(d.stop?[['Stopped from front',f(d.stop)]]:[]));
     S.push(`Knife the two housing walls, using the shelf itself as the gauge for width.`,
       `Chop a small pocket at the stopped end so the saw has room, then saw the walls with a dōzuki.`,
       `Clear the waste and finish to ${f(d.hd)} deep with the shakuri-kanna.`,
-      `Notch the front corner of the shelf ${f(d.stop)} × ${f(d.hd)} to clear the stop. Glue at assembly.`);
+      d.stop?`Notch the front corner of the shelf ${f(d.stop)} × ${f(d.hd)} to clear the stop. Glue at assembly.`:`Glue at assembly.`);
+    if(d.poly)S.splice(0,1,`Knife the housing walls with the shelf itself as the gauge for width. Lay the walls side by side in order and mark all the housings at one height together, so the shelf comes out level.`);
     break;
   case 'skusabi':
     T.push(['Tenons per end',d.nt],['Tenon width',f(d.tw)],['Tenon thickness',f(d.st)],['Wedge kerf depth',f(d.wl+1)]);
@@ -1590,7 +1932,7 @@ function jointDoc(I,ctx){
     break;
   case 'mizo':
     T.push(['Groove',f(d.bT)+' wide × '+f(d.g)+' deep'],['From bottom edge',f(d.zg0)],['Panel clearance',f(1)+' each side across the grain']);
-    S.push(`Plough a ${f(d.bT)} groove ${f(d.g)} deep, ${f(d.zg0)} up from the bottom edge, on the inside of all four walls. Stop it before the corner joints so it doesn't show.`,
+    S.push(d.poly?`Plough a ${f(d.bT)} groove ${f(d.g)} deep, ${f(d.zg0)} up from the bottom edge, on the inside of every wall. Run it right through the mitres: the grooves meet inside the corners, where they stay hidden.`:`Plough a ${f(d.bT)} groove ${f(d.g)} deep, ${f(d.zg0)} up from the bottom edge, on the inside of all four walls. Stop it before the corner joints so it doesn't show.`,
       `Size the bottom panel so it bottoms out along the grain but has about ${f(1)} of play across it.`,
       `Assemble the corners with the panel in place, without glue in the grooves.`);
     break;
@@ -1643,6 +1985,33 @@ function jointDoc(I,ctx){
       `Size the panel to fill the grooves along its grain but leave about ${f(d.clear)} each side across the grain.`,
       `Assemble with the panel loose in its grooves. Don't glue it.`);
     break;
+  case 'tomeKugi': case 'tomeKey': case 'tomeYatoi':{
+    T.push(['Corner angle',fmtA(d.ang)],['Mitre on each board',`${fmtA(d.face)} to the face (${fmtA(d.bevel)} off square)`]);
+    const long=d.convex?'outside':'inside';
+    S.push(`Set a sliding bevel to ${fmtA(d.face)} from the face of the board (${fmtA(d.bevel)} off square). Mark the mitres on the ends of ${d.aName} and ${d.bName} with a knife, with the long points on the ${long} face.`,
+      `Saw just outside the line with a dōzuki, then plane to the line on a shooting board with a fence set to the same angle. Hold two ends together on the full-size shape drawing to check they close at ${fmtA(d.ang)}.`);
+    if(id==='tomeKugi'){T.push(['Bamboo pins',d.n+' per corner, '+(d.round?'Ø'+f(d.pd):'~'+f(d.pd)+' sq')+' × '+f(d.pl)],...(d.stk&&d.stk!=='trad'?[['Pin stock',d.stkName]]:[]));
+      S.push(`Size the end grain with a thin coat of glue and let it go tacky. Then glue all the mitres and pull the ring of walls together with a band clamp, or a loop of string twisted tight with a stick.`,
+        (d.round?`When the glue has set, drill Ø${f(d.pd)} holes square across each mitre, ${d.n} per corner, ${f(d.pl)} deep, alternating ${d.convex?'from one face and then the other':'along the corner'}. ${drillFor(d.pd,f)}`:`When the glue has set, bore pilot holes with a kiri square across each mitre, ${d.n} per corner, alternating ${d.convex?'from one face and then the other':'along the corner'}.`),
+        pinMake(d,f));}
+    else if(id==='tomeKey'){T.push(['Keys',d.nk+' per corner, '+f(d.sp)+' apart'],['Key thickness',f(d.kt)],['Kerf depth (along the diagonal)',f(d.dk)]);
+      S.push(`Glue the mitres and close them all at once with a band clamp. Let the glue cure fully.`,
+        `Mark ${d.nk} keys across each corner, ${f(d.sp)} apart. Saw two kerfs ${f(d.kt)} apart, square to the corner edge and ${f(d.dk)} deep measured along the diagonal, then chop out the waste between them with a narrow chisel.`,
+        `Plane a strip of contrasting wood to a snug push fit in the kerfs. Cut triangles from it with the grain running across the corner, not along it.`,
+        `Glue the keys in, and once dry saw them off and plane them flush with the faces.`);}
+    else{T.push(['Spline',f(d.sw)+' thick × '+f(2*d.sd)+' wide × '+f(d.hz)+' long'],['Groove in each mitre face',f(d.sw)+' wide × '+f(d.sd)+' deep'],['Groove from outside corner',f(d.pos)+' (mitre is '+f(d.m)+' across)'],['Stopped',f(d.st0)+' from top and bottom']);
+      S.push(`On each mitre face, mark the groove ${f(d.pos)} in from the outside corner, ${f(d.sw)} wide, stopping ${f(d.st0)} short of the top and bottom edges.`,
+        `Clamp a guide block flush with the mitre and saw the groove walls ${f(d.sd)} deep, square to the mitre face. Clear the waste with a narrow chisel and level the floor with a router plane.`,
+        `Make the splines with the grain running across the joint (a spline with grain along its length snaps). Fit them a hair under ${f(2*d.sd)} wide so the mitre can close fully.`,
+        `Glue up with the splines in place and close all the corners at once with a band clamp.`);}
+    break;}
+  case 'tenita':
+    T.push(['Top thickness',f(d.tT)],['Overhang',f(d.ov)],['Bamboo pins',d.n+', '+(d.round?'Ø'+f(d.pd):'~'+f(d.pd)+' sq')],['Pin length',f(d.pl)],...(d.stk&&d.stk!=='trad'?[['Pin stock',d.stkName]]:[]));
+    S.push(`Glue up the walls and shelves first, then plane the top edges of all the walls flat and in one plane.`,
+      `Lay the top on, ${d.ov?f(d.ov)+' proud of the walls all round':'flush with the walls'}, and trace the walls onto its underside so you know where to pin.`,
+      d.round?`Glue the top down. Drill Ø${f(d.pd)} holes down into the middle of each wall about every ${f(90)}, ${f(d.pl)} deep. ${drillFor(d.pd,f)}`:`Glue the top down. With a kiri, bore pilot holes down into the middle of each wall about every ${f(90)}.`,
+      pinMake(d,f));
+    break;
   case 'inro':
     T.push(['Lip height',f(d.lipH)],['Liner thickness',f(d.lt)],['Lid rim height',f(d.rimH)],['Lid top',f(d.lT)]);
     S.push(`Make the lid as a shallow box: mitre the rim pieces on a shooting board and glue on the lid top.`,
@@ -1651,6 +2020,8 @@ function jointDoc(I,ctx){
       `Ease the top edge of the liners very slightly. Glue the liners to the walls.`);
     break;
   }
+  if(d.shAng>0.3){T.push(['Shoulder angle',fmtA(d.shAng)+' off square']);
+    S.splice(1,0,`This apron meets the leg at an angle, so its shoulders are cut ${fmtA(d.shAng)} off square. Set a sliding bevel from the shape drawing and knife the shoulders with it. The tenon still runs straight along the apron, so chop the mortise parallel to the apron's faces, not square to the leg face.`);}
   return {dims:T,steps:S};
 }
 
@@ -1690,7 +2061,8 @@ const VIEWS={
 function viewsFrom(r,u){const v=vcross(r,u);return {front:{r,u,v,name:'Face'},top:{r,u:vsc(v,-1),v:u,name:'Edge'},side:{r:vsc(v,-1),u,v:r,name:'End'}};}
 function viewBox2D(parts,view){
   let x0=1e30,x1=-1e30,y0=1e30,y1=-1e30;
-  for(const p of parts){const b=p.bb;for(let c=0;c<8;c++){const pt=[b[c&1],b[2+(c>>1&1)],b[4+(c>>2&1)]];const x=vdot(pt,view.r),y=vdot(pt,view.u);x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}}
+  const add=pt=>{const x=vdot(pt,view.r),y=vdot(pt,view.u);if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;};
+  for(const p of parts){if(p.pos&&p.pos.length&&p.pos[0].V){for(const pr of p.pos)for(const v of pr.V)add(v);}else{const b=p.bb;for(let c=0;c<8;c++)add([b[c&1],b[2+(c>>1&1)],b[4+(c>>2&1)]]);}}
   return [x0,x1,y0,y1];
 }
 function segMerge(segs){
@@ -1859,6 +2231,9 @@ function miniViews(parts,views,W,H){
 // ===== App =====
 const $=s=>document.querySelector(s);
 const FR=o=>Object.assign({shape:'rect',cr:0,gap:0,taper:0,chamfer:2,str:'none',strZ:110,strH:40,strT:24},o);
+const CU=o=>Object.assign({build:'box',W:300,D:300,H:120,wallT:10.5,bottomT:6,lidT:10.5,topT:21,ov:10,shelfT:18,nShelves:1,baseH:50,legS:40,apH:65,apT:20,apIn:4,open:null},o);
+function normPts(P){const x0=Math.min(...P.map(q=>q[0])),y0=Math.min(...P.map(q=>q[1]));return P.map(q=>[Math.round((q[0]-x0)*1000)/1000,Math.round((q[1]-y0)*1000)/1000]);}
+function regPoly(n,side){const r=side/(2*Math.sin(Math.PI/n)),a0=-Math.PI/2-Math.PI/n,P=[];for(let k=0;k<n;k++){const a=a0+k*2*Math.PI/n;P.push([r*Math.cos(a),r*Math.sin(a)]);}return normPts(P);}
 const PRESETS={
   frame:{
     dining:{label:'Dining table',p:FR({W:1800,D:900,H:720,topT:30,nBoards:4,ovX:120,ovY:80,legS:65,apH:90,apT:24,apIn:8,chamfer:3})},
@@ -1873,11 +2248,32 @@ const PRESETS={
     side:{label:'Side table',p:FR({W:500,D:450,H:600,topT:22,nBoards:2,ovX:40,ovY:40,legS:42,apH:80,apT:20,apIn:5,str:'box',strZ:110,strH:32,strT:22})},
     fumidai:{label:'Fumidai (step stool)',p:FR({W:360,D:260,H:220,topT:22,nBoards:1,ovX:20,ovY:20,legS:36,apH:55,apT:18,apIn:4,chamfer:2}),lv:2,
       J:{legApron:'komisen',topAttach:'dabo',topEnds:'none'},
-      practice:{n:4,teaches:'Chopping mortises and fitting tenons, then drawing them tight with pegs.',goals:[
+      practice:{n:5,teaches:'Chopping mortises and fitting tenons, then drawing them tight with pegs.',goals:[
         'Chop eight matching mortises with the chisel alone, keeping the walls square to the reference face.',
         'Saw tenon cheeks and shoulders to a gauge line so each one fits off the saw, snug by hand with no hammer.',
         'Offset the peg holes about 1 mm (hikitsuke) so driving the komisen pulls each shoulder tight without clamps.',
-        'Fit a one-board top on hidden dowels and slot the holes so it can still move.']}}
+        'Fit a one-board top on hidden dowels and slot the holes so it can still move.']}},
+    teatable:{label:'Small tea table with breadboard ends',p:FR({W:600,D:400,H:300,topT:21,nBoards:2,ovX:45,ovY:35,legS:38,apH:55,apT:18,apIn:4,chamfer:2}),lv:2,
+      J:{legApron:'hira',topAttach:'dabo',topEnds:'hashibami',boardEdge:'yatoi',accent:'none'},
+      practice:{n:8,teaches:'Edge-joining boards with a spline and fitting breadboard ends that let a top move.',goals:[
+        'Plane two board edges so they meet along their whole length with no light showing, then glue them with a loose spline.',
+        'Cut a long tongue across the end grain of the top and a matching stopped groove in each breadboard end.',
+        'Glue the breadboard ends only at the centre and peg the outer ends in slotted holes, so the top can still move.',
+        'Cut eight stub mortises and tenons for a low frame and glue it up square.']}},
+    wedgestool:{label:'Wedged-tenon stool',p:FR({W:340,D:300,H:420,topT:24,nBoards:2,ovX:25,ovY:25,legS:40,apH:60,apT:20,apIn:4,chamfer:2,str:'box',strZ:110,strH:30,strT:20}),lv:3,
+      J:{legApron:'kusabi',legStretcher:'kusabi',topAttach:'dabo',boardEdge:'imo'},
+      practice:{n:9,teaches:'Chopping through mortises from both faces and locking tenons with wedges.',goals:[
+        'Mark mortises on both faces of each leg from the same reference face, and chop halfway from each side so they meet cleanly.',
+        'Flare the outer ends of each mortise slightly so the wedged tenon becomes a dovetail that cannot pull out.',
+        'Stagger the tenons where two rails meet inside a leg, so both can pass right through.',
+        'Drive wedges evenly from both sides and plane the tenon ends flush.']}},
+    plantstand:{label:'Knock-down plant stand',p:FR({W:320,D:320,H:520,topT:21,nBoards:2,ovX:22,ovY:22,legS:42,apH:60,apT:20,apIn:4,chamfer:2,str:'box',strZ:120,strH:30,strT:20}),lv:4,
+      J:{legApron:'hanasen',legStretcher:'hanasen',topAttach:'dabo',boardEdge:'imo'},
+      practice:{n:15,teaches:'Through tenons locked by tapered nose pins, so the frame comes apart without glue.',goals:[
+        'Chop through mortises with dead straight walls: on an exposed tenon every gap shows.',
+        'Cut tenons that stand proud of the legs and chop a pin slot through each one, set just inside the leg face.',
+        'Plane tapered pins from tough wood so they draw each shoulder tight as they are driven.',
+        'Take the stand apart and put it back together to check every joint still closes.']}}
   },
   case:{
     bookshelf:{label:'Bookshelf',p:{W:800,D:300,H:1200,T:21,shelfT:21,nShelves:3,baseH:70,backT:12,layout:'shelves'}},
@@ -1890,7 +2286,14 @@ const PRESETS={
         'Mark both sides together from one story stick so the shelf housings line up exactly.',
         'Saw the housing walls with the dozuki, chop out the waste and level the floor to an even depth.',
         'Stop each housing short of the front so the joint stays hidden, and notch the shelf to match.',
-        'Plane the shelf ends for a hand-tight fit; a housing that needs a mallet will split the side.']}}
+        'Plane the shelf ends for a hand-tight fit; a housing that needs a mallet will split the side.']}},
+    dovetailshelf:{label:'Wall shelf with sliding dovetails',p:{W:480,D:180,H:420,T:15,shelfT:15,nShelves:1,baseH:0,backT:8,layout:'shelves'},lv:4,
+      J:{caseCorner:'ari',shelf:'arigata',back:'none'},
+      practice:{n:13,teaches:'Sliding dovetail housings, and through dovetails on a wide carcass.',goals:[
+        'Saw the walls of a dovetail housing at a steady angle against a bevelled guide block.',
+        'Plane a matching dovetail tongue on the shelf end so it slides halfway by hand and tightens only at the end.',
+        'Cut through dovetails across the full depth of the top and bottom corners.',
+        'Glue only the front few centimetres of each sliding dovetail so the shelf can move.']}}
   },
   tansu:{
     kodansu:{label:'Kodansu (small chest)',p:{W:600,D:360,H:560,T:18,rows:3,cols:2,topCols:3,doorRows:0,steps:1,backT:10}},
@@ -1899,7 +2302,7 @@ const PRESETS={
     kaidan:{label:'Kaidan-dansu (step chest)',p:{W:1500,D:420,H:1600,T:21,rows:5,cols:1,topCols:0,doorRows:1,steps:3,backT:12},sp:'sugi'},
     hikidashi:{label:'Two-drawer jewellery chest',p:{W:280,D:200,H:190,T:12,rows:2,cols:1,topCols:0,doorRows:0,steps:1,backT:6},sp:'kiri',lv:3,
       J:{caseCorner:'ari',shelf:'oire',drawerCorner:'arare',bottom:'mizo',back:'aijakuri'},
-      practice:{n:7,teaches:'Building a dovetailed carcass and fitting drawers to it.',goals:[
+      practice:{n:12,teaches:'Building a dovetailed carcass and fitting drawers to it.',goals:[
         'Cut through dovetails across the full depth of a carcass and glue it up square, with equal diagonals.',
         'House a divider so both openings stay parallel; drawers will show any twist.',
         'Make two small finger-jointed drawers with floating bottoms.',
@@ -1911,11 +2314,18 @@ const PRESETS={
     andon:{label:'Andon (floor lamp)',p:{style:'lamp',W:300,H:820,D:300,sw:42,ft:27,rw:30,fh:60,lift:0,kw:5,kd:12,ks:70,pattern:'fukiyose',koshiH:0,ps:32,rt:18,fc:70}},
     miniandon:{label:'Kumiko table lamp',p:{style:'lamp',W:160,H:300,D:160,sw:42,ft:27,rw:22,fh:60,lift:0,kw:4,kd:10,ks:45,pattern:'masu',koshiH:0,ps:22,rt:12,fc:20},lv:2,
       J:{postRail:'hira',kumiko:'aigaki',base:'panelGroove'},
-      practice:{n:5,teaches:'Cutting kumiko strips and half-laps that lock into a flat grid.',goals:[
+      practice:{n:6,teaches:'Cutting kumiko strips and half-laps that lock into a flat grid.',goals:[
         'Rip and plane thin kumiko strips to one exact width and depth; every bar must match.',
         'Gang-cut the half-lap notches on bundled strips so the spacing is identical on every bar.',
         'Pare the laps to a press fit: the grid should hold together dry and lie flat.',
-        'Join the small post-and-rail frame with stub tenons and paper it with washi.']}}
+        'Join the small post-and-rail frame with stub tenons and paper it with washi.']}},
+    deskscreen:{label:'Desk screen with mitred bridles',p:{style:'screen',W:420,H:500,D:200,sw:28,ft:21,rw:28,fh:40,lift:30,kw:4,kd:10,ks:60,pattern:'masu',koshiH:0,ps:30,rt:18,fc:60},lv:4,
+      J:{frameCorner:'tome',frameRail:'hira',feet:'hira',kumiko:'aigaki'},
+      practice:{n:14,teaches:'Mitred bridle joints, where a clean 45° line shows on both faces of every corner.',goals:[
+        'Mark the middle third of every corner with one gauge setting and the mitres with a knife and mitre square.',
+        'Saw the outer thirds exactly to the mitre lines, so both faces close at the same moment as the bridle.',
+        'Fit a small kumiko grid into the frame with stub tenons.',
+        'Glue and clamp each corner in both directions, checking the frame stays flat.']}}
   },
   box:{
     chest:{label:'Blanket chest',p:{W:800,D:420,H:460,wallT:20,bottomT:12,lidT:20}},
@@ -1932,18 +2342,55 @@ const PRESETS={
         'Plane the bottom edges level so the tray sits flat, then pin on the bottom.']}},
     cardbox:{label:'Card box with drop-in lid',p:{W:160,D:110,H:70,wallT:9,bottomT:5,lidT:8},sp:'kiri',lv:2,
       J:{boxCorner:'arare',bottom:'mizo',lid:'sanbuta'},
-      practice:{n:3,teaches:'Cutting box (finger) joints, grooving for a floating bottom and fitting a lid.',goals:[
+      practice:{n:4,teaches:'Cutting box (finger) joints, grooving for a floating bottom and fitting a lid.',goals:[
         'Lay out the fingers from one gauge setting and saw on the waste side of every line.',
         'Chop the waste between fingers from both faces so the baseline stays crisp.',
         'Plough a groove in all four walls and fit a bottom that floats with a small gap.',
         'Fit two lid battens so the lid drops in snugly and can only go on one way round.']}},
     teabox:{label:'Dovetailed tea box',p:{W:180,D:120,H:110,wallT:10,bottomT:6,lidT:9},sp:'yamazakura',lv:3,
       J:{boxCorner:'ari',bottom:'mizo',lid:'inro'},
-      practice:{n:6,teaches:'Hand-cut through dovetails and a fitted, airtight lid.',goals:[
+      practice:{n:10,teaches:'Hand-cut through dovetails and a fitted, airtight lid.',goals:[
         'Mark and saw tails at a consistent slope, then transfer them exactly to the pin boards with a knife.',
         'Chop pins to the knife line so each corner closes with no gaps and no filling.',
         'Fit thin liners inside the walls to form a lip.',
-        'Mitre a lid rim to fit over the lip with the slow, piston-like inrō fit.']}}
+        'Mitre a lid rim to fit over the lip with the slow, piston-like inrō fit.']}},
+    hbdbox:{label:'Half-blind dovetailed box',p:{W:220,D:150,H:100,wallT:12,bottomT:6,lidT:10.5},sp:'cherry',lv:4,
+      J:{boxCorner:'tsutsumi',bottom:'mizo',lid:'sanbuta'},
+      practice:{n:16,teaches:'Half-blind dovetails, chopped blind so the front stays clean.',goals:[
+        'Gauge a lap on the pin boards and saw the pins at an angle without cutting into it.',
+        'Chop the sockets blind, clearing the corners with a skew chisel, and keep the lap face untouched.',
+        'Transfer the tails with a knife and pare only the pins until each corner taps home.',
+        'Groove the walls for a floating bottom and fit a lid with locating battens.']}}
+  },
+  custom:{
+    cutcab:{label:'Cabinet with a cut corner',p:CU({build:'case',pts:[[0,0],[600,0],[600,220],[440,380],[0,380]],H:760,wallT:18,topT:21,ov:10,shelfT:18,nShelves:2,baseH:60,open:[true,false,false,false,false]})},
+    cornersh:{label:'Corner shelf for a room corner',p:CU({build:'case',pts:[[0,0],[380,0],[380,110],[110,380],[0,380]],H:900,wallT:18,topT:21,ov:10,shelfT:18,nShelves:3,baseH:50,open:[false,false,true,false,false]})},
+    baysh:{label:'Bay window shelf',p:CU({build:'case',pts:[[0,0],[900,0],[700,200],[200,200]],H:420,wallT:18,topT:21,ov:10,shelfT:18,nShelves:1,baseH:40,open:[true,false,false,false]})},
+    pentbox:{label:'Pentagon box with lid',p:CU({build:'box',pts:regPoly(5,130),H:90,wallT:10.5,bottomT:6,lidT:10.5}),J:{pbottom:'mizo',plid:'sanbuta'}},
+    hexplanter:{label:'Hexagonal planter',p:CU({build:'box',pts:regPoly(6,170),H:280,wallT:18,bottomT:15}),sp:'sugi',J:{pbottom:'kugi',plid:'none'}},
+    ltray:{label:'L-shaped desk tray',p:CU({build:'box',pts:[[0,0],[300,0],[300,120],[140,120],[140,240],[0,240]],H:60,wallT:9,bottomT:6}),J:{pbottom:'kugi',plid:'none'}},
+    hextable:{label:'Hexagonal side table',p:CU({build:'table',pts:regPoly(6,280),H:550,topT:21,ov:30,legS:42,apH:70,apT:20,apIn:4})},
+    hexcover:{label:'Hexagonal pot cover',p:CU({build:'box',pts:regPoly(6,110),H:140,wallT:10.5,bottomT:6}),sp:'sugi',lv:1,
+      J:{polyCorner:'tomeKugi',pbottom:'kugi',plid:'none'},
+      practice:{n:3,teaches:'Setting a sliding bevel and cutting accurate mitres at an angle other than 45°.',goals:[
+        'Set a sliding bevel to the mitre angle from the shape drawing and mark all twelve mitre lines from the outside faces.',
+        'Make a shooting-board fence at that angle and plane every mitre to the line, so all six corners match.',
+        'Glue the ring of walls with a band clamp (or twisted string) and check it against the full-size drawing.',
+        'Drive bamboo pins across each mitre and pin on the bottom.']}},
+    pentkeys:{label:'Pentagon tray with feather keys',p:CU({build:'box',pts:regPoly(5,140),H:50,wallT:10.5,bottomT:6}),lv:2,
+      J:{polyCorner:'tomeKey',pbottom:'mizo',plid:'none'},
+      practice:{n:7,teaches:'Strengthening mitres with contrasting keys, and grooving for a floating bottom in an odd-shaped box.',goals:[
+        'Cut five matching mitres at the pentagon angle and close them all at once with a band clamp.',
+        'Plough a groove inside every wall and fit a five-sided bottom that floats with a small gap.',
+        'Saw evenly spaced kerfs across each corner, square to the edge, and chop them clean.',
+        'Fit and glue contrasting keys, then plane them flush without tearing the corners.']}},
+    octbox:{label:'Octagonal box with splined mitres',p:CU({build:'box',pts:regPoly(8,70),H:90,wallT:10.5,bottomT:6,lidT:10.5}),sp:'yamazakura',lv:3,
+      J:{polyCorner:'tomeYatoi',pbottom:'mizo',plid:'sanbuta'},
+      practice:{n:11,teaches:'Cutting stopped spline grooves in mitre faces and gluing up eight corners at once.',goals:[
+        'Plane sixteen mitres to exactly 22.5° off square; small errors add up around eight corners.',
+        'Cut a stopped groove in every mitre face at the same distance from the outside corner.',
+        'Make cross-grain splines and glue up all eight walls with a band clamp in one go.',
+        'Fit a lid with two battens that drop inside the octagon.']}}
   }
 };
 const strShow=p=>p.str!=='none',isScreen=p=>p.style!=='lamp',isLamp=p=>p.style==='lamp';
@@ -1988,17 +2435,34 @@ const FIELDS={
     {k:'pattern',l:'Kumiko pattern',g:'M',sel:[['masu','Masu (square grid)'],['yoko','Yoko-shige (close horizontals)'],['tate','Tate-shige (close verticals)'],['fukiyose','Fukiyose (paired bars)']],wide:1},
     {k:'ks',l:'Kumiko spacing',g:'M',min:25,max:300},{k:'kw',l:'Kumiko width',g:'M',min:3,max:15},{k:'kd',l:'Kumiko depth',g:'M',min:6,max:40}
   ],
+  custom:[
+    {k:'build',l:'Make it as',g:'S',sel:[['box','Box, tray or planter'],['case','Cabinet or shelf unit'],['table','Table or stand']],wide:1},
+    {k:'H',l:'Height',g:'S',min:30,max:2400},
+    {k:'wallT',l:'Wall thickness',g:'M',min:5,max:40,show:p=>p.build!=='table'},
+    {k:'bottomT',l:'Bottom thickness',g:'M',min:3,max:30,show:p=>p.build==='box'},
+    {k:'lidT',l:'Lid thickness',g:'M',min:4,max:40,show:p=>p.build==='box'&&S.J.plid!=='none'},
+    {k:'topT',l:'Top thickness',g:'M',min:6,max:60,show:p=>p.build!=='box'},
+    {k:'ov',l:'Top overhang',g:'M',min:0,max:200,show:p=>p.build!=='box'},
+    {k:'shelfT',l:'Shelf thickness',g:'M',min:6,max:40,show:p=>p.build==='case'},
+    {k:'nShelves',l:'Shelves above the bottom one',g:'M',int:1,min:0,max:10,show:p=>p.build==='case'},
+    {k:'baseH',l:'Bottom shelf above floor',g:'M',min:15,max:600,show:p=>p.build==='case'},
+    {k:'legS',l:'Leg size',g:'M',min:22,max:120,show:p=>p.build==='table'},
+    {k:'apH',l:'Apron height',g:'M',min:30,max:250,show:p=>p.build==='table'},
+    {k:'apT',l:'Apron thickness',g:'M',min:12,max:50,show:p=>p.build==='table'},
+    {k:'apIn',l:'Apron setback',g:'M',min:0,max:30,show:p=>p.build==='table'}
+  ],
   box:[
     {k:'W',l:'Length',g:'S',min:80,max:2000},{k:'D',l:'Depth',g:'S',min:60,max:1200},{k:'H',l:'Height with lid',g:'S',min:40,max:1200},
     {k:'wallT',l:'Wall thickness',g:'M',min:5,max:40},{k:'bottomT',l:'Bottom thickness',g:'M',min:3,max:30},{k:'lidT',l:'Lid thickness',g:'M',min:4,max:40,show:()=>S.J.lid!=='none'}
   ]
 };
 const KIND_CONNS={frame:['legApron','legStretcher','stretcherCross','topAttach','topEnds','boardEdge','accent'],case:['caseCorner','shelf','ebizuka','back'],
-  tansu:['caseCorner','shelf','drawerCorner','bottom','doors','back'],lattice:['frameCorner','frameRail','feet','postRail','kumiko','panel','base'],box:['boxCorner','bottom','lid']};
+  tansu:['caseCorner','shelf','drawerCorner','bottom','doors','back'],lattice:['frameCorner','frameRail','feet','postRail','kumiko','panel','base'],box:['boxCorner','bottom','lid'],
+  custom:['polyCorner','pbottom','plid','pshelf','ptop','pLegApron','ptopAttach']};
 const ORDER={tansu:['caseCorner','shelf','drawerCorner','drawerBack','bottom','doors','back']};
 const CONN_LABEL={tansu:{caseCorner:'Carcass corners',shelf:'Dividers',bottom:'Drawer bottoms',back:'Back'},case:{caseCorner:'Top & bottom corners'}};
 const connLabel=c=>(CONN_LABEL[S.kind]&&CONN_LABEL[S.kind][c])||CONNS[c].label;
-const KIND_DEF={frame:'dining',case:'bookshelf',tansu:'kodansu',lattice:'tsuitate',box:'chest'};
+const KIND_DEF={frame:'dining',case:'bookshelf',tansu:'kodansu',lattice:'tsuitate',box:'chest',custom:'cutcab'};
 const KEYNAMES={apronX:'Front & back apron',apronY:'Side apron',strY:'Side stretcher',strX:'Front & back stretcher',side:'Side',wallX:'Front & back wall',wallY:'End wall',linerX:'Liner, long',linerY:'Liner, short',rimX:'Lid rim, long',rimY:'Lid rim, short',trX:'Top rail',trY:'Top rail',brX:'Bottom rail',brY:'Bottom rail',stile:'Stile'};
 const LV_HINT=['','Straight cuts, glue and simple housings. Good for a first project.','Pinned, bridled and splined joints, many needing no clamps or glue.','Through-wedged tenons, dovetails, sliding battens and lift-in doors.','Exposed knock-down joinery, mitred bridles and blind dovetails.'];
 let S=null,M=null,ver=0;const undo=[];
@@ -2013,11 +2477,12 @@ function practiceNow(){const pr=PRESETS[S.kind][S.preset];if(!pr||!pr.practice)r
   const same=!pr.J||Object.keys(pr.J).every(c=>!activeConns().includes(c)||S.J[c]===pr.J[c]);return {pr,same};}
 function newState(kind,preset,lv,keep){
   const pr=PRESETS[kind][preset];lv=pr.lv||lv;
-  return {kind,preset,level:lv,units:keep?keep.units:'mm',p:JSON.parse(JSON.stringify(pr.p)),J:presetJ(kind,pr,lv),species:pr.sp||(keep?keep.species:'hinoki'),accent:keep?keep.accent:'walnut',boards:keep&&keep.boards?keep.boards.slice():[],pins:keep&&keep.pins?Object.assign({},keep.pins):{fine:'trad',peg:'trad',dowel:'trad'},mc:keep?keep.mc:4,hidden:true};
+  return {kind,preset,level:lv,mode:keep&&keep.mode||(pr.practice?'practice':'design'),units:keep?keep.units:'mm',p:JSON.parse(JSON.stringify(pr.p)),J:presetJ(kind,pr,lv),species:pr.sp||(keep?keep.species:'hinoki'),accent:keep?keep.accent:'walnut',boards:keep&&keep.boards?keep.boards.slice():[],pins:keep&&keep.pins?Object.assign({},keep.pins):{fine:'trad',peg:'trad',dowel:'trad'},mc:keep?keep.mc:4,hidden:true};
 }
 function activeConns(){const p=S.p,lamp=p.style==='lamp';return KIND_CONNS[S.kind].filter(c=>{
   switch(c){case 'legStretcher':return p.str!=='none';case 'stretcherCross':return p.str==='H';case 'boardEdge':case 'accent':return p.nBoards>1&&!(p.gap>0);
   case 'topEnds':return p.shape!=='round';case 'ebizuka':return p.layout==='chigai';case 'doors':return p.doorRows>0;
+  case 'polyCorner':return p.build!=='table';case 'pbottom':case 'plid':return p.build==='box';case 'pshelf':case 'ptop':return p.build==='case';case 'pLegApron':case 'ptopAttach':return p.build==='table';
   case 'frameCorner':case 'frameRail':case 'feet':return !lamp;case 'panel':return !lamp&&p.koshiH>0;case 'postRail':case 'base':return lamp;default:return true;}});}
 // ---------- units
 function inch(mm){let v=mm/25.4;const neg=v<0;v=Math.abs(v);let w=Math.floor(v),n=Math.round((v-w)*16);if(n===16){w++;n=0;}let s;if(n){let d=16;while(n%2===0){n/=2;d/=2;}s=(w?w+' ':'')+n+'/'+d;}else s=String(w);return (neg?'-':'')+s+'″';}
@@ -2056,6 +2521,14 @@ function sanitize(){
     p.baseH=p.baseH>0?c(p.baseH,30,p.H/4):0;
     p.nShelves=c(p.nShelves,0,Math.max(0,Math.floor((p.H-2*p.T-p.baseH)/(p.shelfT+60))-1));
     p.backT=c(p.backT,6,Math.max(6,p.D/4));
+  }else if(S.kind==='custom'){
+    if(!Array.isArray(p.pts)||p.pts.length<3)p.pts=PRESETS.custom.cutcab.p.pts.map(q=>q.slice());
+    p.pts=normPts(p.pts.map(q=>[+q[0]||0,+q[1]||0]));
+    p.W=Math.max(...p.pts.map(q=>q[0]));p.D=Math.max(...p.pts.map(q=>q[1]));
+    if(!['box','case','table'].includes(p.build))p.build='box';
+    const op=Array.isArray(p.open)?p.open:[];p.open=p.pts.map((_,i)=>!!op[i]);
+    p.wallT=c(p.wallT,5,40);p.apT=c(p.apT,12,Math.max(12,p.legS-8));p.apIn=c(p.apIn,0,Math.max(0,p.legS-p.apT-4));
+    p.apH=c(p.apH,30,Math.max(30,p.H-p.topT-60));p.baseH=c(p.baseH,15,Math.max(15,p.H/2));
   }else{
     const minH=3*p.wallT+(S.J.lid==='none'?0:p.lidT)+(S.J.bottom==='kugi'?p.bottomT:0);p.H=Math.max(p.H,minH);
     p.wallT=c(p.wallT,5,Math.min(40,p.W/4,p.D/4));p.bottomT=c(p.bottomT,3,Math.max(3,p.wallT*1.5));
@@ -2066,7 +2539,7 @@ function rebuild(keepCam){
   sanitize();
   if(!S.pins)S.pins={fine:'trad',peg:'trad',dowel:'trad'};
   const p=Object.assign({},S.p,{J:S.J,species:S.species,accent:S.accent,mc:S.mc,pins:S.pins});
-  try{M=GENERATORS[S.kind](p);}catch(e){console.error(e);toast('That combination could not be built. Try other sizes.');return;}
+  try{M=GENERATORS[S.kind](p);}catch(e){if(!e.user)console.error(e);toast(e.user?e.message:'That combination could not be built. Try other sizes.');if(S.kind==='custom')drawPlan();return;}
   ver++;viewer.sel=-1;$('#info').hidden=true;
   viewer.setScene(M.parts,keepCam);
   summary();checks();syncFields();
@@ -2107,12 +2580,12 @@ function checks(){
 function renderSide(){
   document.querySelectorAll('.kind').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===S.kind));
   const opt=([k,v])=>`<option value="${k}" ${k===S.preset?'selected':''}>${esc(v.label)}</option>`,ents=Object.entries(PRESETS[S.kind]);
-  const pe=ents.filter(([,v])=>v.practice),fe=ents.filter(([,v])=>!v.practice);
-  $('#preset').innerHTML=(pe.length?`<optgroup label="Furniture">${fe.map(opt).join('')}</optgroup><optgroup label="Practice pieces">${pe.map(opt).join('')}</optgroup>`:fe.map(opt).join(''))+(PRESETS[S.kind][S.preset]?'':'<option selected>Custom</option>');
-  const cur=PRACTICE.findIndex(x=>x.kind===S.kind&&x.preset===S.preset);
-  $('#practice').innerHTML=`<option value="" ${cur<0?'selected':''}>Choose a practice piece…</option>`+PRACTICE.map((x,i)=>`<option value="${i}" ${i===cur?'selected':''}>${x.v.practice.n}. ${esc(x.v.label)} ${'●'.repeat(x.v.lv)}${'○'.repeat(4-x.v.lv)}</option>`).join('');
-  const pn=practiceNow();$('#learnHint').hidden=!pn;
-  if(pn)$('#learnHint').innerHTML=`<b>Practises:</b> ${esc(pn.pr.practice.teaches)}${pn.same?'':' <span class="warnTxt">You have changed its joints; press Reset to go back to the ones it is designed to teach.</span>'}${pn.pr.practice.n<PRACTICE.length?` <button class="linkbtn" id="nextPractice">Next piece →</button>`:''}`;
+  const fe=ents.filter(([,v])=>!v.practice),cpr=PRESETS[S.kind][S.preset],pm=S.mode==='practice';
+  $('#preset').innerHTML=fe.map(opt).join('')+(cpr&&!cpr.practice?'':'<option selected>Custom</option>');
+  document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===(pm?'practice':'design')));
+  $('#secPiece').hidden=pm;$('#secLevel').hidden=pm;$('#secPractice').hidden=!pm;$('#customHint').hidden=S.kind!=='custom';
+  if(pm)renderPractice();
+  renderShape();
   $('#levels').innerHTML=[1,2,3,4].map(l=>`<button data-l="${l}" aria-pressed="${l===S.level}"><span class="pips">${'●'.repeat(l)}${'○'.repeat(4-l)}</span>${LEVELS[l]}</button>`).join('');
   $('#lvlHint').textContent=LV_HINT[S.level];
   const unit=S.units==='in'?'in':'mm';
@@ -2139,7 +2612,7 @@ function renderSide(){
   $('#uMM').setAttribute('aria-pressed',S.units==='mm');$('#uIN').setAttribute('aria-pressed',S.units==='in');
 }
 // board-thickness fields that follow the thicknesses you can buy
-const THK={frame:['topT'],case:['T','shelfT','backT'],tansu:['T','backT'],box:['wallT','bottomT','lidT']};
+const THK={frame:['topT'],case:['T','shelfT','backT'],tansu:['T','backT'],box:['wallT','bottomT','lidT'],custom:['wallT','bottomT','lidT','topT','shelfT']};
 const boardOpts=f=>(S.boards&&S.boards.length&&(THK[S.kind]||[]).includes(f.k))?S.boards.filter(v=>v>=f.min&&v<=f.max):[];
 // snap to the nearest board you can buy, unless none is close (then the field stays free, e.g. 21 mm shelves from 10.5 mm stock)
 function snapBoards(){const p=S.p;for(const f of FIELDS[S.kind]){const o=boardOpts(f);if(!o.length)continue;const n=o.reduce((a,b)=>Math.abs(b-p[f.k])<Math.abs(a-p[f.k])?b:a);if(Math.abs(n-p[f.k])<=Math.max(3,p[f.k]*0.35))p[f.k]=n;}}
@@ -2150,11 +2623,182 @@ function pinFields(){
   const rows=PIN_ROLES.filter(([r])=>M.parts.some(p=>p.stockRole===r)).map(([r,l])=>`<div class="field wide"><label for="w-pin-${r}">${l}</label><select id="w-pin-${r}" data-pin="${r}">${Object.entries(STOCK[r]).map(([k,o])=>`<option value="${k}" ${(S0[r]||'trad')===k?'selected':''}>${esc(o.name)}</option>`).join('')}</select></div>`);
   return rows.length?rows.join('')+`<p class="hint field wide" style="margin:0">Shop-bought bamboo and wood dowels work well when Japanese stock is hard to find. Sizes, drilling and the cut list follow your choice.</p>`:'';
 }
+// ---------- practice path (its own mode)
+const MADE_KEY='sashimono-made';
+function madeSet(){try{return JSON.parse(localStorage.getItem(MADE_KEY)||'{}')||{};}catch(e){return {};}}
+function isPracticeState(st){const pr=st&&PRESETS[st.kind]&&PRESETS[st.kind][st.preset];return !!(pr&&pr.practice);}
+function renderPractice(){
+  const made=madeSet(),cur=PRACTICE.findIndex(x=>x.kind===S.kind&&x.preset===S.preset),nm=PRACTICE.filter(x=>made[x.kind+'/'+x.preset]).length,pn=practiceNow();
+  let h=`<h2>Practice path</h2><p class="pintro">${PRACTICE.length} small pieces, each designed to teach one or two joints. Work down the list: each one builds on the skills before it. Sizes, wood and board thicknesses can still be changed below.</p>
+  <div class="prog"><i style="width:${nm/PRACTICE.length*100}%"></i></div><p class="hint" style="margin:0 0 4px">${nm} of ${PRACTICE.length} made</p>`;
+  let lv=0;
+  PRACTICE.forEach((x,i)=>{const v=x.v,L=v.lv||1,k=x.kind+'/'+x.preset,on=i===cur;
+    if(L!==lv){lv=L;h+=`<div class="plv"><span>${LEVELS[L]}</span><span aria-hidden="true">${'●'.repeat(L)}${'○'.repeat(4-L)}</span></div>`;}
+    h+=`<div class="pitem${on?' cur':''}${made[k]?' made':''}"><button data-pi="${i}" aria-expanded="${on}"><span class="pnum">${made[k]?'✓':v.practice.n}</span><span><span class="pt">${esc(v.label)}</span><span class="ps">${esc(v.practice.teaches)}</span></span></button>`;
+    if(on){const js=M&&M.kind===S.kind?[...new Set(jointGroups().map(g=>JOINTS[jkey(g.conn,g.id)].en))]:[];
+      h+=`<div class="pbody"><b>What you will practise</b><ol>${v.practice.goals.map(g=>`<li>${esc(g)}</li>`).join('')}</ol>
+      ${js.length?`<p class="hint" style="margin:4px 0">Joints: ${esc(js.join(', '))}. See the Joints and Steps tabs for how to cut each one.</p>`:''}
+      ${pn&&!pn.same?'<p class="warnTxt" style="margin:4px 0">You have changed its joints. Press Reset (under Project) to go back to the ones it is designed to teach.</p>':''}
+      <label><input type="checkbox" data-made="${k}" ${made[k]?'checked':''}> I have made this piece</label>
+      ${i+1<PRACTICE.length?`<button class="btn" style="margin-top:10px" data-pi="${i+1}">Next piece: ${esc(PRACTICE[i+1].v.label)} →</button>`:''}</div>`;}
+    h+='</div>';});
+  $('#secPractice').innerHTML=h;
+}
+$('#secPractice').addEventListener('click',e=>{const b=e.target.closest('[data-pi]');if(!b)return;const x=PRACTICE[+b.dataset.pi];if(!x||(x.kind===S.kind&&x.preset===S.preset))return;
+  commit(()=>{S=newState(x.kind,x.preset,S.level,S);S.mode='practice';},false);});
+$('#secPractice').addEventListener('change',e=>{const k=e.target.dataset.made;if(!k)return;const m=madeSet();if(e.target.checked)m[k]=1;else delete m[k];
+  try{localStorage.setItem(MADE_KEY,JSON.stringify(m));}catch(_){}renderPractice();if(e.target.checked)toast('Nicely done. Move on to the next piece when you are ready.');});
+const stash={};try{Object.assign(stash,JSON.parse(localStorage.getItem('sashimono-stash')||'{}'));}catch(e){}
+function setMode(m){
+  const cm=S.mode||'design';if(cm===m)return;
+  stash[cm]=JSON.stringify(S);let nx=null;try{nx=stash[m]?JSON.parse(stash[m]):null;}catch(e){nx=null;}
+  if(nx&&!(nx.kind&&PRESETS[nx.kind]&&nx.p&&nx.J))nx=null;
+  if(m==='practice'&&(!nx||!isPracticeState(nx))){const x=PRACTICE[0];nx=newState(x.kind,x.preset,S.level,S);}
+  if(m==='design'&&(!nx||isPracticeState(nx)))nx=newState(KIND_DEF[S.kind]&&S.kind!=='custom'?S.kind:'frame',KIND_DEF[S.kind]&&S.kind!=='custom'?KIND_DEF[S.kind]:'dining',S.level,S);
+  for(const c of KIND_CONNS[nx.kind])if(!nx.J[c])nx.J[c]=pickForLevel(c,nx.level||2);
+  nx.mode=m;nx.units=S.units;nx.boards=(S.boards||[]).slice();nx.pins=Object.assign({},S.pins);
+  undo.push(JSON.stringify(S));S=nx;try{localStorage.setItem('sashimono-stash',JSON.stringify(stash));}catch(e){}
+  renderSide();rebuild(false);
+}
+document.querySelector('.modes').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(b)setMode(b.dataset.m);});
+
+// ---------- shape editor for your own shapes
+const QSHAPES=[['rect','Rectangle'],['cut','Cut corner'],['pent','Pentagon'],['hex','Hexagon'],['oct','Octagon'],['trap','Trapezoid'],['ell','L-shape'],['tri','Triangle']];
+function shapeFor(k,W,D){
+  const c=Math.min(W,D)*0.4,ins=Math.min(D,W*0.25);
+  switch(k){case 'rect':return [[0,0],[W,0],[W,D],[0,D]];case 'cut':return [[0,0],[W,0],[W,D-c],[W-c,D],[0,D]];
+    case 'pent':return regPoly(5,W/1.618);case 'hex':return regPoly(6,W/2);case 'oct':return regPoly(8,W/2.4142);
+    case 'trap':return [[0,0],[W,0],[W-ins,D],[ins,D]];case 'ell':return [[0,0],[W,0],[W,D*0.45],[W*0.45,D*0.45],[W*0.45,D],[0,D]];
+    default:return [[0,0],[W,0],[0,D]];}
+}
+function turtle(P,L,A){const n=P.length;let h=Math.atan2(P[1][1]-P[0][1],P[1][0]-P[0][0]);const out=[P[0].slice()];
+  for(let k=0;k<n-1;k++){const q=out[k];out.push([q[0]+L[k]*Math.cos(h),q[1]+L[k]*Math.sin(h)]);if(k+1<=n-2)h+=(180-A[k+1])*Math.PI/180;}
+  return out.map(q=>[Math.round(q[0]*1000)/1000,Math.round(q[1]*1000)/1000]);}
+// change one side's length but keep every angle: two other sides stretch to close the shape (the most nearly opposite ones)
+function closeUp(P0,e,L,k,pref){// sides keep their directions; two sides other than k change length so the shape closes
+  const n=e.length;let r=[0,0];for(let i=0;i<n;i++)r=add2(r,sc2(e[i],L[i]));r=sc2(r,-1);let best=null;
+  for(let a=0;a<n;a++)for(let b=a+1;b<n;b++){if(a===k||b===k)continue;if(pref&&!(pref.includes(a)&&pref.includes(b)))continue;const det=crs2(e[a],e[b]);if(Math.abs(det)<1e-6)continue;
+    const da=crs2(r,e[b])/det,db=crs2(e[a],r)/det;if(L[a]+da<10||L[b]+db<10)continue;const cost=da*da+db*db;if(!best||cost<best.cost-1e-6)best={a,b,da,db,cost};}
+  if(!best)return pref?closeUp(P0,e,L,k):null;L=L.slice();L[best.a]+=best.da;L[best.b]+=best.db;
+  const out=[P0.slice()];for(let i=0;i<n-1;i++)out.push(add2(out[i],sc2(e[i],L[i])));return out.map(q=>[Math.round(q[0]*1000)/1000,Math.round(q[1]*1000)/1000]);}
+function stretch(P,k,newL){const Ls=polyLines(P),L=Ls.map(l=>l.L);L[k]=newL;return closeUp(P[0],Ls.map(l=>l.e),L,k);}
+// set the angle at corner v: the side after it swings round and the next corner makes up the difference
+function bend(P,v,newA){const Ls=polyLines(P),A=polyAngles(P),e=Ls.map(l=>l.e.slice()),d=-(newA-A[v])*Math.PI/180,c=Math.cos(d),s=Math.sin(d),q=e[v];
+  e[v]=[q[0]*c-q[1]*s,q[0]*s+q[1]*c];const n=P.length;return closeUp(P[0],e,Ls.map(l=>l.L),v,[(v-1+n)%n,(v+1)%n]);}
+function shapeErr(P){if(P.length<3)return 'A shape needs at least three corners.';if(polyArea(P)<=0||!polySimple(P))return 'The sides cross each other. Drag the corners or change the angles to untangle the shape.';return '';}
+let planVB=null,drag=null;
+function renderShape(){
+  const on=S.kind==='custom';$('#shapeSec').hidden=!on;if(!on)return;
+  $('#qshapes').innerHTML=QSHAPES.map(([k,l])=>{const P=shapeFor(k,26,16);const xs=P.map(q=>q[0]),ys=P.map(q=>q[1]),sx=Math.max(...xs),sy=Math.max(...ys),f=Math.min(26/sx,16/sy);
+    return `<button data-q="${k}" aria-label="${l}"><svg viewBox="0 0 30 20" aria-hidden="true"><polygon points="${P.map(q=>[(2+q[0]*f+(26-sx*f)/2).toFixed(1),(18-q[1]*f-(16-sy*f)/2).toFixed(1)].join(',')).join(' ')}"/></svg>${l}</button>`;}).join('');
+  drawPlan(true);sideTable();
+}
+function drawPlan(fit=true){
+  if(S.kind!=='custom')return;
+  const svg=$('#planEd'),p=S.p,P=p.pts,n=P.length;const w=svg.clientWidth||300,h=svg.clientHeight||250;
+  if(fit||!planVB){const xs=P.map(q=>q[0]),ys=P.map(q=>-q[1]);let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+    const k0=Math.max((x1-x0)/(w-130),(y1-y0)/(h-60));x0-=65*k0;x1+=65*k0;y0-=30*k0;y1+=30*k0;let vw=x1-x0,vh=y1-y0;
+    if(vw/vh<w/h){const nw=vh*w/h;x0-=(nw-vw)/2;vw=nw;}else{const nh=vw*h/w;y0-=(nh-vh)/2;vh=nh;}planVB=[x0,y0,vw,vh];}
+  const k=planVB[2]/w,T=q=>(+q[0]).toFixed(1)+','+(-q[1]).toFixed(1),err=shapeErr(P),A=polyAngles(P),fs=(12*k).toFixed(1);
+  let o=`<polygon class="poly${err?' bad':''}" points="${P.map(T).join(' ')}"/>`;
+  if(!err){const Ls=polyLines(P);
+    const ds=p.build==='table'?P.map(()=>p.ov):P.map((_,i)=>p.build==='case'&&p.open[i]?0:p.wallT);
+    try{const I=offsetPoly(Ls,ds);o+=`<polygon class="inner" points="${I.map(T).join(' ')}"/>`;
+      if(p.build==='table'){const I2=offsetPoly(Ls,P.map(()=>p.ov+p.legS));for(let i=0;i<n;i++){const h2=(i-1+n)%n;const q=[lineX(Ls[h2],p.ov,Ls[i],p.ov),lineX(Ls[h2],p.ov,Ls[i],p.ov+p.legS),I2[i],lineX(Ls[h2],p.ov+p.legS,Ls[i],p.ov)];if(q.every(Boolean))o+=`<polygon class="inner" points="${q.map(T).join(' ')}"/>`;}}}catch(e){}}
+  for(let i=0;i<n;i++){const a=P[i],b=P[(i+1)%n],e=nrm2(sub2(b,a)),out=[e[1],-e[0]],m=sc2(add2(a,b),0.5),L=len2(sub2(b,a));
+    if(p.build==='case'&&p.open[i])o+=`<line class="open" x1="${a[0]}" y1="${-a[1]}" x2="${b[0]}" y2="${-b[1]}"/>`;
+    const q=add2(m,sc2(out,(Math.abs(out[0])>0.5?12:16)*k)),anc=out[0]>0.5?'start':out[0]<-0.5?'end':'middle';o+=`<text x="${q[0].toFixed(1)}" y="${(-q[1]).toFixed(1)}" font-size="${fs}" text-anchor="${anc}" dominant-baseline="middle"><tspan font-weight="700">${sideLetter(i)}</tspan> ${esc(fmtN(L))}${p.build==='case'&&p.open[i]?' open':''}</text>`;}
+  for(let i=0;i<n;i++){const u=nrm2(sub2(P[(i-1+n)%n],P[i])),v=nrm2(sub2(P[(i+1)%n],P[i]));let b=add2(u,v);b=len2(b)<1e-6?[-v[1],v[0]]:nrm2(b);if(A[i]>180)b=sc2(b,-1);
+    const q=add2(P[i],sc2(b,24*k));o+=`<text class="ang" x="${q[0].toFixed(1)}" y="${(-q[1]).toFixed(1)}" font-size="${(11*k).toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${Math.round(A[i]*10)/10}°</text>`;}
+  for(let i=0;i<n;i++){const a=P[i],b=P[(i+1)%n],m=sc2(add2(a,b),0.5);if(len2(sub2(b,a))<40*k)continue;
+    o+=`<circle class="add" data-add="${i}" cx="${m[0].toFixed(1)}" cy="${(-m[1]).toFixed(1)}" r="${(8*k).toFixed(1)}"><title>Add a corner here</title></circle><text x="${m[0].toFixed(1)}" y="${(-m[1]).toFixed(1)}" font-size="${(13*k).toFixed(1)}" text-anchor="middle" dominant-baseline="central">+</text>`;}
+  P.forEach((q,i)=>{o+=`<circle class="vh${drag&&drag.i===i?' on':''}" data-v="${i}" cx="${q[0].toFixed(1)}" cy="${(-q[1]).toFixed(1)}" r="${(9*k).toFixed(1)}"><title>Drag to move this corner</title></circle>`;});
+  svg.setAttribute('viewBox',planVB.map(v=>v.toFixed(1)).join(' '));svg.innerHTML=o;
+  $('#planErr').hidden=!err;$('#planErr').textContent=err;
+}
+function sideTable(){
+  const p=S.p,P=p.pts,n=P.length,Ls=polyLines(P),A=polyAngles(P),cs=p.build==='case',u=S.units==='in'?'in':'mm';
+  let h=`<thead><tr><th>Side</th><th>Length (${u})</th><th>Corner</th>${cs?'<th>Open</th>':''}<th></th></tr></thead><tbody>`;
+  for(let i=0;i<n;i++){const v=(i+1)%n;
+    const lc=`<input type="number" data-len="${i}" value="${toUI(Ls[i].L)}" step="${S.units==='in'?0.0625:1}" inputmode="decimal" aria-label="Length of side ${sideLetter(i)}">`;
+    const ac=`<input type="number" data-ang="${v}" value="${Math.round(A[v]*10)/10}" step="1" inputmode="decimal" aria-label="Angle between sides ${sideLetter(i)} and ${sideLetter(v)}, degrees">`;
+    h+=`<tr><td><b>${sideLetter(i)}</b></td><td>${lc}</td><td><span class="calc">${sideLetter(i)}–${sideLetter(v)}</span> ${ac}</td>${cs?`<td><input type="checkbox" data-open="${i}" ${p.open[i]?'checked':''} aria-label="Leave side ${sideLetter(i)} open"></td>`:''}<td>${n>3?`<button class="rm" data-rm="${v}" aria-label="Remove the corner between ${sideLetter(i)} and ${sideLetter(v)}" title="Remove this corner">×</button>`:''}</td></tr>`;}
+  $('#sideTbl').innerHTML=h+'</tbody>';
+}
+$('#qshapes').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(!b)return;
+  commit(()=>{S.p.pts=shapeFor(b.dataset.q,S.p.W,S.p.D);S.p.open=S.p.pts.map((_,i)=>S.p.build==='case'&&i===0);});});
+$('#sideTbl').addEventListener('change',e=>{const el=e.target;
+  if(el.dataset.open!=null){commit(()=>{S.p.open[+el.dataset.open]=el.checked;});return;}
+  const v=parseFloat(el.value);if(!isFinite(v))return;
+  if(el.dataset.len!=null||el.dataset.ang!=null){const P=S.p.pts,Ls=polyLines(P),A=polyAngles(P),L=Ls.map(l=>l.L);
+    if(el.dataset.len!=null){const k=+el.dataset.len,nl=Math.max(10,fromUI(v)),Q=stretch(P,k,nl);
+      if(Q)commit(()=>{S.p.pts=Q;});else{L[k]=nl;if(k===P.length-1){toast('That length cannot be reached without changing an angle.');sideTable();return;}commit(()=>{S.p.pts=turtle(P,L,A);});}}
+    else{const k=+el.dataset.ang,Q=bend(P,k,clamp(v,5,355));if(Q)commit(()=>{S.p.pts=Q;});else{toast('That angle does not fit with the other sides. Try a smaller change, or drag the corners.');sideTable();}}}});
+$('#sideTbl').addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(!b)return;const v=+b.dataset.rm;commit(()=>{S.p.pts.splice(v,1);S.p.open.splice(v,1);});});
+{const svg=$('#planEd');
+  const sp=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());return [q.x,-q.y];};
+  svg.addEventListener('pointerdown',e=>{const t=e.target;
+    if(t.classList.contains('vh')){e.preventDefault();svg.setPointerCapture(e.pointerId);drag={i:+t.dataset.v,snap:JSON.stringify(S),moved:false};drawPlan(false);}
+    else if(t.classList.contains('add')){const i=+t.dataset.add;commit(()=>{const P=S.p.pts,a=P[i],b=P[(i+1)%P.length];P.splice(i+1,0,[(a[0]+b[0])/2,(a[1]+b[1])/2]);S.p.open.splice(i+1,0,!!S.p.open[i]);});}});
+  svg.addEventListener('pointermove',e=>{if(!drag)return;const q=sp(e),g=e.shiftKey?1:5;S.p.pts[drag.i]=[Math.round(q[0]/g)*g,Math.round(q[1]/g)*g];drag.moved=true;drawPlan(false);sideTable();});
+  const end=()=>{if(!drag)return;const d=drag;drag=null;if(d.moved){undo.push(d.snap);if(undo.length>60)undo.shift();rebuild(true);renderSide();}else drawPlan(false);};
+  svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+  new ResizeObserver(()=>{if(S&&S.kind==='custom'&&!drag)drawPlan(true);}).observe(svg);}
+$('#dlTpl').addEventListener('click',()=>saveFile(`${S.preset}-full-size-template.svg`,templateSVG()));
+function templateSVG(){
+  const p=S.p,P=p.pts,n=P.length,Ls=polyLines(P),A=polyAngles(P),m=20,W=p.W+2*m,D=p.D+2*m+24,T=q=>[(q[0]+m).toFixed(2),(p.D-q[1]+m).toFixed(2)];
+  let o=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}mm" height="${D}mm" viewBox="0 0 ${W} ${D}" font-family="Helvetica,Arial,sans-serif"><rect width="${W}" height="${D}" fill="#fff"/>`;
+  o+=`<polygon points="${P.map(q=>T(q).join(',')).join(' ')}" fill="none" stroke="#000" stroke-width="0.4"/>`;
+  if(!shapeErr(P)&&p.build!=='table'){const I=offsetPoly(Ls,P.map((_,i)=>p.build==='case'&&p.open[i]?0:p.wallT));o+=`<polygon points="${I.map(q=>T(q).join(',')).join(' ')}" fill="none" stroke="#666" stroke-width="0.25" stroke-dasharray="2 1.5"/>`;
+    for(let i=0;i<n;i++)if(p.build!=='case'||(!p.open[i]&&!p.open[(i-1+n)%n])){const a=T(P[i]),b=T(I[i]);o+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#666" stroke-width="0.25"/>`;}}
+  for(let i=0;i<n;i++){const a=P[i],b=P[(i+1)%n],e=nrm2(sub2(b,a)),q=T(add2(sc2(add2(a,b),0.5),sc2([e[1],-e[0]],7)));o+=`<text x="${q[0]}" y="${q[1]}" font-size="4" text-anchor="middle" dominant-baseline="middle"><tspan font-weight="700">${sideLetter(i)}</tspan> ${esc(fmt(Ls[i].L))}</text>`;
+    const u=nrm2(sub2(P[(i-1+n)%n],a)),v=nrm2(sub2(P[(i+1)%n],a));let bb=add2(u,v);bb=len2(bb)<1e-6?[-v[1],v[0]]:nrm2(bb);if(A[i]>180)bb=sc2(bb,-1);const r=T(add2(a,sc2(bb,Math.max(14,p.wallT*2.2))));
+    o+=`<text x="${r[0]}" y="${r[1]}" font-size="3.4" fill="#444" text-anchor="middle" dominant-baseline="middle">${fmtA(A[i])}</text>`;}
+  o+=`<line x1="${m}" y1="${D-10}" x2="${m+100}" y2="${D-10}" stroke="#000" stroke-width="0.5"/><line x1="${m}" y1="${D-12}" x2="${m}" y2="${D-8}" stroke="#000" stroke-width="0.3"/><line x1="${m+100}" y1="${D-12}" x2="${m+100}" y2="${D-8}" stroke="#000" stroke-width="0.3"/>`;
+  o+=`<text x="${m+104}" y="${D-9}" font-size="3.2">Print at actual size (100%): this line must measure 100 mm. Solid line = outside of the piece${p.build!=='table'?', dashed = inside faces of the walls':''}.</text></svg>`;
+  return o;
+}
+// shape plan sheet for the drawings tab
+function planSheet(sh){
+  const p=S.p,P=p.pts,n=P.length,Ls=polyLines(P),A=polyAngles(P),PW=420,PH=297,Mg=10,m=meta(),cs=p.build==='case',tb=p.build==='table';
+  const aw=272,ah=226,ax=Mg+8,ay=Mg+12;let sc=SCALES[SCALES.length-1];for(const s2 of SCALES){if(p.W/s2<=aw-40&&p.D/s2<=ah-40){sc=s2;break;}}
+  const ox=ax+(aw-p.W/sc)/2,oy=ay+(ah-p.D/sc)/2,T=q=>[ox+q[0]/sc,oy+(p.D-q[1])/sc],pts=Q=>Q.map(q=>T(q).map(v=>v.toFixed(2)).join(',')).join(' ');
+  const o=[`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${PW} ${PH}" width="${PW}mm" height="${PH}mm" font-family="'Zen Kaku Gothic New',Helvetica,Arial,sans-serif">`,`<rect width="${PW}" height="${PH}" fill="#fff"/><rect x="${Mg}" y="${Mg}" width="${PW-2*Mg}" height="${PH-2*Mg}" fill="none" stroke="#111" stroke-width="0.5"/>`];
+  o.push(`<polygon points="${pts(P)}" fill="#f6efe2" stroke="#111" stroke-width="0.5"/>`);
+  const closed=P.map((_,i)=>!(cs&&p.open[i]));
+  if(!tb){const I=offsetPoly(Ls,closed.map(c=>c?p.wallT:0));o.push(`<polygon points="${pts(I)}" fill="#fff" stroke="#111" stroke-width="0.3"/>`);
+    for(let i=0;i<n;i++)if(closed[i]&&closed[(i-1+n)%n]){const a=T(P[i]),b=T(I[i]);o.push(`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#111" stroke-width="0.3"/>`);}
+    for(let i=0;i<n;i++)if(!closed[i]){const a=T(P[i]),b=T(P[(i+1)%n]);o.push(`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#d23f27" stroke-width="0.6" stroke-dasharray="2 1.2"/>`);}}
+  else{for(let i=0;i<n;i++){const h2=(i-1+n)%n;const q=[lineX(Ls[h2],p.ov,Ls[i],p.ov),lineX(Ls[h2],p.ov,Ls[i],p.ov+p.legS),lineX(Ls[h2],p.ov+p.legS,Ls[i],p.ov+p.legS),lineX(Ls[h2],p.ov+p.legS,Ls[i],p.ov)];if(q.every(Boolean))o.push(`<polygon points="${pts(q)}" fill="#e8dcc6" stroke="#111" stroke-width="0.3"/>`);}
+    const I1=offsetPoly(Ls,P.map(()=>p.ov+p.apIn)),I2=offsetPoly(Ls,P.map(()=>p.ov+p.apIn+p.apT));o.push(`<polygon points="${pts(I1)}" fill="none" stroke="#444" stroke-width="0.25" stroke-dasharray="1.4 0.9"/><polygon points="${pts(I2)}" fill="none" stroke="#444" stroke-width="0.25" stroke-dasharray="1.4 0.9"/>`);}
+  for(let i=0;i<n;i++){const a=P[i],b=P[(i+1)%n],e=nrm2(sub2(b,a)),q=T(add2(sc2(add2(a,b),0.5),sc2([e[1],-e[0]],9*sc)));
+    o.push(`<circle cx="${(q[0]-0).toFixed(2)}" cy="${q[1].toFixed(2)}" r="3.2" fill="#1d3557"/><text x="${q[0].toFixed(2)}" y="${(q[1]+1.2).toFixed(2)}" font-size="3.4" font-weight="700" fill="#fff" text-anchor="middle">${sideLetter(i)}</text>`);
+    const on=[e[1],-e[0]],r=T(add2(sc2(add2(a,b),0.5),sc2(on,(Math.abs(on[0])>0.5?13:15)*sc))),anc=on[0]>0.5?'start':on[0]<-0.5?'end':'middle';o.push(`<text x="${r[0].toFixed(2)}" y="${(r[1]+1.2).toFixed(2)}" font-size="3.4" fill="#1b3a63" text-anchor="${anc}">${esc(fmt(Ls[i].L))}</text>`);
+    const u=nrm2(sub2(P[(i-1+n)%n],a)),v=nrm2(sub2(b,a));let bb=add2(u,v);bb=len2(bb)<1e-6?[-v[1],v[0]]:nrm2(bb);if(A[i]>180)bb=sc2(bb,-1);
+    const g=T(add2(a,sc2(bb,Math.max(14*sc,(tb?p.ov+p.legS:p.wallT)*2.4))));o.push(`<text x="${g[0].toFixed(2)}" y="${(g[1]+1).toFixed(2)}" font-size="3.2" fill="#444" text-anchor="middle">${fmtA(A[i])}</text>`);}
+  // settings table
+  const tx=PW-Mg-116,rows=[];let ty=Mg+16;
+  rows.push(`<text x="${tx}" y="${ty}" font-size="4.2" font-weight="700">Sides</text>`);ty+=6;
+  for(let i=0;i<n;i++){rows.push(`<text x="${tx}" y="${ty}" font-size="3.4"><tspan font-weight="700">${sideLetter(i)}</tspan>  ${esc(fmt(Ls[i].L))}${cs&&p.open[i]?'  (open)':''}</text>`);ty+=5;}
+  ty+=4;rows.push(`<text x="${tx}" y="${ty}" font-size="4.2" font-weight="700">${tb?'Corners and apron shoulders':'Corners and mitres'}</text>`);ty+=6;
+  for(let i=0;i<n;i++){const h2=(i-1+n)%n,a=A[i],bev=Math.abs(180-a)/2;let txt;
+    if(tb)txt=`${fmtA(a)}: shoulders ${fmtA(Math.abs(90-Math.abs(180-a)))} off square`;
+    else if(closed[i]&&closed[h2])txt=`${fmtA(a)}: mitre ${fmtA(90-bev)} to the face (${fmtA(bev)} off square)`;
+    else if(closed[i]||closed[h2])txt=`${fmtA(a)}: wall end flush with the opening`;else txt=`${fmtA(a)}: open`;
+    rows.push(`<text x="${tx}" y="${ty}" font-size="3.4"><tspan font-weight="700">${sideLetter(h2)}–${sideLetter(i)}</tspan>  ${esc(txt)}</text>`);ty+=5;}
+  ty+=4;const notes=tb?['Legs have faces parallel to their aprons, so each','leg section has the same angle as its corner.']:['Lengths are measured on the outside faces.','Long points of every mitre are on the outside.','Set the sliding bevel from this sheet or the','full-size template, never from a protractor guess.'];
+  for(const t of notes){rows.push(`<text x="${tx}" y="${ty}" font-size="3.1" fill="#444">${esc(t)}</text>`);ty+=4.6;}
+  o.push(...rows);
+  const bx=PW-Mg-200,by=PH-Mg-26;o.push(`<g font-size="2.6" fill="#111"><rect x="${bx}" y="${by}" width="200" height="26" fill="#fff" stroke="#111" stroke-width="0.4"/><line x1="${bx+110}" y1="${by}" x2="${bx+110}" y2="${by+26}" stroke="#111" stroke-width="0.25"/><line x1="${bx+155}" y1="${by}" x2="${bx+155}" y2="${by+26}" stroke="#111" stroke-width="0.25"/><line x1="${bx+110}" y1="${by+13}" x2="${bx+200}" y2="${by+13}" stroke="#111" stroke-width="0.25"/>
+    <text x="${bx+3}" y="${by+8}" font-size="5" font-weight="700">${esc(m.title)}</text><text x="${bx+3}" y="${by+14.5}" font-size="3.2">Shape plan and angles · ${esc(m.dims)}</text><text x="${bx+3}" y="${by+21}" font-size="2.6" fill="#555">Seen from above. Side A is the front.</text>
+    <text x="${bx+112}" y="${by+4}" fill="#666" font-size="2.2">Scale</text><text x="${bx+112}" y="${by+10}" font-size="3.6" font-weight="700">1:${sc}</text><text x="${bx+157}" y="${by+4}" fill="#666" font-size="2.2">Units</text><text x="${bx+157}" y="${by+10}" font-size="3.6" font-weight="700">${m.units}</text>
+    <text x="${bx+112}" y="${by+17}" fill="#666" font-size="2.2">View</text><text x="${bx+112}" y="${by+23}" font-size="3.6" font-weight="700">Plan</text><text x="${bx+157}" y="${by+17}" fill="#666" font-size="2.2">Sheet</text><text x="${bx+157}" y="${by+23}" font-size="3.6" font-weight="700">${sh.n} / ${sh.of}</text></g>`);
+  o.push(`<text x="${Mg+4}" y="${Mg+6}" font-size="2.6" fill="#777">Sashimono Studio · ${esc(m.date)}</text></svg>`);
+  return o.join('');
+}
 function syncFields(){for(const f of FIELDS[S.kind]){const el=document.getElementById('f-'+f.k);if(!el||f.sel||el.tagName==='SELECT'||document.activeElement===el)continue;el.value=f.int?S.p[f.k]:toUI(S.p[f.k]);}}
 // side events
 $('#kinds').addEventListener('click',e=>{const b=e.target.closest('.kind');if(!b||b.dataset.k===S.kind)return;commit(()=>{S=newState(b.dataset.k,KIND_DEF[b.dataset.k],S.level,S);},false);});
-$('#practice').addEventListener('change',e=>{const x=PRACTICE[+e.target.value];if(!x)return;commit(()=>{S=newState(x.kind,x.preset,S.level,S);},false);});
-$('#learnHint').addEventListener('click',e=>{if(!e.target.closest('#nextPractice'))return;const i=PRACTICE.findIndex(x=>x.kind===S.kind&&x.preset===S.preset),x=PRACTICE[i+1];if(x)commit(()=>{S=newState(x.kind,x.preset,S.level,S);},false);});
 $('#preset').addEventListener('change',e=>{const k=e.target.value;if(!PRESETS[S.kind][k])return;commit(()=>{const J=S.J;S=newState(S.kind,k,S.level,S);},false);});
 $('#levels').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;commit(()=>{S.level=+b.dataset.l;S.J=levelJ(S.kind,S.level);});});
 let tIn=0;
@@ -2180,7 +2824,7 @@ $('#resetP').addEventListener('click',()=>commit(()=>{S=newState(S.kind,PRESETS[
 $('#saveP').addEventListener('click',()=>saveFile(`sashimono-${S.preset}.json`,JSON.stringify(Object.assign({app:'sashimono-studio',v:1},S),null,1)));
 $('#loadP').addEventListener('click',()=>$('#fileP').click());
 $('#fileP').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const o=JSON.parse(await f.text());if(!o.kind||!o.p||!o.J||!PRESETS[o.kind])throw 0;
-  commit(()=>{S=Object.assign(newState(o.kind,KIND_DEF[o.kind],o.level||2),o);delete S.app;delete S.v;},false);toast('Project opened');}catch(err){toast('That file is not a Sashimono Studio project.');}e.target.value='';});
+  commit(()=>{S=Object.assign(newState(o.kind,KIND_DEF[o.kind],o.level||2),o);delete S.app;delete S.v;if(!o.mode)S.mode=isPracticeState(S)?'practice':'design';for(const c of KIND_CONNS[S.kind])if(!S.J[c])S.J[c]=pickForLevel(c,S.level);},false);toast('Project opened');}catch(err){toast('That file is not a Sashimono Studio project.');}e.target.value='';});
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!/INPUT|SELECT/.test(document.activeElement.tagName)){e.preventDefault();doUndo();}});
 function doUndo(){if(!undo.length)return toast('Nothing to undo');const u=S.units;S=JSON.parse(undo.pop());S.units=u;S.tab=location.hash.slice(1)||'model';renderSide();rebuild(true);toast('Undone');}
 // ---------- 3D stage
@@ -2200,7 +2844,7 @@ function animateExplode(v,to,onStep){
 $('#exBtn').addEventListener('click',()=>{const to=viewer.explode>0.5?0:1;$('#exBtn').setAttribute('aria-pressed',to===1);animateExplode(viewer,to,()=>{$('#exR').value=Math.round(viewer.explode*100);});});
 $('#exR').addEventListener('input',e=>{viewer.explode=e.target.value/100;$('#exBtn').setAttribute('aria-pressed',viewer.explode>0.5);viewer.render(0.5);clearTimeout(viewer.idleT);viewer.idleT=setTimeout(()=>viewer.request(1),150);});
 viewer.onPick=p=>{viewer.sel=p?p.id:-1;viewer.request(1);showInfo(p);};
-function pieceLWT(p){if(p.count>1&&p.pos[0]){const b=p.pos[0].bb,e=[b[1]-b[0],b[3]-b[2],b[5]-b[4]];return [e[p.grain],e[3-p.grain-p.thk],e[p.thk]];}return p.dimsLWT;}
+function pieceLWT(p){if(p.lwt)return p.lwt;if(p.count>1&&p.pos[0]){const b=p.pos[0].bb,e=[b[1]-b[0],b[3]-b[2],b[5]-b[4]];return [e[p.grain],e[3-p.grain-p.thk],e[p.thk]];}return p.dimsLWT;}
 function showInfo(p){
   const el=$('#info');if(!p){el.hidden=true;return;}
   const d=pieceLWT(p);const js=M.inst.filter(I=>!I.hidden&&I.parts.includes(p.id)&&I.jointId!=='none');
@@ -2225,7 +2869,7 @@ function renderTab(t){
 // ---------- drawings
 let sheetCache={},zoom=1;
 function sheetList(){
-  const L=[{name:'General arrangement',kind:'ga'}];
+  const L=[{name:'General arrangement',kind:'ga'}];if(S.kind==='custom')L.push({name:'Shape plan and angles',kind:'plan'});
   partGroups().filter(g=>!g.small).forEach(g=>L.push({name:g.name,kind:'part',g}));
   return L.map((s,i)=>Object.assign(s,{n:i+1,of:L.length}));
 }
@@ -2246,14 +2890,15 @@ function meta(){return {title:title(),dims:overall(),material:`${SPECIES[S.speci
 function getSheet(i){
   const key=ver+'|'+i+'|'+S.hidden+'|'+S.units;if(sheetCache[key])return sheetCache[key];
   const L=sheetList(),s=L[i],m=meta();let svg;
-  if(s.kind==='ga'){
+  if(s.kind==='plan')svg=planSheet(s);
+  else if(s.kind==='ga'){
     const views={front:VIEWS.front,top:VIEWS.top,side:VIEWS.side};
     const lines=linesFor(M.parts,views);
     svg=composeSheet({views,parts:M.parts,lines,dims:M.dims,fmt:fmtN,title:m.title,subtitle:'General arrangement · '+m.dims,material:m.material,units:m.units,sheet:`${s.n} / ${s.of}`,
       iso:isoImage(M.parts,1000,700),hidden:S.hidden,date:m.date,notes:['No screws or nails. All joints are cut in wood.','Dimensions are finished sizes. See part sheets for joint positions.']}).svg;
   }else{
-    const g=s.g,p=g.parts[0];const ax=[[1,0,0],[0,1,0],[0,0,1]];const wa=3-p.grain-p.thk;
-    const views=viewsFrom(ax[p.grain],ax[wa]);const parts=[p];const lines=linesFor(parts,views);
+    const g=s.g,p=g.parts[0];
+    const views=viewsFrom(p.B[0],p.B[1]);const parts=[p];const lines=linesFor(parts,views);
     const dims=partDims(p,views);
     svg=composeSheet({views,parts,lines,dims,fmt:fmtN,title:`${g.name} ×${g.count}`,subtitle:`Finished ${fmtN(g.L)} × ${fmtN(g.W)} × ${fmtN(g.T)}${S.units==='mm'?' mm':''} · for ${m.title}`,
       material:`${(p.wood.name||'Bamboo')} · grain runs left to right in the face view`,units:m.units,sheet:`${s.n} / ${s.of}`,hidden:S.hidden,date:m.date,
@@ -2373,14 +3018,15 @@ function buildSteps(){
     ...stockShopping(parts),
     ...(S.kind==='lattice'?[`Kumiko tools: a fine pull saw (dōzuki or any fine-tooth saw) for the notches, a sharp 3 to 6 mm chisel to clean the notch floors, a small block plane to bring the strips to exact size, and a marking gauge, knife and square for layout. A shooting board helps square the ends. A 45°/30° kumiko jig, which you can make from scrap, is only needed later for angled patterns such as asanoha.`]:[]),
     `Stack the boards with spacers in the room where the piece will live for one to two weeks, so they reach its moisture content.`,
-    S.kind==='frame'?`Pick the straightest, rift- or quarter-sawn stock for legs and rails, and save the best figure for the top.`:S.kind==='case'?`Choose matching boards for the two sides and the stiffest ones for the shelves.`:S.kind==='tansu'?`Cut all the drawer fronts in sequence from one board, so the grain flows across the face of the chest.`:S.kind==='lattice'?`Choose knot-free, straight-grained stock for the kumiko. Hinoki and sugi are traditional; western red cedar, clear pine or spruce are good, easy-to-find alternatives. Rip strips about 1 mm oversize and plane them down to ${fmt(p.kw)} × ${fmt(p.kd)}, or buy ready-made kumiko strips and plane them to match. Square sticks of 10 mm or more are too chunky for kumiko.`:`If you can, cut all four walls from one long board in sequence, so the grain runs on around the corners.`]});
+    S.kind==='frame'?`Pick the straightest, rift- or quarter-sawn stock for legs and rails, and save the best figure for the top.`:S.kind==='case'?`Choose matching boards for the two sides and the stiffest ones for the shelves.`:S.kind==='tansu'?`Cut all the drawer fronts in sequence from one board, so the grain flows across the face of the chest.`:S.kind==='custom'?(p.build==='table'?`Pick straight, rift-sawn stock for the legs and aprons, and save your best boards for the top.`:`If you can, cut the walls one after another from one long board, in the order A, B, C…, so the grain runs on around the corners.`):S.kind==='lattice'?`Choose knot-free, straight-grained stock for the kumiko. Hinoki and sugi are traditional; western red cedar, clear pine or spruce are good, easy-to-find alternatives. Rip strips about 1 mm oversize and plane them down to ${fmt(p.kw)} × ${fmt(p.kd)}, or buy ready-made kumiko strips and plane them to match. Square sticks of 10 mm or more are too chunky for kumiko.`:`If you can, cut all four walls from one long board in sequence, so the grain runs on around the corners.`]});
   ph.push({h:'Mill to size (kezuri)',items:[
     `Flatten one face with the kanna, checking with winding sticks, then plane one edge square to it. Mark both as reference faces.`,
     `Gauge each part to thickness with the kebiki and plane down to the line. Rip to width, then cut to the lengths in the cut list.`,
     through?`Leave through tenons about 1.5 mm long. Trim and plane them flush after assembly.`:`Cut lengths exactly. Shoulder-to-shoulder lengths decide whether the piece is square.`]});
   ph.push({h:'Mark out (sumitsuke)',items:[
     `Lay the parts out in their final positions and label them with bantsuke marks, as on a building frame (い ろ は across, 一 二 三 along). Every part then has a home and an orientation.`,
-    `Mark every joint from the reference faces. Use one gauge setting per dimension across all matching parts so they come out identical.`]});
+    `Mark every joint from the reference faces. Use one gauge setting per dimension across all matching parts so they come out identical.`,
+    ...(S.kind==='custom'?[`Print the shape at full size (Download full-size template, in the Shape panel) or draw it from the Shape plan sheet onto hardboard or paper. Check every ${p.build==='table'?'shoulder':'mitre'} against it as you go.`]:[])]});
   ph.push({h:'Cut the joints',items:gs.map(g=>{const J=JOINTS[jkey(g.conn,g.id)];return `<a href="#joints" data-card="${g.conn}-${g.id}">${J.ro}</a>: cut ${g.n} × ${J.en.toLowerCase()} (${esc([...g.labels].slice(0,2).join(', ').toLowerCase())}). Allow about ${Math.round(J.min*g.n/60*10)/10} h.`;})});
   const shape=[];
   if(S.kind==='frame'){if(p.taper>0&&p.str==='none')shape.push(`Plane the tapers on the two inside faces of each leg, from ${fmt(p.legS)} just below the apron to ${fmt(p.taper)} at the foot.`);
@@ -2389,7 +3035,12 @@ function buildSteps(){
   if(S.kind==='case'&&p.baseH>0)shape.push(`Saw out the plinth cut-outs at the foot of each side and clean them up with a spokeshave or chisel.`);
   if(S.kind==='case'&&p.layout==='chigai')shape.push(`Shape the fude-gaeshi, the raised lip at the free end of each upper shelf, with a chisel and a curved scraper so it rises in a smooth curve.`);
   if(S.kind==='lattice'&&p.style!=='lamp')shape.push(`Shape the feet: cut the bevelled ends${S.J.feet==='kusabi'?'':' and the shallow relief underneath, so each foot stands only on its ends'}.`);
-  shape.push(`Dry-fit the whole piece. Check that the diagonals are equal and that the frame sits flat without rocking.`);
+  if(S.kind==='custom'&&M.shape){const A=M.shape.ang,n=A.length,cl=M.shape.closed;
+    if(p.build==='table'){if(A.some(a=>Math.abs(a-90)>0.5))shape.push(`Plane each leg to its diamond-shaped section: mark the corner angle on the end grain with the sliding bevel and plane the faces to the lines, so each face is parallel to its apron.`);}
+    else{const bv=[...new Set(A.filter((a,i)=>cl[i]&&cl[(i-1+n)%n]).map(a=>fmtA(Math.abs(180-a)/2)))];
+      if(bv.length)shape.push(`Make a shooting-board fence for each mitre: ${bv.join(', ')} off square. Plane every mitre that uses one setting before you change it.`);}
+    shape.push(`Dry-fit the whole piece with a band clamp. Check it against the full-size drawing and that it sits flat without rocking.`);}
+  else shape.push(`Dry-fit the whole piece. Check that the diagonals are equal and that the frame sits flat without rocking.`);
   ph.push({h:'Shape and dry-fit',items:shape});
   ph.push({h:'Final surfacing (shiage)',items:[`Take the last passes with a finely set smoothing plane (shiage-kanna). A properly planed surface needs no sanding.`,`Ease every sharp edge with one light pass. Plane the inside faces now, while you can still reach them.`]});
   const asm=[];
@@ -2416,6 +3067,24 @@ function buildSteps(){
       asm.push(`Fit the stiles into the feet and ${S.J.feet==='hira'?'glue them':S.J.feet==='komisen'?'drive the pegs':'drive the wedges'}.`);}
     asm.push(`Paper the lattice from the back: brush rice paste (nori) thinly on the kumiko and frame edges, lay the washi on, and trim it with a sharp knife. Mist it lightly with water; it tightens as it dries.`);
     if(p.style==='lamp')asm.push(`Light it with an LED bulb or LED string only. LEDs stay cool; a hot bulb or a candle next to paper and thin wood is a fire risk.`);
+  }else if(S.kind==='custom'){
+    const jc=S.J.polyCorner,lock=jc==='tomeKugi'?'Once the glue has set, drive the bamboo pins across each mitre.':jc==='tomeKey'?'Once the glue has cured, saw the key kerfs across each corner and glue in the keys.':'';
+    if(p.build==='table'){
+      asm.push(`Dry-fit all the legs and aprons at once and pull them together with a band clamp around the legs. Check that every shoulder closes and the frame sits flat.`);
+      asm.push(S.J.pLegApron==='komisen'?`Assemble for real and drive the komisen pegs; they pull each shoulder tight, so you need only the band clamp to hold things while you work.`:`Glue every joint and close them all at once with the band clamp. Check the frame against the full-size drawing before the glue sets.`);
+      asm.push(`Lower the top onto the dowels. Don't glue it.`);
+    }else if(p.build==='case'){const op=p.open.map((o,i)=>o?sideLetter(i):null).filter(Boolean);
+      asm.push(`Dry-fit the ring of walls with every shelf in its housing, and close it with a band clamp. Check the shelves sit level${op.length?` and that the opening on side ${op.join(', ')} is straight`:''}.`);
+      asm.push(`Glue the mitres${jc==='tomeYatoi'?' with the splines in place':''} and the shelf housings, and close everything with the band clamp. Check against the full-size drawing before the glue sets.`);
+      if(lock)asm.push(lock);
+      asm.push(`Plane the top edges of the walls level, then glue and pin on the top.`);
+    }else{
+      asm.push(`Dry-fit all the walls in a ring${S.J.pbottom==='mizo'?' around the bottom panel':''} with a band clamp, or a loop of string twisted tight with a stick. Mitres that gap on the outside need their angle opened a little; gaps on the inside, closed a little.`);
+      asm.push(`Glue all the mitres at once${S.J.pbottom==='mizo'?', with the bottom panel loose in its grooves':''}${jc==='tomeYatoi'?' and the splines in place':''}, and pull them closed. Check the shape against the full-size drawing before the glue sets.`);
+      if(lock)asm.push(lock);
+      if(S.J.pbottom==='kugi')asm.push(`Plane the bottom edges level, then glue and pin the bottom board.`);
+      if(S.J.plid==='sanbuta')asm.push(`Make the lid and fit its battens so they drop just inside the walls.`);
+    }
   }else{
     asm.push(`Glue all four corners at once${S.J.bottom==='mizo'?', with the bottom panel loose in its grooves':''}. Clamp both ways and check the diagonals.`);
     if(S.J.bottom==='kugi')asm.push(`Plane the bottom edges level, then glue and pin the bottom board.`);
@@ -2489,6 +3158,7 @@ function boot(){
   let saved=null;try{saved=JSON.parse(localStorage.getItem('sashimono-v1')||'null');}catch(e){}
   if(saved&&saved.kind&&PRESETS[saved.kind]&&saved.p&&saved.J){S=Object.assign(newState(saved.kind,KIND_DEF[saved.kind],saved.level||2),saved);for(const c of KIND_CONNS[S.kind])if(!S.J[c])S.J[c]=pickForLevel(c,S.level);}
   else S=newState('frame','dining',2);
+  if(!S.mode)S.mode=isPracticeState(S)?'practice':'design';
   S.tab='model';renderSide();themeColors();rebuild(false);route();
 }
 boot();
