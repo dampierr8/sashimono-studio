@@ -188,6 +188,32 @@ ol.st li{margin:4px 0}
 .pbody ol{margin:6px 0;padding-left:18px}.pbody li{margin:3px 0}
 .pbody label{display:flex;gap:8px;align-items:center;margin-top:8px;cursor:pointer}
 .pbody input[type=checkbox]{width:20px;height:20px;accent-color:var(--ok)}
+/* joint exercises */
+body[data-pview=ex] aside>.sec:not(#secPractice){display:none}
+.pview{display:flex;margin:0 0 12px}.pview button{flex:1;min-height:40px}
+.exdoc{max-width:980px}
+.exhead{display:flex;gap:14px;align-items:center;margin-bottom:6px}
+.exhead .big{font-size:34px;line-height:1;color:var(--shu);min-width:2em}
+.exhead h2{margin:0}.exhead .meta{font-size:13px;color:var(--mute)}
+.exwhy{margin:8px 0 12px;max-width:70ch}
+.twist{border-left:4px solid var(--shu);background:var(--panel);border-radius:0 10px 10px 0;padding:10px 14px;margin:0 0 14px}
+.twist p{margin:4px 0 0}
+.exgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
+.exgrid.one{grid-template-columns:1fr}
+.exgrid h3:first-child{margin-top:0}
+.exv{border-radius:12px;overflow:hidden;border:1px solid var(--line);height:320px}
+.need{margin:0;padding-left:20px}.need li{margin:3px 0}
+.excols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tips ul{margin:0;padding-left:20px}.tips li{margin:5px 0}
+.catches dl{margin:0;display:grid;gap:8px}
+.catches dl div{border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.catches dt{font-weight:600;color:var(--shu)}.catches dd{margin:2px 0 0}
+.exfoot{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;display:grid;gap:10px}
+.exdone{display:flex;gap:8px;align-items:center;font-weight:500;cursor:pointer}
+.exdone input{width:22px;height:22px;accent-color:var(--ok)}
+.exfoot p{margin:0}
+.exback{margin-bottom:8px;display:none}
+@media(max-width:899px){.exgrid,.excols{grid-template-columns:1fr}.exback{display:inline-block}.exv{height:260px}}
 /* shape editor */
 .qshapes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-bottom:8px}
 .qshapes button{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:4px 2px 3px;cursor:pointer;display:grid;justify-items:center;gap:1px;font-size:11.5px;line-height:1.15;min-height:44px}
@@ -229,6 +255,7 @@ ol.st li{margin:4px 0}
       <a href="#joints" role="tab" id="t-joints">Joints</a>
       <a href="#cutlist" role="tab" id="t-cutlist">Cut list</a>
       <a href="#steps" role="tab" id="t-steps">Steps</a>
+      <a href="#exercise" role="tab" id="t-exercise" hidden>Exercise</a>
     </nav>
     <section class="pane" id="tab-model" role="tabpanel" aria-labelledby="t-model">
       <div class="stage" id="stage">
@@ -258,6 +285,7 @@ ol.st li{margin:4px 0}
     <section class="pane" id="tab-joints" role="tabpanel" aria-labelledby="t-joints"><div class="jgrid" id="jgrid"></div></section>
     <section class="pane" id="tab-cutlist" role="tabpanel" aria-labelledby="t-cutlist"><div class="doc" id="cut"></div></section>
     <section class="pane" id="tab-steps" role="tabpanel" aria-labelledby="t-steps"><div class="doc" id="steps"></div></section>
+    <section class="pane" id="tab-exercise" role="tabpanel" aria-labelledby="t-exercise"><div class="doc exdoc" id="exercise"></div></section>
   </main>
   <aside id="design" aria-label="Design">
     <div class="sec" id="secPractice" hidden></div>
@@ -2583,7 +2611,7 @@ function renderSide(){
   const fe=ents.filter(([,v])=>!v.practice),cpr=PRESETS[S.kind][S.preset],pm=S.mode==='practice';
   $('#preset').innerHTML=fe.map(opt).join('')+(cpr&&!cpr.practice?'':'<option selected>Custom</option>');
   document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===(pm?'practice':'design')));
-  $('#secPiece').hidden=pm;$('#secLevel').hidden=pm;$('#secPractice').hidden=!pm;$('#customHint').hidden=S.kind!=='custom';
+  $('#secPiece').hidden=pm;$('#secLevel').hidden=pm;$('#secPractice').hidden=!pm;if(!pm)delete document.body.dataset.pview;$('#t-exercise').hidden=!pm;if(!pm&&location.hash==='#exercise')location.hash='#model';$('#customHint').hidden=S.kind!=='custom';
   if(pm)renderPractice();
   renderShape();
   $('#levels').innerHTML=[1,2,3,4].map(l=>`<button data-l="${l}" aria-pressed="${l===S.level}"><span class="pips">${'●'.repeat(l)}${'○'.repeat(4-l)}</span>${LEVELS[l]}</button>`).join('');
@@ -2628,8 +2656,10 @@ const MADE_KEY='sashimono-made';
 function madeSet(){try{return JSON.parse(localStorage.getItem(MADE_KEY)||'{}')||{};}catch(e){return {};}}
 function isPracticeState(st){const pr=st&&PRESETS[st.kind]&&PRESETS[st.kind][st.preset];return !!(pr&&pr.practice);}
 function renderPractice(){
+  document.body.dataset.pview=pview;
+  if(pview==='ex'){$('#secPractice').innerHTML=renderExList();return;}
   const made=madeSet(),cur=PRACTICE.findIndex(x=>x.kind===S.kind&&x.preset===S.preset),nm=PRACTICE.filter(x=>made[x.kind+'/'+x.preset]).length,pn=practiceNow();
-  let h=`<h2>Practice path</h2><p class="pintro">${PRACTICE.length} small pieces, each designed to teach one or two joints. Work down the list: each one builds on the skills before it. Sizes, wood and board thicknesses can still be changed below.</p>
+  let h=`${pviewSeg()}<h2>Practice path</h2><p class="pintro">${PRACTICE.length} small pieces, each designed to teach one or two joints. Work down the list: each one builds on the skills before it. Sizes, wood and board thicknesses can still be changed below.</p>
   <div class="prog"><i style="width:${nm/PRACTICE.length*100}%"></i></div><p class="hint" style="margin:0 0 4px">${nm} of ${PRACTICE.length} made</p>`;
   let lv=0;
   PRACTICE.forEach((x,i)=>{const v=x.v,L=v.lv||1,k=x.kind+'/'+x.preset,on=i===cur;
@@ -2644,7 +2674,9 @@ function renderPractice(){
     h+='</div>';});
   $('#secPractice').innerHTML=h;
 }
-$('#secPractice').addEventListener('click',e=>{const b=e.target.closest('[data-pi]');if(!b)return;const x=PRACTICE[+b.dataset.pi];if(!x||(x.kind===S.kind&&x.preset===S.preset))return;
+$('#secPractice').addEventListener('click',e=>{const pv=e.target.closest('[data-pv]');if(pv){setPview(pv.dataset.pv);return;}
+  const xb=e.target.closest('[data-ex]');if(xb){openEx(xb.dataset.ex);return;}
+  const b=e.target.closest('[data-pi]');if(!b)return;const x=PRACTICE[+b.dataset.pi];if(!x||(x.kind===S.kind&&x.preset===S.preset))return;
   commit(()=>{S=newState(x.kind,x.preset,S.level,S);S.mode='practice';},false);});
 $('#secPractice').addEventListener('change',e=>{const k=e.target.dataset.made;if(!k)return;const m=madeSet();if(e.target.checked)m[k]=1;else delete m[k];
   try{localStorage.setItem(MADE_KEY,JSON.stringify(m));}catch(_){}renderPractice();if(e.target.checked)toast('Nicely done. Move on to the next piece when you are ready.');});
@@ -2662,6 +2694,346 @@ function setMode(m){
 }
 document.querySelector('.modes').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(b)setMode(b.dataset.m);});
 
+// ---------- joint exercises (practice mode)
+// Short bench exercises on offcuts: one joint (or skill) each, with a twist that makes it a real test.
+// ref: the joint shown in 3D, taken from a preset. piece: the practice piece that uses the joint for real.
+const EXERCISES=[
+{id:'saw',lv:1,kj:'鋸',title:"Sawing to a line",short:"Twist: saw off a slice 1 mm thick",time:"45 min",
+ why:"Every joint starts with a saw cut. If you can saw exactly on a line, square through the board and stop at a depth line, every joint after this gets easier.",
+ twist:"When your practice cuts are square, knife a line 1 mm from the end of the board and saw that slice off. It only comes off whole if the cut is straight and square all the way through.",
+ need:["A scrap board about 300 × 70 mm, any thickness from 10.5 to 20 mm (softwood is fine)","A pull saw (dōzuki or ryōba)","A marking knife, a square and a pencil","A bench hook or a clamp to hold the work"],
+ steps:[
+  "Pick the flattest face and the straightest edge. Mark them with a pencil loop and a tick. These are your reference face and reference edge, and you measure everything from them.",
+  "Hold the square firmly against the reference edge and knife a line across the face. Carry the line round both edges and the back, always with the square against the reference face or edge. If you have been accurate, the line meets itself at the last corner.",
+  "On the waste side of the line, pare a small V-groove with a chisel or the knife held at an angle. The saw teeth will drop into this groove and start in exactly the right place.",
+  "Hold the board on a bench hook or clamp it. Stand so your eye, shoulder, elbow and the saw are all in line with the cut.",
+  "Start at the far corner with the saw almost flat on the board. Use short, light pull strokes, with the side of your thumb against the blade to steady it until the kerf is a few millimetres deep.",
+  "Lower the saw handle a little at a time so the cut runs down the near edge as well. Watch the line on the top and the line on the edge facing you. Use long, light strokes: a Japanese saw cuts on the pull, so do not push or press.",
+  "Bring the saw level for the last few strokes and support the offcut with your free hand so it does not break off and tear the corner.",
+  "Check the end with the square on the face and on the edge. Write the gap you see on the offcut in pencil. Repeat ten times and watch the number get smaller.",
+  "Now the twist: knife a line 1 mm from the end all round, and saw the slice off just on the waste side of it."],
+ tips:["Hold the saw lightly, as if it might slip out of your hand. A tight grip makes the saw wander.","Look at the board reflected in the saw blade. When the reflected line carries straight on from the real line, the saw is square to the face.","Saw on the waste side so that half the knife line is still visible after the cut.","Most of the steering happens in the first 10 mm. If the start is wrong, start again a few millimetres away instead of trying to bend the cut back."],
+ catches:[["The cut wanders off the line","You are pressing or gripping too hard. Let the weight of the saw do the work, and restart if you are more than half a millimetre out early on."],["The face is square but the edge is not","You only watched the top line. Tilt the saw so you can follow two lines at once, then bring it level."],["The far corner splinters","The last strokes were too heavy. Slow down and hold the offcut."],["The saw jams in the cut","The wood is pinching the blade. Push a thin wedge into the kerf behind the saw, or rub candle wax on the blade."]]},
+
+{id:'plane',lv:1,kj:'鉋',title:"Planing a square stick, then an octagon",short:"Twist: turn it into an octagon with only a gauge",time:"1 h",
+ why:"Legs, kumiko, pegs and pins all need to be straight, square and an exact size. Planing a stick by hand teaches you to read grain and to make things the same size without measuring.",
+ twist:"Turn the square stick into an even octagon with no protractor. Set the marking gauge to 0.29 of the stick’s width and gauge from every corner: planing each corner down to its two lines gives eight equal faces.",
+ need:["A straight-grained stick about 300 × 32 × 32 mm, with no knots","A hand plane set for a very fine shaving","A marking gauge, a square and a pencil","Two straight battens to use as winding sticks","A planing stop on the bench, or a V-block for the octagon"],
+ steps:[
+  "Look at the grain on the side of the stick. Plane in the direction where the fibres run uphill away from you, like stroking a cat the right way. If the surface tears, turn the stick end for end.",
+  "Plane the first face flat. Hold the edge of the square along it against the light: no light should show underneath. Lay a winding stick across each end and sight across their tops. If they are not parallel the face is twisted, so plane the two high corners until they are.",
+  "Mark this face as the reference face. Now plane an edge next to it until the square sits on the reference face and on the edge with no gap anywhere along it. Mark it as the reference edge.",
+  "Set the marking gauge to 30 mm (a little under the smallest width). Gauge a line along the two rough faces, with the gauge fence against the reference face and then the reference edge.",
+  "Plane the last two faces down to the gauge lines. Stop when half the line is gone: the last shaving should just take the rest off. Check that all four sides measure the same.",
+  "For the twist, set the gauge to 8.8 mm (0.29 × 30 mm). Run it from each corner along both faces, so every face carries two lines.",
+  "Rest the stick in a V-block, or between two battens on the bench, with one corner pointing up. Plane that corner away until the new face just reaches both lines.",
+  "Do the opposite corner, then the remaining two. Check the eight faces with dividers or by eye: they should all be the same width."],
+ tips:["Set the blade so the shaving is thin enough to read print through. Fine shavings are easier to control.","Press on the front of the plane at the start of a stroke and on the back at the end. This stops the ends getting rounded over.","Scribble pencil over a face before planing. The marks that are left after a stroke show the low spots.","Count your strokes on the first chamfer and use the same count on the others."],
+ catches:[["The stick ends up slightly diamond-shaped","The plane was tilting. Check with the square every few strokes and correct by planing only the high side."],["Patches of tear-out","The grain changes direction there. Plane from the other end, take a finer shaving, or turn the plane at an angle as you push it (skewing)."],["The ends are thinner than the middle","Too much pressure at the start and end of each stroke. Take a few short strokes in the middle first, then full-length strokes."],["The octagon faces are different widths","You planed past the gauge lines on some corners. Stop as soon as each line disappears."]]},
+
+{id:'pins',lv:1,kj:'竹釘',title:"Rebated corner with bamboo pins",short:"Twist: angle the pins so the corner hooks shut",time:"1 h 30 min",
+ ref:{kind:'box',preset:'pentray',conn:'boxCorner'},piece:['box','pentray'],
+ why:"The simplest box corner in Japanese work: a rebate (a step cut across the end of one board) that hides the end grain of the other, held with bamboo pins instead of nails.",
+ twist:"Drive the pins at opposite angles, one tilted up and one tilted down, so they hook like a dovetail. Make one corner with glue and one dry, then try to pull the dry one apart.",
+ need:["Two offcuts of 10.5 mm board, about 100 × 60 mm each","Bamboo pins about 3 mm square (or split bamboo skewers)","A kiri (gimlet) or a small drill with a bit slightly smaller than the pins","A marking gauge, a square, a knife, a saw and a 12 mm chisel","Wood glue (optional)"],
+ steps:[
+  "Square the ends of both boards as in exercise 1. Mark the outside face of each board with a pencil.",
+  "Board A gets the rebate. Set the gauge to the thickness of board B (10.5 mm) and gauge a line across the inside face of board A, measured from its end. This is how wide the rebate will be.",
+  "Reset the gauge to about two thirds of board A’s thickness (7 mm) and gauge across the end grain and down both edges, measured from the inside face. This is how deep the rebate goes. The thin wall left on the outside is called the lip.",
+  "Knife the first line deeper and pare a small V on the waste side, as you did before sawing in exercise 1.",
+  "Saw down that line to the depth line on both edges. Stop exactly on the depth lines: overshooting leaves a kerf that shows on the finished box.",
+  "Split the waste off from the end grain with a chisel, taking small bites and staying well above the depth line. Then pare down to the line in thin slices, holding the chisel flat side down.",
+  "Fit board B into the rebate. Its face should sit flush with the end of board A, and the corner should be square. Pare a little more if it does not sit flat.",
+  "Mark two pin positions about 12 mm in from each edge, through the lip into board B. Bore the holes about 15 mm deep with the kiri, one tilted 10° upward and one 10° downward.",
+  "Taper the end of each pin slightly, drive it in with a light hammer until it stops, then saw it off just proud and plane it flush."],
+ tips:["Always gauge from the same face. If the board is slightly uneven in thickness, every line still matches.","Leave the lip at least 3 mm thick in a 10.5 mm board; thinner lips split when the pins go in.","Wet the tip of each bamboo pin with a dab of glue or water so it slides in without splitting the bamboo.","Saw the pin off with a piece of card under the saw so you do not scratch the face."],
+ catches:[["The rebate is deeper at one edge than the other","You chiselled downhill and the chisel dived. Pare from both edges toward the middle and check with the end of a ruler."],["The lip splits when the pin goes in","The hole is too small, or too close to the end. Use a slightly bigger bore and keep the pin at least 4 mm from the end grain."],["A gap shows on the outside of the corner","The rebate floor is not flat, or the end of board B is not square. Check both with the square before gluing."],["The pin bends and folds over","The pin is too long or the hole too shallow. Bore the full depth first and keep pins short."]]},
+
+{id:'housing',lv:1,kj:'大入れ',title:"Stopped housing",short:"Twist: stop it short so the front looks plain",time:"1 h 30 min",
+ ref:{kind:'case',preset:'rack',conn:'shelf'},piece:['case','rack'],
+ why:"A housing (dado) is a shallow groove across a board that a shelf sits in. It holds the shelf square and takes the weight. A stopped housing stops before the front edge, so the joint is invisible from the front.",
+ twist:"Stop the groove 8 mm short of the front edge, so the front just shows a plain butt. Use the shelf board itself as the measuring stick for the width, with no ruler at all.",
+ need:["One side board, about 200 × 150 × 10.5 mm","One shelf board, about 150 × 150 × 10.5 mm (the same thickness as the groove you want)","A knife, a square, a saw and chisels of 6 mm and 12 mm","A router plane, or a wide chisel used with care"],
+ steps:[
+  "Knife a line square across the inside of the side board where the bottom of the shelf will sit.",
+  "Stand the shelf on its edge against that line and knife the second wall tight against the shelf’s other face. The groove is now exactly as wide as the shelf.",
+  "Gauge a depth line of about 4 mm (a third to a half of the board thickness) on the back edge, and mark the stop 8 mm in from the front edge.",
+  "At the stopped end, chop a small pocket about 20 mm long between the knife lines, down to the depth. This gives the saw room to work.",
+  "Deepen the knife lines with a chisel to make a V, then saw both walls from the back edge toward the pocket, holding the saw at a low angle. Stop at the depth line on the back edge.",
+  "Chop the waste out between the walls in small bites, working from both ends toward the middle.",
+  "Level the floor to the depth with a router plane, or by paring with a wide chisel held bevel up. The floor must be flat so the shelf sits without rocking.",
+  "Cut a notch 8 mm × 4 mm from the front corner of the shelf to clear the stop. Slide the shelf in from the back: it should go with firm hand pressure."],
+ tips:["Always mark which side of each line is waste with a small cross. Most mistakes are cuts on the wrong side of a line.","Saw slightly inside the knife lines and pare to them; a saw cut that is too wide cannot be fixed.","Test the fit with the end of the shelf before cutting the full length of the groove.","Make the groove a hair tight. Shaving the shelf with a plane is easier than filling a loose groove."],
+ catches:[["The shelf is loose","The second knife line moved when you marked it. Press the shelf hard against the first line and knife once, firmly."],["The groove is deeper at one end","The saw drifted below the depth line. Saw at a low angle and watch the line on the back edge."],["A gap at the front of the shelf","The notch on the shelf is too big. Cut the notch last, when the groove is finished, and mark it straight from the groove."],["The chisel breaks out the back edge","You pried with the chisel or cut from the edge toward the inside. Work from the inside toward the edge."]]},
+
+{id:'mitre',lv:1,kj:'留',title:"Mitres at any angle: the hexagon ring",short:"Twist: six pieces that must close with no gap",time:"2 h",
+ ref:{kind:'custom',preset:'hexcover',conn:'polyCorner'},piece:['custom','hexcover'],
+ why:"A mitre hides the end grain at a corner by cutting both boards at an angle. Square boxes need 45°, but hexagons, octagons and odd shapes need other angles. Here you learn to set and cut any angle.",
+ twist:"Make a hexagonal ring from six short pieces. Each corner is 120°, so each end is cut at 60° to the face. A 1° error per cut becomes 12° in total and shows as a gap at the last joint, so the ring tells you how accurate you really are.",
+ need:["A strip of 10.5 mm board about 400 × 30 mm","A sliding bevel and a protractor (or the shape drawing from the app printed at full size)","A saw, a knife and a block plane","A shooting board, and a scrap block cut at 60° as an angled fence","String and a short stick to make a tourniquet clamp, or a band clamp"],
+ steps:[
+  "Set the sliding bevel to 60° from the face of the board (30° off square). Check it against the full-size drawing or a protractor and lock it tight.",
+  "Cut the strip into six pieces 60 mm long, cutting each end roughly to angle with plenty to spare.",
+  "Knife the 60° line on the edge of each piece with the bevel, with the long point on the outside face. Carry the line square across both faces.",
+  "Saw just outside the line, on the waste side.",
+  "Fix the 60° block to your shooting board as a fence. Shoot each end to the knife line with a sharp block plane, taking the line off with the last stroke.",
+  "Make sure all six pieces are exactly the same length, from long point to long point. Stack them together and plane until they all match.",
+  "Lay the six pieces round on the drawing, dry. Pull a loop of string round them and twist it with the stick until it is tight. Look at every joint against the light.",
+  "If one joint gaps, do not adjust that joint: check the angle of every piece, correct the bevel or fence, and shoot all of them again.",
+  "When all six joints close, glue the ends and tighten the string clamp again. Once the glue has set, drill and pin each corner with bamboo pins as in exercise 3."],
+ tips:["Mitre end grain soaks up glue. Brush on a thin coat first, wait five minutes, then glue properly.","A sliding bevel can slip when you lay it on the bench. Check it against the drawing before every set of marks.","Length matters as much as angle: one long piece opens two joints.","Cut a couple of test pieces at the start and check that two of them close at 120° on the drawing before cutting all six."],
+ catches:[["One joint gaps on the outside","The angle is slightly too large or too small on every piece. Adjust the fence, not that joint."],["The joints close on the outside but gap on the inside","The angle is too small. Increase it a fraction and re-shoot all the ends."],["The pieces slide out of line when the clamp tightens","The glue is acting as a lubricant. Let it go tacky for a few minutes, or tighten gently and check as you go."],["Torn fibres on the long point","The plane was blunt or the long point was unsupported. Shoot towards the long point with a sharp blade, or back it with a scrap."]]},
+
+{id:'halflap',lv:2,kj:'相欠き',title:"Kumiko half-laps: a 3 × 3 grid",short:"Twist: gang-cut every notch at once",time:"2 h",
+ ref:{kind:'lattice',preset:'miniandon',conn:'kumiko'},piece:['lattice','miniandon'],
+ why:"A half-lap is a notch halfway through two strips so they cross flush. It is the joint behind kumiko lattices and shoji screens, and it trains you to cut many identical notches.",
+ twist:"Clamp all the strips together and cut the notches through the whole bundle at once (gang-cutting). If the grid goes together flat and square, every notch must be the same.",
+ need:["Six strips of straight-grained softwood, each 4 × 10 × 150 mm (rip them from 10.5 mm board, or buy kumiko strips)","A small plane and a scrap board with a shallow groove to hold the strips (a sticking board)","A fine saw, a 4 mm chisel, a knife and a square","Two small clamps"],
+ steps:[
+  "Plane all six strips to exactly 4 mm thick and 10 mm deep in the sticking board. Check every strip with calipers or by feel: any difference shows in the finished grid.",
+  "Clamp the six strips together on edge with their ends lined up, and mark the three notch positions across the whole bundle at once, 40 mm apart.",
+  "Use one spare strip as a gauge for width: lay it across the bundle at each mark and knife along both sides of it.",
+  "Gauge a depth line at exactly half the strip depth, 5 mm, on both outside strips of the bundle.",
+  "Saw the notch walls on the waste side of the knife lines, straight down to the depth line, through all six strips at once.",
+  "Unclamp, and chop the waste from each notch with the 4 mm chisel, working from both sides toward the middle. Pare the bottom flat.",
+  "Turn three strips over so their notches face up and the other three face down. Push the grid together by hand, then tap gently with a block if it is tight.",
+  "Check that the grid lies flat and that all its squares are the same size. Look at both faces: the strips should be flush where they cross."],
+ tips:["Mark an arrow on the top of the bundle before unclamping, so you can put the strips back in the same order.","Saw a tiny bit inside the knife lines. A half-lap that is slightly tight can be eased with one stroke of the chisel; a loose one cannot be fixed.","Notch depth matters more than width. Too deep and the grid sits hollow; too shallow and the strips stand proud.","Hold the chisel vertical with your fingers on the strip, not on the bench, so it cannot slip."],
+ catches:[["The grid twists when assembled","The notches are not square across the strip. Mark and saw with the bundle clamped tight so the saw cannot wander."],["The strips crack at the notch","The fit is too tight. Pare the notch walls a fraction rather than forcing it."],["Some crossings are loose","The strips were not all the same thickness. Plane all the strips together to one size before marking."],["The squares are uneven","You measured each notch separately. Mark them all at once from one story stick (a strip with the marks on it)."]]},
+
+{id:'finger',lv:2,kj:'霰組',title:"Finger joint by eye",short:"Twist: divide the width with a slanted ruler",time:"2 h",
+ ref:{kind:'box',preset:'cardbox',conn:'boxCorner'},piece:['box','cardbox'],
+ why:"A finger joint (box joint) interlocks square fingers at a corner. It is strong, decorative and a great way to practise sawing straight down to a line.",
+ twist:"Divide the board into five equal fingers without any maths: lay a ruler at a slant across the board so that 0 and 50 mm touch the two edges, and mark every 10 mm. Any width divides this way.",
+ need:["Two pieces of 10.5 mm board, about 120 × 60 mm","A ruler, a marking gauge, a square and a knife","A fine saw and a chisel as wide as or a little narrower than a finger","A pencil for crossing out the waste"],
+ steps:[
+  "Square the ends of both boards. Mark the outside face of each with a pencil.",
+  "Set the gauge to the thickness of the boards (10.5 mm). Gauge a baseline all the way round the end of both boards: both faces and both edges.",
+  "Lay a ruler across the end of board A at a slant until the 0 and the 50 mm marks sit exactly on the two edges. Make a tick at 10, 20, 30 and 40 mm. These ticks divide the width into five equal fingers.",
+  "Carry the ticks square across the end grain and down both faces to the baseline with the square and knife.",
+  "Mark the waste with a cross: on board A the two outer fingers and the middle finger stay, and the other two are waste. Board B will be the opposite.",
+  "Saw down the waste side of each line to the baseline, keeping the saw level so it reaches both faces at once.",
+  "Chop the waste: put the chisel in the baseline knife cut, tap it halfway through, then turn the board over and finish from the other face.",
+  "Stand board A on the end of board B, line it up exactly and knife round the fingers. Square the lines down to the baseline, mark the waste and cut board B in the same way.",
+  "Fit the joint. It should tap together with light taps of a block. If it binds, find the shiny spots where it rubs and pare only those."],
+ tips:["Saw on the waste side of every line. If you are unsure which side that is, look for the cross.","Chop halfway from each face so the far side never splinters.","Leave the fingers a hair long and plane them flush after glue-up; short fingers leave a step you cannot fix.","Pencil the same number on both boards next to each joint, so you always fit the same pair."],
+ catches:[["The joint is loose","The saw cut on the wrong side of a line in board B. Knife round board A directly instead of measuring."],["Gaps at the baseline","The chisel was not in the knife line, or the bottom of each socket is not flat. Pare the floor straight across, a little undercut in the middle is fine."],["A finger splits off when tapping together","The fit is too tight. Pare the sides of the sockets, not the fingers."],["The corner is not square","The boards were not cut square in the first place. Check the ends before you mark anything."]]},
+
+{id:'mt',lv:2,kj:'平枘',title:"Stub mortise and tenon",short:"Twist: fit the tenon straight from the saw",time:"2 h",
+ ref:{kind:'frame',preset:'fumidai',conn:'legApron',J:{legApron:'hira'}},piece:['frame','fumidai'],
+ why:"The mortise and tenon joins legs to rails in tables, stools and frames. A tenon is a tongue on the end of the rail; the mortise is the matching hole in the leg.",
+ twist:"Chop the mortise first, then saw the tenon so carefully that it fits with no paring at all. Make three; by the third, you should be able to go straight from the saw to a snug fit.",
+ need:["A leg offcut about 200 × 36 × 36 mm","A rail offcut about 200 × 55 × 18 mm","A 6 mm mortise chisel (or a sturdy bench chisel) and a mallet","A marking gauge (a two-pin mortise gauge is best), a square, a knife and a saw"],
+ steps:[
+  "Set the mortise gauge pins to the width of your 6 mm chisel. The chisel decides the size, and the tenon is made to fit the hole.",
+  "Mark the mortise on the leg: 39 mm long, gauged 10 mm in from the outside face. Mark the same reference face on the rail.",
+  "Chop the mortise: start 2 mm in from each end with the chisel’s flat side toward the end. Work along the mortise in 3 mm steps, levering out the chips, until you are 30 mm deep. Then chop back to the end lines.",
+  "Without moving the gauge, mark the tenon cheeks on the end and both edges of the rail, from the same reference face.",
+  "Knife the shoulder line all the way round the rail, 29 mm from the end, using the square.",
+  "Saw the cheeks: start at a corner with the rail tilted in the vice, turn it over and saw the other corner, then saw straight down to the shoulder line. Stay on the waste side of the gauge lines.",
+  "Saw the shoulders. Pare a small V into the knife line first, so the saw starts exactly on it. Stop at the cheek.",
+  "Mark and saw the narrow shoulders on the edges, so the tenon is 39 mm wide to match the mortise.",
+  "Try the fit. It should push in with firm hand pressure and pull out without a mallet. If it is tight, look for the shiny rubbing marks and pare them away."],
+ tips:["Keep the chisel vertical: sight it from the side and from the end. A tilted mortise twists the rail.","Pare a small chamfer around the tip of the tenon so it starts easily.","Do not chop all the way to the end lines first: the levering crushes the ends. Leave them till last.","Keep the chips clear. Chopping into chips makes the floor uneven."],
+ catches:[["The rail sits twisted in the leg","The mortise walls are not square to the face. Check the chisel with a square held next to it while chopping."],["The tenon is loose","You sawed on the line instead of beside it. Keep the whole kerf on the waste side of the gauge line."],["Gaps at the shoulder on one side only","The shoulder line was not square or the saw drifted. Knife the line all round and pare a V before sawing."],["The leg splits when you fit the tenon","The tenon is too thick, or the mortise is too near the end of the leg. Leave at least 25 mm of leg above the mortise while practising."]]},
+
+{id:'drawbore',lv:2,kj:'込栓',title:"Draw-bored peg: pull a joint tight with no clamps",short:"Twist: offset the hole to pull the shoulder shut",time:"1 h",
+ ref:{kind:'frame',preset:'fumidai',conn:'legApron',J:{legApron:'komisen'}},piece:['frame','fumidai'],
+ why:"A square peg (komisen) through a mortise and tenon locks it for generations, even without glue. Draw-boring means the hole in the tenon sits slightly closer to the shoulder than the hole in the leg, so driving the peg pulls the joint tight.",
+ twist:"Assemble the joint with no glue and no clamps. If you get the offset right, the peg alone closes the shoulder so that you cannot see light through it.",
+ need:["A finished mortise and tenon from the last exercise","A 5 mm square chisel or a 5 mm drill","Peg stock: a tough, straight-grained hardwood such as oak or ash, 6 × 6 × 50 mm","A flush-cut saw, a small plane and a hammer"],
+ steps:[
+  "Mark the peg position on the face of the leg, centred on the mortise width and 13 mm from the face where the rail enters.",
+  "Make a 5 mm square hole through the leg at that mark, straight and square to the face. Clear the mortise of any chips.",
+  "Push the tenon fully home and mark through the hole onto the tenon with the tip of the chisel or a sharp pencil.",
+  "Pull the tenon out. Move your mark 1.5 mm closer to the shoulder and make the hole in the tenon there.",
+  "Plane the peg stock to exactly 5 mm square, then plane a long, gentle taper on the first third and round its corners a little.",
+  "Push the tenon home. Looking through the hole, you will see that the holes do not quite line up. That is the point.",
+  "Drive the peg with steady hammer blows. As it goes in, it bends slightly round the offset and pulls the shoulder tight.",
+  "Saw the peg off a little proud with a flush-cut saw and plane it level."],
+ tips:["Split the peg stock with a chisel rather than sawing it. A split peg follows the grain and is much less likely to break.","1.5 mm is right for a small joint like this. Thicker pegs and bigger joints take up to 2 mm.","Leave the peg a little long and tapered so it finds its way through the holes.","Draw a line along the peg so you can keep its square faces lined up with the hole."],
+ catches:[["The peg snaps while being driven","The offset is too large, or the peg grain runs out across it. Use 1 mm on a fine joint and split your peg stock."],["The shoulder still shows a gap","The offset is too small, or the hole was marked with the tenon not fully home. Push it right in when marking."],["The tenon end splits","The hole is too close to the end of the tenon. Keep at least one and a half peg widths of wood behind the hole."],["The peg shows a crushed square on the far face","The holes were not square to the face. Use a square as a guide when chopping."]]},
+
+{id:'keys',lv:2,kj:'千切り留',title:"Keyed mitre",short:"Twist: contrasting keys that lock the corner",time:"1 h 30 min",
+ ref:{kind:'custom',preset:'pentkeys',conn:'polyCorner'},piece:['custom','pentkeys'],
+ why:"A glued mitre is mostly end grain, so it is weak. Saw cuts across the corner, filled with thin keys of a contrasting wood, make it strong and decorative at the same time.",
+ twist:"Use a contrasting wood for the keys and saw the kerfs at a slight angle, so the keys form a pattern that also locks the corner against being pulled apart.",
+ need:["A glued mitred corner: two pieces of 10.5 mm board, about 80 × 60 mm, cut at 45° and glued (or a corner from the hexagon ring)","A fine saw with a thin kerf","A 3 mm strip of contrasting wood, such as walnut in a pale box","A block plane and glue"],
+ steps:[
+  "Glue up the mitred corner first and let it cure for a full day. The kerfs will weaken it until the keys go in.",
+  "Mark two keys across the corner, 25 mm apart. Square them across the corner with a square, or tilt them by about 10° each in opposite directions for the twist.",
+  "Clamp the corner in the vice with the corner pointing up. Saw each kerf 8 mm deep, measured along the corner diagonal. Use a stop on the saw, or a strip of tape, to keep the depth even.",
+  "If your saw is thinner than the key stock, saw a second cut next to the first and chop out the wood between them.",
+  "Plane the key strip until it slides into the kerf with a firm push.",
+  "Cut triangles from the strip with the grain running across the corner, not along it. Each triangle should be larger than the kerf.",
+  "Glue both sides of each key and push it home to the bottom of the kerf.",
+  "When the glue is dry, saw the keys off close to the faces and plane them flush. Plane from the corner inward so you do not tear the keys out."],
+ tips:["Make a simple cradle: a V-shaped block that holds the corner upright at 45° makes sawing much easier.","Test the key fit in a scrap kerf first.","Keys should be tight but not forced. Forcing them can split the corner.","Pick key wood that contrasts but moves about as much as the box wood, so the keys do not stand proud later."],
+ catches:[["The key snaps off when planing","The grain runs along the key. Cut the triangles so the grain runs across the corner."],["Gaps beside the key","The kerf was wider at the top because the saw wandered. Saw slowly with a light grip and check the depth line on both faces."],["The corner breaks open while sawing","The glue was not fully cured. Wait a day before cutting the kerfs."],["A blob of glue stains the face","Use less glue and wipe it straight away with a damp cloth, or mask the corners with tape before gluing."]]},
+
+{id:'wedged',lv:3,kj:'楔',title:"Wedged through tenon",short:"Twist: a flared mortise that locks like a dovetail",time:"2 h 30 min",
+ ref:{kind:'frame',preset:'wedgestool',conn:'legApron'},piece:['frame','wedgestool'],
+ why:"A through tenon goes right through the leg and shows on the outside. Wedges driven into saw cuts in its end spread it, so it can never pull out.",
+ twist:"Flare the outer third of the mortise by about 1 mm at each end. The wedges spread the tenon into the flare and lock it like a dovetail. Try it first in a contrasting wood so the wedges show.",
+ need:["A leg offcut about 200 × 40 × 40 mm","A rail offcut about 200 × 60 × 20 mm","A 6 mm mortise chisel, a mallet, a saw and a knife","Hardwood for wedges, such as walnut or oak, about 30 × 25 × 5 mm","Glue"],
+ steps:[
+  "Mark the mortise on both faces of the leg from the same reference face, so the two sides line up. Use the same gauge setting you will use for the tenon.",
+  "Chop the mortise halfway through from one face, then turn the leg over and chop from the other face to meet in the middle. This keeps both faces clean.",
+  "On the face where the tenon comes out, pare the ends of the mortise outward by about 1 mm, over the outer third of the depth only.",
+  "Make the tenon 1.5 mm longer than the leg is thick so it stands slightly proud.",
+  "Saw a kerf down the tenon, 30 mm deep, running across the grain of the leg (so the wedge spreads the tenon toward the ends of the mortise, not toward the weak sides).",
+  "Drill a small hole at the bottom of the kerf. This stops the split running further than you want.",
+  "Make wedges 3.2 mm thick at the head, tapering to nothing over 28 mm, with the grain running along their length.",
+  "Assemble the joint dry, then put glue on the wedge only and tap it in. Drive it a little at a time so the tenon spreads evenly.",
+  "When the glue is dry, saw the tenon and wedge off just proud and plane them flush with the leg."],
+ tips:["Check the wedge direction twice. The wedge must spread the tenon along the leg’s length, never across it, or the leg will split.","Make spare wedges. The first one often snaps.","A dab of soap on the cheeks (not the wedge) helps the tenon spread without binding.","Chamfer the tip of the tenon slightly so it does not tear the fibres on the way out."],
+ catches:[["The leg splits along the grain","The wedge was turned the wrong way, or driven too hard. Turn the kerf so the wedge pushes toward the ends of the mortise."],["Gaps around the tenon on the outside","The two halves of the mortise did not meet straight. Mark both faces from one reference face and chop exactly to the lines."],["The wedge stops halfway and will not go further","The kerf is too narrow or too short for the wedge. Make it a little thinner, or saw the kerf deeper."],["The tenon end looks crushed","You hammered the tenon instead of the wedge. Tap the wedge, not the tenon, and use a block."]]},
+
+{id:'dovetail',lv:3,kj:'蟻組',title:"Through dovetail: one tail, then two",short:"Twist: narrow Japanese-style pins",time:"3 h",
+ ref:{kind:'box',preset:'teabox',conn:'boxCorner'},piece:['box','teabox'],
+ why:"The dovetail is the classic drawer and box joint. Tails flare like a dove’s tail, so the corner cannot be pulled apart in one direction even without glue.",
+ twist:"Start with a single wide tail. Then cut two tails with narrow pins, only 3 mm wide at the narrow end, the way Japanese box makers do. Narrow pins look delicate but need careful sawing.",
+ need:["Two pieces of 10.5 mm board, 100 × 80 mm, for the single tail","Two more pieces for the twist","A sliding bevel set to 1:8 (about 7°), a gauge, a square and a knife","A fine dovetail or dōzuki saw","Chisels of 3, 6 and 12 mm and a mallet"],
+ steps:[
+  "Gauge a baseline all round both boards, set to the thickness of the boards (10.5 mm).",
+  "On board A (the tail board), mark the tails on the face with the sliding bevel set to a slope of 1:8. For the first try, mark one wide tail in the middle with half pins at each edge.",
+  "Square the lines across the end grain. Mark the waste with crosses.",
+  "Saw the tails, angling the saw to follow the lines on the face and keeping it square across the end. Stop at the baseline.",
+  "Saw out the corner waste, then chop the waste between the tails halfway from each face.",
+  "Stand board B in the vice. Lay board A on its end, lined up with the outside face, and knife round the tails onto the end grain of board B.",
+  "Square these marks down to the baseline on both faces of board B. These are the pins. Mark the waste.",
+  "Saw the pins on the waste side of the knife lines. This is the most important cut: the kerf must sit entirely in the waste.",
+  "Chop out the sockets halfway from each face.",
+  "Test the fit by pushing the joint together a little way. Pare only the pins, not the tails, where they rub, until it taps home with a block."],
+ tips:["Cut the tails first. Then you mark the pins from the actual tails, so small errors in the tails do not matter.","Mark the waste with a cross every time. Dovetails have more waste areas than you think.","Do not over-test. Each time you push the joint together you crush the fibres, so go halfway at most until the last test.","For narrow pins, use a saw with a thin plate and saw gently with the toe of the saw."],
+ catches:[["Gaps between tails and pins","You sawed on the line instead of beside it on the pin board. Keep the kerf in the waste and leave the knife line just visible."],["The pin board splits when fitting","The fit is too tight or the slope is too steep. Stick to 1:8, and pare the pins until they push in by hand."],["The joint will not close at the baseline","Bits of waste are left in the corners of the sockets. Clean them out with a narrow chisel."],["The box ends up out of square","The tails were not square across the end grain. Check each saw cut with a small square on the end."]]},
+
+{id:'butterfly',lv:3,kj:'契り',title:"Butterfly key into a crack",short:"Twist: stop a real crack with an inlaid key",time:"2 h",
+ ref:{kind:'frame',preset:'zataku',conn:'accent',J:{accent:'chigiri'}},piece:null,
+ why:"A butterfly key (chigiri) is a bow-tie-shaped piece set across a crack or a joint between boards. It holds the two sides together and becomes a feature of the piece.",
+ twist:"Find a board with a real crack (an offcut from a firewood pile will do) and stop the crack with a key. Inlaying into a genuine defect teaches you to pare a recess with no visible gap.",
+ need:["A board with a crack, or two boards glued edge to edge, at least 20 mm thick","Hardwood for the key, such as walnut or oak, 90 × 40 × 12 mm","A knife, a small square, chisels of 6, 12 and 18 mm and a mallet","A router plane or a chisel used flat","Glue"],
+ steps:[
+  "Draw the key on its stock: 90 mm long, 18 mm wide at the waist and 38 mm at each end. The grain should run along the key, from end to end.",
+  "Saw and plane the key to shape. Plane a 2° bevel on all four long sides so the bottom is slightly smaller than the top. This helps it wedge as it goes in.",
+  "Place the key over the crack, centred, with the bevelled bottom down. Hold it still and knife carefully round it. Make the knife lines deep and clean.",
+  "Pare a small V on the inside of each knife line so the edges of the recess stay sharp.",
+  "Chop out the recess in layers, 2–3 mm at a time, staying 1 mm inside the knife lines until you reach the full depth of 11 mm.",
+  "Pare the walls back to the knife line with the chisel held vertical, taking thin slices.",
+  "Level the floor with a router plane or by paring.",
+  "Check the fit. The key should go in a third of the way with hand pressure. Pare the recess, not the key, if it binds.",
+  "Glue the walls of the recess and tap the key home with a block. When dry, plane it flush."],
+ tips:["Keep the knife vertical and press against the key, not the board, when marking.","The 2° bevel is a big help. It means that the tighter the key goes in, the tighter the fit.","Stop the crack from growing by finishing the key before the board dries further.","Number the key and its recess; no two are the same."],
+ catches:[["A gap shows on one side of the key","The key moved while you marked round it. Hold it with double-sided tape."],["The recess edges are crushed","The chisel levered against the edges. Use the knife lines as a stop and lever only against the floor."],["The key splits when tapped in","It is too tight. Pare the recess a little and try again."],["The crack keeps growing past the key","The key is too small or too near the end of the crack. Put it over the crack, a little way back from the end."]]},
+
+{id:'halfblind',lv:4,kj:'包み蟻',title:"Half-blind dovetail",short:"Twist: chop it so the front shows nothing",time:"3 h 30 min",
+ ref:{kind:'box',preset:'hbdbox',conn:'boxCorner'},piece:['box','hbdbox'],
+ why:"A half-blind dovetail is the drawer-front joint. The tails go into sockets that stop short of the front, so the front face stays plain and the dovetails only show from the side.",
+ twist:"Cut it without any saw cut showing on the front. All the sockets have to be chopped blind, from one face only, which is the hardest chisel work in this list.",
+ need:["Two boards 12 mm thick and about 100 mm wide: one for the front, one for the side","A sliding bevel set to 1:8, a gauge, a square and a knife","A dovetail saw, chisels of 3, 6 and 12 mm, a mallet","A skew chisel or a knife for the corners"],
+ steps:[
+  "Gauge the baseline on the side board (the tail board) at 8 mm: the front’s thickness minus a 4 mm lap. Gauge the baseline on the inside of the front board (the pin board) at 12 mm, the thickness of the side board.",
+  "Gauge the lap line on the end of the front board, 4 mm from the front face. The sockets stop here.",
+  "Mark and cut the tails as in the through dovetail exercise.",
+  "Lay the tail board on the end of the front board, lined up with the lap line, and knife round the tails.",
+  "Square the lines down the inside face to the baseline.",
+  "Saw the pins at an angle, from the corner of the end grain down to the baseline and the lap line. Do not cut through the lap.",
+  "Chop the waste in small steps: a vertical cut at the baseline, then a horizontal pare from the end grain. Repeat until you reach the lap line.",
+  "Clean out the corners with a skew chisel or the tip of a knife.",
+  "Fit the joint as before, paring only the pins."],
+ tips:["Saw as deep as you can at an angle, without crossing the lines. The more you saw, the less you chop.","Chop in thin layers of about 2 mm. Big bites push the chisel past the baseline.","Clamp a guide block on the baseline so the chisel starts each cut in the right place.","A scraped-out corner is fine as long as the faces are clean, since the inside is hidden."],
+ catches:[["The front face splits","You chopped too hard toward the lap. Take thinner cuts and support the front."],["The tails do not reach the bottom","The socket corners are not fully cleared. Use a skew chisel to clean right into each corner."],["Gaps at the baseline","The baseline was crushed while chopping. Make the first cut a light one in the knife line and keep the chisel vertical."],["The lap is too thin and shows the tails","The lap line was gauged from the wrong face. Gauge from the front face."]]},
+
+{id:'bridle',lv:4,kj:'留め三枚組',title:"Mitred bridle",short:"Twist: a clean mitre on both faces",time:"3 h",
+ ref:{kind:'lattice',preset:'deskscreen',conn:'frameCorner'},piece:['lattice','deskscreen'],
+ why:"A bridle joint is an open slot on one part with a matching tongue on the other. Mitring both outer layers gives a clean 45° line on both faces of a frame corner, with the strength of the bridle hidden inside.",
+ twist:"Both mitres, front and back, must close at the same time as the tongue goes home. Any error in one layer shows as a gap in another, so the cuts must agree to a fraction of a millimetre.",
+ need:["Two pieces about 200 × 28 × 21 mm","A two-pin mortise gauge set to 7 mm (a third of 21 mm)","A mitre square or a 45° block, a knife and a fine saw","Chisels of 6 and 12 mm"],
+ steps:[
+  "Set the mortise gauge to the middle third, 7 mm wide, with 7 mm on each side. Mark both pieces from the same front face.",
+  "Knife the 45° mitre lines on both faces of both pieces, from the outer corner to the inside corner.",
+  "On the rail (the tongue piece), saw down the gauge lines to the mitre line on both faces.",
+  "Saw away the outer thirds along the mitre lines, leaving the middle third as a tongue.",
+  "On the stile (the slot piece), saw down inside the gauge lines to the depth and chop out the middle third to make the slot.",
+  "Saw the outer thirds of the stile at 45°, along the mitre lines.",
+  "Fit the joint. Pare the cheeks of the tongue until it slides in with hand pressure.",
+  "Check both mitres together. If one closes and the other gaps, pare the mitre that is touching, a few fibres at a time.",
+  "Glue and clamp in both directions."],
+ tips:["Mark both pieces with the same gauge settings and from the same face. That is what makes the parts match.","Saw the mitres a hair proud and trim them on a 45° shooting board.","Keep the slot walls flat. A wavy slot lets the joint rock and the mitres will not close evenly.","Test with the frame laid on a flat surface; a frame that rocks hides mitre gaps."],
+ catches:[["One mitre closes and the other does not","The tongue shoulder and the mitre do not line up. Pare the one that touches first until both close together."],["The slot cheeks crack","The tongue is too thick. Pare the tongue rather than forcing the joint."],["Mitre gaps on the inside corner","The mitre angle is over 45°. Shoot the mitres again with a fresh 45° fence."],["The frame twists when clamped","The slot is not square to the face. Chop with the chisel vertical, checking from the side."]]}
+];
+const PV_KEY='sashimono-pview',EXS_KEY='sashimono-exsteps',EXC_KEY='sashimono-ex';
+let pview='pieces',curEx=EXERCISES[0].id,exView=null;
+try{pview=localStorage.getItem(PV_KEY)==='ex'?'ex':'pieces';const c=localStorage.getItem(EXC_KEY);if(EXERCISES.some(x=>x.id===c))curEx=c;}catch(e){}
+function exSteps(){try{return JSON.parse(localStorage.getItem(EXS_KEY)||'{}')||{};}catch(e){return {};}}
+function setPview(v){pview=v;try{localStorage.setItem(PV_KEY,v);}catch(e){}renderPractice();
+  if(v==='ex'){if(location.hash!=='#exercise')location.hash='#exercise';}else if(location.hash==='#exercise')location.hash='#model';}
+function openEx(id){curEx=id;try{localStorage.setItem(EXC_KEY,id);}catch(e){}renderPractice();
+  if(location.hash!=='#exercise')location.hash='#exercise';else renderExercise();
+  const pane=$('#tab-exercise');pane.scrollTop=0;if(innerWidth<900)window.scrollTo(0,0);}
+function pviewSeg(){return `<div class="seg pview" role="group" aria-label="What to practise"><button data-pv="pieces" aria-pressed="${pview!=='ex'}">Pieces</button><button data-pv="ex" aria-pressed="${pview==='ex'}">Joint exercises</button></div>`;}
+function renderExList(){
+  const made=madeSet(),nm=EXERCISES.filter(x=>made['ex/'+x.id]).length;
+  let h=`${pviewSeg()}<h2>Joint exercises</h2><p class="pintro">${EXERCISES.length} short exercises on offcuts, one joint at a time. Each has a twist that makes it a real test, step-by-step instructions, tips and the common catches. Do them before the piece that uses the joint, or whenever a joint keeps going wrong.</p>
+  <div class="prog"><i style="width:${nm/EXERCISES.length*100}%"></i></div><p class="hint" style="margin:0 0 4px">${nm} of ${EXERCISES.length} done</p>`;
+  let lv=0;
+  EXERCISES.forEach((x,i)=>{const k='ex/'+x.id;
+    if(x.lv!==lv){lv=x.lv;h+=`<div class="plv"><span>${LEVELS[lv]}</span><span aria-hidden="true">${'●'.repeat(lv)}${'○'.repeat(4-lv)}</span></div>`;}
+    h+=`<div class="pitem${x.id===curEx?' cur':''}${made[k]?' made':''}"><button data-ex="${x.id}" aria-current="${x.id===curEx}"><span class="pnum">${made[k]?'✓':i+1}</span><span><span class="pt">${esc(x.title)}</span><span class="ps">${esc(x.short)} · ${esc(x.time)}</span></span></button></div>`;});
+  return h;
+}
+// build the joint shown in an exercise from its preset, without touching the current design
+function exModel(x){
+  const r=x.ref;if(!r)return null;const S0=S;let out=null;
+  try{S=newState(r.kind,r.preset,2,S0);Object.assign(S.p,r.p||{});Object.assign(S.J,r.J||{});sanitize();
+    const p=Object.assign({},S.p,{J:S.J,species:S.species,accent:S0.accent,mc:S0.mc,pins:S0.pins});const m=GENERATORS[S.kind](p);
+    const I=m.inst.find(i=>i.conn===r.conn&&!i.hidden&&i.clip&&i.jointId!=='none');if(I)out={m,I};}
+  catch(e){console.error(e);}finally{S=S0;}
+  return out;
+}
+function renderExercise(){
+  if(exView)exView.dead=true;exView=null;
+  const i=Math.max(0,EXERCISES.findIndex(x=>x.id===curEx)),x=EXERCISES[i],made=madeSet(),st=exSteps()[x.id]||{};
+  const mm=exModel(x),J=mm?JOINTS[jkey(mm.I.conn,mm.I.jointId)]:null,doc=mm?jointDoc(mm.I,ctxDoc()):null;
+  const pc=x.piece&&PRESETS[x.piece[0]][x.piece[1]],src=x.ref&&PRESETS[x.ref.kind][x.ref.preset];
+  const nx=EXERCISES[i+1],pv=EXERCISES[i-1],nd=x.steps.filter((_,k)=>st[k]).length;
+  $('#exercise').innerHTML=`<button class="linkbtn exback" data-exgo="list">← All exercises</button>
+  <div class="exhead"><div class="big kj" aria-hidden="true">${x.kj}</div><div><h2>${esc(x.title)}</h2>
+  <div class="meta">Exercise ${i+1} of ${EXERCISES.length} · ${LEVELS[x.lv]} ${'●'.repeat(x.lv)}${'○'.repeat(4-x.lv)} · about ${esc(x.time)}${J?` · ${esc(J.ro)} (${esc(J.en.toLowerCase())})`:''}</div></div></div>
+  <p class="exwhy">${esc(x.why)}</p>
+  <div class="twist"><b>The twist</b><p>${esc(x.twist)}</p></div>
+  <div class="exgrid${mm?'':' one'}">
+    ${mm?`<div class="jv exv"><canvas aria-label="3D close-up of the ${esc(J.en)}. Drag to turn it."></canvas><div class="ov"><button class="pill jx" aria-pressed="true">Exploded</button></div></div>`:''}
+    <div><h3>You need</h3><ul class="need">${x.need.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>
+    ${doc?`<h3>Measurements in the 3D view</h3><p class="hint" style="margin:0 0 6px">From the ${esc(src.label.toLowerCase())}. Scale them to your own offcuts.</p><table class="dt"><tbody>${doc.dims.map(([a,b])=>`<tr><td>${esc(a)}</td><td class="n">${esc(String(b))}</td></tr>`).join('')}</tbody></table>`:''}</div>
+  </div>
+  <div class="phase"><h3><span>Step by step</span><span class="hint">${nd} of ${x.steps.length}</span></h3><ul>${x.steps.map((s,k)=>`<li class="${st[k]?'done':''}"><input type="checkbox" data-exs="${k}" ${st[k]?'checked':''} aria-label="Step ${k+1} done"><span><b>${k+1}.</b> ${esc(s)}</span></li>`).join('')}</ul></div>
+  <div class="excols"><div class="tips"><h3>Tips</h3><ul>${x.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
+  <div class="catches"><h3>Common catches</h3><dl>${x.catches.map(([a,b])=>`<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join('')}</dl></div></div>
+  <div class="exfoot"><label class="exdone"><input type="checkbox" data-exmade="${x.id}" ${made['ex/'+x.id]?'checked':''}> I have done this exercise</label>
+  ${pc?`<p>Ready for the real thing? Practice piece ${pc.practice.n}, the <button class="linkbtn" data-expiece="1">${esc(pc.label.toLowerCase())}</button>, uses this joint.</p>`:''}
+  <div class="btns">${pv?`<button class="btn" data-exgo="${pv.id}">← ${esc(pv.title)}</button>`:''}${nx?`<button class="btn primary" data-exgo="${nx.id}">Next: ${esc(nx.title)} →</button>`:''}</div></div>`;
+  if(!mm)return;
+  const parts=detailParts(mm.I,mm.m);if(!parts.length)return;
+  const box=$('#exercise .exv'),v=new Viewer(box.querySelector('canvas'),{floor:false,fitK:0.9,exFit:1});v.setColors(viewer.bgCol,viewer.inkCol);v.accent=viewer.accent;
+  v.cam.yaw=-2.25;v.cam.pitch=0.5;v.explode=1;v.setScene(parts);const rec={v,dead:false};exView=rec;
+  new ResizeObserver(()=>{if(!rec.dead)v.request(1);}).observe(box);
+  const bx=box.querySelector('.jx');bx.addEventListener('click',()=>{const to=v.explode>0.5?0:1;bx.setAttribute('aria-pressed',to===1);bx.textContent=to?'Exploded':'Assembled';animateExplode(v,to);});
+  v.onPick=p=>{v.sel=p?p.id:-1;v.request(1);};
+}
+$('#exercise').addEventListener('click',e=>{
+  const g=e.target.closest('[data-exgo]');if(g){if(g.dataset.exgo==='list')location.hash='#model';else openEx(g.dataset.exgo);return;}
+  if(e.target.closest('[data-expiece]')){const x=EXERCISES.find(q=>q.id===curEx);if(!x||!x.piece)return;pview='pieces';try{localStorage.setItem(PV_KEY,'pieces');}catch(_){}
+    location.hash='#model';if(S.kind===x.piece[0]&&S.preset===x.piece[1]){renderPractice();return;}
+    commit(()=>{S=newState(x.piece[0],x.piece[1],S.level,S);S.mode='practice';},false);}
+});
+$('#exercise').addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.exs!==undefined){const a=exSteps(),o=a[curEx]||(a[curEx]={});if(t.checked)o[t.dataset.exs]=1;else delete o[t.dataset.exs];try{localStorage.setItem(EXS_KEY,JSON.stringify(a));}catch(_){}
+    t.closest('li').classList.toggle('done',t.checked);const x=EXERCISES.find(q=>q.id===curEx);$('#exercise .phase h3 .hint').textContent=`${Object.keys(o).length} of ${x.steps.length}`;return;}
+  if(t.dataset.exmade){const m=madeSet(),k='ex/'+t.dataset.exmade;if(t.checked)m[k]=1;else delete m[k];try{localStorage.setItem(MADE_KEY,JSON.stringify(m));}catch(_){}
+    renderPractice();if(t.checked)toast('Well done. Keep the test piece: it is a useful reminder of what worked.');}
+});
 // ---------- shape editor for your own shapes
 const QSHAPES=[['rect','Rectangle'],['cut','Cut corner'],['pent','Pentagon'],['hex','Hexagon'],['oct','Octagon'],['trap','Trapezoid'],['ell','L-shape'],['tri','Triangle']];
 function shapeFor(k,W,D){
@@ -2855,14 +3227,15 @@ function showInfo(p){
 $('#info').addEventListener('click',e=>{const a=e.target.closest('a[data-card]');if(a){pendingCard=a.dataset.card;}});
 let pendingCard=null;
 // ---------- tabs
-const TABS=['model','drawings','joints','cutlist','steps'];const done={};
+const TABS=['model','drawings','joints','cutlist','steps','exercise'];const done={};
 function route(){
-  let t=location.hash.slice(1);if(!TABS.includes(t))t='model';S.tab=t;document.body.dataset.tab=t;
+  let t=location.hash.slice(1);if(!TABS.includes(t)||(t==='exercise'&&S.mode!=='practice'))t='model';S.tab=t;document.body.dataset.tab=t;
   for(const k of TABS){const on=k===t;document.getElementById('tab-'+k).classList.toggle('on',on);document.getElementById('t-'+k).setAttribute('aria-selected',on);}
   if(t==='model')viewer.request(1);else renderTab(t);
 }
 window.addEventListener('hashchange',route);
 function renderTab(t){
+  if(t==='exercise'){renderExercise();return;}
   if(done[t]===ver){if(t==='joints'&&pendingCard)scrollCard();return;}done[t]=ver;
   if(t==='drawings')renderDrawings();else if(t==='joints')renderJoints();else if(t==='cutlist')renderCut();else if(t==='steps')renderSteps();
 }
@@ -2968,9 +3341,9 @@ function renderCut(){
 }
 // ---------- joints
 let jviews=[],jobs=null;
-function detailParts(I){
+function detailParts(I,Mx){
   const clip=BOX(...I.clip);
-  return I.parts.map(id=>{const p=M.parts[id];const q=Object.assign({},p);
+  return I.parts.map(id=>{const p=(Mx||M).parts[id];const q=Object.assign({},p);
     q.pos=p.rawPos.map(r=>mkPrim(r.concat(clip))).filter(x=>x.ok);if(!q.pos.length)return null;
     const bb=[1e30,-1e30,1e30,-1e30,1e30,-1e30];for(const pr of q.pos)for(let a=0;a<6;a+=2){bb[a]=Math.min(bb[a],pr.bb[a]);bb[a+1]=Math.max(bb[a+1],pr.bb[a+1]);}
     q.bb=bb;const c2=BOX(...bb);q.neg=p.rawNeg.map(r=>mkPrim(r.concat(c2))).filter(x=>x.ok);q.ex=I.ex[id]||[0,0,0];q._fe=null;return q;}).filter(Boolean);
@@ -3162,7 +3535,7 @@ function boot(){
   S.tab='model';renderSide();themeColors();rebuild(false);route();
 }
 boot();
-window.__ss={viewer,get M(){return M},get S(){return S},set S(v){S=v},rebuild,getSheet,sheetList,renderTab,renderSide,newState,jointGroups,partGroups,buildSteps};
+window.__ss={viewer,get M(){return M},get S(){return S},set S(v){S=v},rebuild,getSheet,sheetList,renderTab,renderSide,newState,jointGroups,partGroups,buildSteps,jointDoc,ctxDoc};
 
 }
 </script>
