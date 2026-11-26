@@ -350,7 +350,7 @@ body[data-mode=learn] .app,body[data-mode=learn] .summary{display:none}
         <button class="kind" data-k="tansu" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M8 3h28v25H8zM8 11h28M8 19h28M22 3v8M19 15h6M19 23h6M14 7h3M27 7h3"/></svg>Tansu</button>
         <button class="kind" data-k="lattice" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M13 2h18v22H13zM13 9h18M13 16h18M19 2v22M25 2v22M8 28h11M25 28h11M15 24v4M29 24v4"/></svg>Screen &amp; lamp</button>
         <button class="kind" data-k="box" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M5 12h34v15H5zM4 8h36v4H4zM5 20h34"/></svg>Box &amp; chest</button>
-        <button class="kind" data-k="ply" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M4 13h36v13H4zM4 13l3-4h30l3 4M7 13v13M37 13v13M7 17h30M15 20h14"/></svg>Van &amp; plywood</button>
+        <button class="kind" data-k="ply" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M5 8h34M5 25h34M7 6v22M37 6v22M7 11h30M7 22h30M13 11v11M18 11v11M23 11v11M28 11v11M33 11v11"/></svg>Van furniture</button>
         <button class="kind" data-k="custom" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M8 27h28l4-12-18-12L4 15z"/><circle cx="8" cy="27" r="1.6"/><circle cx="36" cy="27" r="1.6"/><circle cx="40" cy="15" r="1.6"/><circle cx="22" cy="3" r="1.6"/><circle cx="4" cy="15" r="1.6"/></svg>Your own shape</button>
       </div>
       <div class="row"><select id="preset" aria-label="Starting point"></select></div>
@@ -1425,7 +1425,7 @@ function kumikoPanel(M,c){
   if(c.paper){M.add({name:'Washi (shoji paper)',key:'paper',role:'paper',species:'paper',small:true,pos:[F.box(a0,a1,b0,b1,w1,w1+0.6)],grain:gB,thk:tk,ex:vadd(c.ex||[0,0,0],vsc(out,-E*0.25))});}
   if(c.record&&V.length&&Hh.length){const pv=V[Math.floor(V.length/2)],ph=Hh[Math.floor(Hh.length/2)];
     M.rec({conn:'kumiko',jointId:'aigaki',parts:[pv.id,ph.id],ex:{[pv.id]:vsc(out,kd*2.2)},label:'Kumiko crossings',
-      dims:{kw,kd,kt,nc:V.length*Hh.length*(c.faces||1),nV:V.length,nH:Hh.length,ks:R(us.length>1?us[1]-us[0]:La/2)},clip:F.aabb(pv.u-45,pv.u+45,ph.v-45,ph.v+45,w0-1,w1+1)});}
+      dims:{kw,kd,kt,paper:!!c.paper,nc:V.length*Hh.length*(c.faces||1),nV:V.length,nH:Hh.length,ks:R(us.length>1?us[1]-us[0]:La/2)},clip:F.aabb(pv.u-45,pv.u+45,ph.v-45,ph.v+45,w0-1,w1+1)});}
   return {V,H:Hh};
 }
 // ================= LATTICE: tsuitate screen and andon lamp =================
@@ -1872,140 +1872,251 @@ const JOINTS={
 };
 const SHELF_KEY={oire:'oire',kusabi:'skusabi',arigata:'arigata'};
 const jkey=(conn,id)=>conn==='shelf'?SHELF_KEY[id]:id;
-// ================= PLYWOOD: light van furniture on a timber skeleton =================
-Object.assign(TOOLS,{csaw:'Track saw, or circular saw with a guide rail',drill:'Drill-driver, pilot bit and countersink',jig:'Jigsaw and hole saw (for lightening holes)',hinge:'Hacksaw and file (to cut the hinge)'});
+// ================= VAN FURNITURE: plywood panels in a light, visible timber frame =================
+Object.assign(TOOLS,{csaw:'Track saw, or circular saw with a guide rail',drill:'Drill-driver, pilot bit and countersink',router:'Router with a straight bit, or a plough plane (for the panel grooves)',hinge:'Hacksaw and file (to cut the hinge)'});
 Object.assign(CONNS,{
-  plyCorner:{label:'Top & bottom corners',opts:['batten','arare']},
-  plyFront:{label:'Front panel',opts:['batten']},
-  plyShelf:{label:'Shelves',opts:['oire','cleat']},
-  plyLid:{label:'Lid',opts:['sanbuta','hinge']}
+  plyFrame:{label:'Frame rails to posts',opts:['hira','komisen']},
+  plyPanel:{label:'Plywood panels',opts:['plyGroove']},
+  plyDoors:{label:'Sliding doors',opts:['hikido']},
+  plyLid:{label:'Lid',opts:['sanbuta','hinge']},
+  plyShelf:{label:'Staggered shelves',opts:['cleat']}
 });
 Object.assign(JOINTS,{
-  batten:{ro:'San',kj:'桟',en:'Glued and screwed corner batten',lv:1,glue:'Glue and screws',min:20,tools:['csaw','sashi','drill','clamps','glue'],
-    what:d=>`A ${d.bs} mm square timber batten runs along the inside of the corner. Both panels are glued and screwed to it, so the screws bite into solid wood instead of the plywood edge, and together the battens form a light frame inside the piece. This is the usual way to build strong, light plywood furniture for vans.`},
+  plyGroove:{ro:'Mizo-ire',kj:'溝入れ',en:'Plywood panel glued in grooves',lv:1,glue:'Glued',min:35,tools:['router','kebiki','kanna','glue','clamps'],
+    what:d=>`A ${d.t} mm plywood panel sits in ${d.g} mm deep grooves in the posts and rails. Solid-wood panels must float, but plywood barely moves, so here the panel is glued in. Every glued panel braces the frame against racking, which a van on a rough road does all day.`},
+  batten:{ro:'San',kj:'桟',en:'Glued and screwed batten',lv:1,glue:'Glue and screws',min:20,tools:['csaw','sashi','drill','clamps','glue'],
+    what:d=>`A ${d.bs} mm square timber batten is glued and screwed along the inside corner, so the screws bite into solid wood instead of a plywood edge.`},
   cleat:{ro:'Tana-zan',kj:'棚桟',en:'Shelf on glued cleats',lv:1,glue:'Glue and screws',min:20,tools:['csaw','sashi','drill','clamps','glue'],
-    what:d=>`The shelf rests on ${d.bs} mm timber cleats glued and screwed to the sides. The cleats also stiffen the sides, and screws up through them hold the shelf down on rough roads.`},
+    what:d=>`The shelf rests on ${d.bs} mm timber cleats glued and screwed to the panels behind and beside it. Screws up through the cleats hold the shelf down on rough roads.`},
   hinge:{ro:'Chōtsugai',kj:'蝶番',en:'Lid on a piano hinge',lv:1,glue:'Screwed',min:30,tools:['hinge','drill','sashi'],
-    what:d=>`A continuous piano hinge runs the length of the lid along a timber hinge rail, spreading the load over many small screws. Add a stay so the lid stays open, and a latch so it stays shut while driving.`}
+    what:d=>`A continuous piano hinge runs along the back rail, spreading the load over many small screws. Add a stay so the lid stays open, and a catch so it stays shut while driving.`}
 });
 const PLY_SHEET=[2440,1220];
 const STEEL={name:'Steel',col:[0.66,0.67,0.70],late:[0.66,0.67,0.70],flat:true};
-// a timber batten in the inside corner of two panels; in frame F the batten fills u∈[u0,u0+bs], v∈[v0,v0+bs], w∈[w0,w1];
-// panel A lies at u<u0 (screws along −U), panel B at v<v0 (screws along −V)
+const FRAME_DENS={spruce:450,hinoki:410,sugi:380};
+// a timber cleat glued and screwed under a shelf; in frame F the cleat fills u∈[u0,u0+bs], v∈[v0,v0+bs], w∈[w0,w1];
+// panel A lies at u<u0 (screws along −U), shelf B at v<v0
 function battenJoint(M,c){
   const {F,u0,v0,w0,w1,A,B,bs,conn,label,jointId}=c,E=M.E,L=w1-w0;if(L<20)return null;
-  const bat=M.add({name:c.name||'Corner batten',key:c.key||'batten',role:c.role||'batten',species:'batten',pos:[F.box(u0,u0+bs,v0,v0+bs,w0,w1)],grain:axisOf(F.W),thk:axisOf(F.U),
+  const bat=M.add({name:c.name||'Cleat',key:c.key||'batten',role:c.role||'batten',species:'batten',pos:[F.box(u0,u0+bs,v0,v0+bs,w0,w1)],grain:axisOf(F.W),thk:axisOf(F.U),
     ex:vadd(c.exBase||[0,0,0],F.vec(E*0.18,E*0.18,0))});
   const tA=c.tA,tB=c.tB,sl=Math.max(16,R((bs+Math.min(tA,tB)*0.7)/5)*5),sp=150,n=Math.max(2,R(L/sp)),raws=[];
   for(let i=0;i<n;i++){const w=w0+L*(i+0.5)/n,dw=L/n/4;
-    raws.push(rod(F,true,3.5,1,2,0,v0+bs/2,w-dw,u0+bs-sl,u0+bs));
-    raws.push(rod(F,true,3.5,0,2,1,u0+bs/2,w+dw,v0+bs-sl,v0+bs));}
+    raws.push(rod(F,true,3.5,1,2,0,v0+bs/2,w-dw,Math.max(u0+bs-sl,u0-tA+2),u0+bs));
+    raws.push(rod(F,true,3.5,0,2,1,u0+bs/2,w+dw,Math.max(v0+bs-sl,v0-tB+2),v0+bs));}
   const sc=M.add({name:`Screws, 3.5 × ${sl} mm`,key:'screw'+sl,role:'screw',species:'steel',pos:raws,grain:axisOf(F.U),thk:axisOf(F.V),small:true,prio:4,count:raws.length,
     ex:vadd(c.exBase||[0,0,0],F.vec(E*0.32,E*0.32,0))});
   const I={conn,jointId:jointId||'batten',parts:[A.id,B.id,bat.id,sc.id],ex:{[A.id]:F.vec(-40,0,0),[B.id]:F.vec(0,-40,0),[bat.id]:F.vec(18,18,0),[sc.id]:F.vec(42,42,0)},label,
     dims:{bs,L:R(L),n:raws.length,sl,sp,tA,tB,aName:A.name,bName:B.name}};
-  I.clip=F.aabb(-2,u0+bs+45,-2,v0+bs+45,w0-Math.min(tA,tB)-2,Math.min(w1,w0+180));
+  I.clip=F.aabb(-tA-2,u0+bs+45,-tB-2,v0+bs+45,w0-2,Math.min(w1,w0+180));
   return M.rec(I);
 }
-function plyCornerJ(M,c){
-  if(c.jointId==='arare')return cornerJoint(M,{conn:c.conn,jointId:'arare',F:c.F,tP:c.T,tT:c.T,L:c.L,tail:c.tail,pin:c.pin,slope:1/8,label:c.label});
-  c.pin.pos.push(c.F.box(0,c.T,0,c.T,0,c.L));
-  return battenJoint(M,{conn:c.conn,F:c.F,u0:c.T,v0:c.T,w0:c.b0,w1:c.L,A:c.pin,B:c.tail,tA:c.T,tB:c.T,bs:c.bs,label:c.label});
+// ---------- the frame: posts in columns xs (front and back), rails in rings per bay
+function vanFrame(M,p,xs,hs){
+  const L=p.L,D=p.D,E=M.E,t=p.T,g=Math.min(6,R((L-t)/4)),rT=clamp(R(t+2*g+1),16,L-6),aI=(L-rT)/2,nc=xs.length,J=p.J.plyFrame;
+  const F={L,D,E,t,g,rT,aI,xs,hs,posts:[],yr:{},bays:[]};
+  for(let j=0;j<nc;j++){F.posts.push([0,1].map(iy=>M.add({name:'Post (hashira)',key:'post'+R(hs[j]),role:'leg',species:'batten',
+    pos:[BOX(xs[j],xs[j]+L,iy?D-L:0,iy?D:L,0,hs[j])],grain:2,thk:0,ex:[(j===0?-1:j===nc-1?1:0)*E*0.55,(iy?1:-1)*E*0.55,0]})));}
+  const depth=j=>j===0||j===nc-1?L:L/2-1;
+  const tj=(rail,post,Fr,d,rh,rt,pt,pf,lbl,upper)=>{const [z0,z1]=rh,sh=Math.max(4,R((z1-z0)*0.12)),zc=(z0+z1)/2;
+    railToPost(M,{conn:'plyFrame',jointId:J,F:Fr,depth:d,rail,post,railH:rh,railT:rt,postT:pt,postH:[0,Math.max(z1+40,200)],tenH:upper?[zc+1,z1-sh]:[z0+sh,zc-1],shTop:sh,shBot:sh,pegFrom:pf,postGrain:'h',label:lbl});};
+  F.yRail=(j,z0,z1,nm)=>{const k=j+':'+z0;if(F.yr[k])return F.yr[k];const x0=xs[j]+aI,x1=x0+rT;
+    const r=M.add({name:nm||'Side rail',key:'yr'+R(D),role:'rail',species:'batten',pos:[BOX(x0,x1,L,D-L,z0,z1)],grain:1,thk:0,ex:[(j===0?-1:j===nc-1?1:0)*E*0.3,0,0],geo:{a:x0,b:x1,z0,z1}});
+    for(const iy of [0,1])tj(r,F.posts[j][iy],frame([0,iy?D-L:L,0],[0,iy?1:-1,0],[0,0,1],[1,0,0]),L,[z0,z1],[x0,x1],[xs[j],xs[j]+L],j===nc-1?1:-1,(nm||'Side rail')+' ↔ post',false);
+    return F.yr[k]=r;};
+  F.xRail=(j,iy,z0,z1,nm,yr)=>{const [a,b]=yr||(iy?[D-L+aI,D-L+aI+rT]:[aI,aI+rT]);
+    const r=M.add({name:nm,key:'xr'+R(xs[j+1]-xs[j]-L)+(yr?'d':''),role:'rail',species:'batten',pos:[BOX(xs[j]+L,xs[j+1],a,b,z0,z1)],grain:0,thk:1,ex:[0,(iy?1:-1)*E*0.3,0],geo:{a,b,z0,z1}});
+    tj(r,F.posts[j][iy],frame([xs[j]+L,0,0],[-1,0,0],[0,0,1],[0,1,0]),depth(j),[z0,z1],[a,b],[iy?D-L:0,iy?D:L],iy?1:-1,nm+' ↔ post',true);
+    tj(r,F.posts[j+1][iy],frame([xs[j+1],0,0],[1,0,0],[0,0,1],[0,1,0]),depth(j+1),[z0,z1],[a,b],[iy?D-L:0,iy?D:L],iy?1:-1,nm+' ↔ post',true);
+    return r;};
+  // a ring of four rails around bay j; front rail may be deeper (door tracks)
+  F.ring=(j,z0,z1,nm,front)=>{const r={f:F.xRail(j,0,z0,z1,'Front '+nm,front),b:F.xRail(j,1,z0,z1,'Back '+nm),l:F.yRail(j,z0,z1,'Side '+nm),r:F.yRail(j+1,z0,z1,'Side '+nm),z0,z1};return r;};
+  // vertical panel in the X plane (front or back) of bay j between two rails
+  F.panelX=(j,iy,lo,up,nm,ex)=>{const yc=(lo.geo.a+lo.geo.b)/2,y0=yc-t/2,y1=yc+t/2,xa=xs[j]+L,xb=xs[j+1],za=lo.geo.z1,zb=up.geo.z0;
+    const pn=M.add({name:nm,key:'px'+R(xb-xa)+'x'+R(zb-za),role:iy?'back':'front',pos:[BOX(xa-g+0.5,xb+g-0.5,y0,y1,za,zb),BOX(xa,xb,y0,y1,za-g+0.5,zb+g-0.5)],grain:2,thk:1,ex:ex||[0,(iy?1:-1)*E*0.75,0]});
+    F.posts[j][iy].neg.push(BOX(xa-g,xa,y0,y1,za,zb));F.posts[j+1][iy].neg.push(BOX(xb,xb+g,y0,y1,za,zb));
+    lo.neg.push(BOX(xa,xb,y0,y1,za-g,za));up.neg.push(BOX(xa,xb,y0,y1,zb,zb+g));return pn;};
+  // vertical panel in the Y plane at column j
+  F.panelY=(j,lo,up,nm,ex)=>{const xc=xs[j]+L/2,x0=xc-t/2,x1=xc+t/2,ya=L,yb=D-L,za=lo.geo.z1,zb=up.geo.z0;
+    const pn=M.add({name:nm,key:'py'+R(yb-ya)+'x'+R(zb-za),role:'side',pos:[BOX(x0,x1,ya-g+0.5,yb+g-0.5,za,zb),BOX(x0,x1,ya,yb,za-g+0.5,zb+g-0.5)],grain:2,thk:0,ex:ex||[(j===0?-1:j===nc-1?1:0)*E*0.85,0,0]});
+    F.posts[j][0].neg.push(BOX(x0,x1,ya-g,ya,za,zb));F.posts[j][1].neg.push(BOX(x0,x1,yb,yb+g,za,zb));
+    lo.neg.push(BOX(x0,x1,ya,yb,za-g,za));up.neg.push(BOX(x0,x1,ya,yb,zb,zb+g));return pn;};
+  // horizontal panel in grooves on the inner faces of a ring; top=true puts it at the bottom of an upper ring
+  F.panelH=(j,rg,nm,top,ex)=>{const fI=rg.f.geo.b,bI=rg.b.geo.a,lI=rg.l.geo.b,rI=rg.r.geo.a,z0=top?rg.z0+4:rg.z1-4-t,z1=z0+t;
+    const pn=M.add({name:nm,key:'ph'+R(xs[j+1]-xs[j])+'x'+R(bI-fI),role:top?'top':'bottom',pos:[BOX(xs[j]+L,xs[j+1],fI-g+0.5,bI+g-0.5,z0,z1),BOX(lI-g+0.5,rI+g-0.5,L,D-L,z0,z1)],grain:0,thk:2,ex:ex||[0,0,(top?0.5:-0.5)*E]});
+    rg.f.neg.push(BOX(xs[j]+L,xs[j+1],fI-g,fI,z0,z1));rg.b.neg.push(BOX(xs[j]+L,xs[j+1],bI,bI+g,z0,z1));
+    rg.l.neg.push(BOX(lI-g,lI,L,D-L,z0,z1));rg.r.neg.push(BOX(rI,rI+g,L,D-L,z0,z1));return pn;};
+  F.recPanel=(pn,j,lo,label)=>{const x=xs[j]+L,z=lo.geo.z1,iy=pn.role==='back'?1:0;
+    M.rec({conn:'plyPanel',jointId:'plyGroove',parts:[pn.id,F.posts[j][iy].id,lo.id],ex:{[pn.id]:[0,iy?45:-45,25]},label,dims:{t,g,clear:0.5},clip:[x-L-2,x+90,iy?D-L-30:-2,iy?D+2:L+30,z-lo.geo.z1+lo.geo.z0-4,z+90]});};
+  F.recPanelY=(pn,j,lo,label)=>{const x=xs[j],z=lo.geo.z1;
+    M.rec({conn:'plyPanel',jointId:'plyGroove',parts:[pn.id,F.posts[j][0].id,lo.id],ex:{[pn.id]:[(j===0?-1:1)*45,0,25]},label,dims:{t,g,clear:0.5},clip:[x-4,x+L+4,-2,L+90,z-(lo.geo.z1-lo.geo.z0)-4,z+90]});};
+  return F;
 }
+// two sliding kōshi doors in the deep front rails of bay j
+function vanDoors(M,F,j,lo,up){
+  const E=M.E,dt=6,sd=5,sw=10,y1=sd+2,y2=y1+dt+sd+2,gB=3,gT=10,ox0=F.xs[j]+F.L,ox1=F.xs[j+1],za=lo.geo.z1,zb=up.geo.z0,ov=12,dw=(ox1-ox0)/2+ov;
+  for(const yA of [y1,y2]){lo.neg.push(BOX(ox0,ox1,yA-0.5,yA+dt+0.5,za-gB,za));up.neg.push(BOX(ox0,ox1,yA-0.5,yA+dt+0.5,zb,zb+gT));}
+  const zd0=za-gB+0.5,zd1=zb+gT-3,ds=[];
+  for(const [k,x0,yA,exx,exy] of [[0,ox0,y2,-0.12,-0.45],[1,ox1-dw,y1,0.12,-0.8]]){
+    const d=M.add({name:'Sliding door',key:'door',role:'door',pos:[BOX(x0,x0+dw,yA,yA+dt,zd0,zd1)],grain:2,thk:1,ex:[exx*E,exy*E,0]});
+    const n=Math.max(3,R((dw-20)/34)),raws=[];
+    for(let i=0;i<n;i++){const xc=x0+10+sw/2+(dw-20-sw)*i/(n-1);raws.push(BOX(xc-sw/2,xc+sw/2,yA-sd,yA,za+6,zb-6));}
+    for(const r of raws)r.push(...BOX(-1e5,1e5,-1e5,1e5,za+6+sw,zb-6-sw));
+    const sl=M.add({name:'Door slat, upright (kōshi)',key:'slatV'+R(zb-za),role:'slat',species:'batten',small:true,prio:3,count:n,pos:raws,grain:2,thk:1,lwt:[R(zb-za-12-2*sw),sw,sd],ex:[exx*E,(exy-0.12)*E,0]});
+    const sh=M.add({name:'Door slat, cross (kōshi)',key:'slatH'+R(dw),role:'slat',species:'batten',small:true,prio:3,count:2,pos:[BOX(x0+10,x0+dw-10,yA-sd,yA,za+6,za+6+sw),BOX(x0+10,x0+dw-10,yA-sd,yA,zb-6-sw,zb-6)],grain:0,thk:1,lwt:[R(dw-20),sw,sd],ex:[exx*E,(exy-0.12)*E,0]});
+    ds.push(d,sl,sh);}
+  M.rec({conn:'plyDoors',jointId:'hikido',parts:[ds[3].id,ds[4].id,ds[5].id,ds[0].id,lo.id],ex:{[ds[3].id]:[0,-40,30],[ds[4].id]:[0,-40,30],[ds[5].id]:[0,-40,30],[ds[0].id]:[0,-14,30]},label:'Door bay',
+    dims:{dt,gB,gT,ov:2*ov,w:R(dw),h:R(zd1-zd0),tr:R(y2-y1),ply:1},clip:[(ox0+ox1)/2-110,(ox0+ox1)/2+110,-2,F.L+20,za-(lo.geo.z1-lo.geo.z0)-2,za+80]});
+  return y2+dt+4;
+}
+// lift-off lid with locating battens (sanbuta) or a piano hinge, over bay columns j0..j1
+function vanLid(M,F,j0,j1,rg,o){
+  const E=M.E,J=M.p.J.plyLid,lT=M.p.lidT,ov=o.ov,x0=o.x0,x1=o.x1,y0=-ov,y1=J==='hinge'?F.D:F.D+ov,z=rg.z1;
+  const lid=M.add({name:o.name||'Lid',key:'lid'+R(x1-x0),role:'lid',pos:[BOX(x0,x1,y0,y1,z,z+lT)],grain:0,thk:2,ex:[0,0,E*1.1+(o.exz||0)]});
+  if(o.hole){const cx=(x0+x1)/2;lid.neg.push(BOX(cx-50,cx+50,F.D-F.L-60,F.D-F.L-35,z-1,z+lT+1));}
+  if(J==='hinge'){const hg=M.add({name:'Piano hinge',key:'hinge',role:'hinge',species:'steel',small:true,prio:4,count:1,pos:[cylAx(0,[F.D-3,z+0.5],3,x0+15,x1-15,8)],grain:0,thk:1,ex:[0,E*0.2,E*0.6+(o.exz||0)],lwt:[x1-x0-30,32,1.2]});
+    M.rec({conn:'plyLid',jointId:'hinge',parts:[lid.id,hg.id,rg.b.id,F.posts[j1][1].id],ex:{[lid.id]:[0,0,50],[hg.id]:[0,0,25]},label:o.name||'Lid',dims:{L:R(x1-x0-30),ns:2*Math.max(4,R((x1-x0-30)/90)),bs:F.L},clip:[x1-170,x1+2,F.D-90,F.D+8,z-80,z+lT+2]});
+    return lid;}
+  const cw=clamp(R(lT*1.3),16,30),ch=clamp(R(lT),12,22),cl=[];
+  for(const [xa,xb] of [[rg.l.geo.b+1,rg.l.geo.b+1+cw],[rg.r.geo.a-1-cw,rg.r.geo.a-1]])
+    cl.push(M.add({name:'Lid batten (san)',key:'lidsan'+R(F.D),role:'cleat',species:'batten',pos:[BOX(xa,xb,F.L+2,F.D-F.L-2,z-ch,z)],grain:1,thk:0,ex:[0,0,E*1.1+(o.exz||0)]}));
+  M.rec({conn:'plyLid',jointId:'sanbuta',parts:[lid.id,cl[0].id,rg.l.id,F.posts[j0][0].id],ex:{[lid.id]:[0,0,60],[cl[0].id]:[0,0,30]},label:o.name||'Lid',dims:{lT,cw,ch,clear:1,ply:1},clip:[x0-2,x0+150,-ov-2,170,z-90,z+lT+2]});
+  return lid;
+}
+// a slatted front (kōshi) between two front rails of bay j: 'tate' = upright slats, 'yoko' = horizontal slats
+function slatFront(M,F,j,lo,up,pat,ks,record){
+  const yc=(lo.geo.a+lo.geo.b)/2,kd=Math.min(15,F.rT-4);
+  const k=kumikoPanel(M,{F:frame([0,0,0],[1,0,0],[0,0,1],[0,1,0]),a0:F.xs[j]+F.L,a1:F.xs[j+1],b0:lo.geo.z1,b1:up.geo.z0,wc:yc,kw:8,kd,ks:2*ks,pattern:pat,recv:{a0:F.posts[j][0],a1:F.posts[j+1][0],b0:lo,b1:up},paper:false,record,ex:[0,-M.E*0.4,0]});
+  for(const q of [...k.V,...k.H]){q.species='batten';q.name=q.name.replace('Kumiko','Slat');}
+}
+// a round window (marumado) cut through a side panel at column j
+function marumado(pn,j,F,za,zb,k){const r=R(Math.min((F.D-2*F.L)*0.36,(zb-za)*0.3,170)),xc=F.xs[j]+F.L/2;if(r<40)return;
+  pn.neg.push(cylAx(0,[F.D/2,za+(zb-za)*k],r,xc-F.t,xc+F.t,40));pn.name='Side panel with round window';pn.key+='m';}
 function genPly(p){
-  const M=new Model('ply',p),J=p.J;const W=p.W,D=p.D,H=p.H,T=p.T,bT=p.backT,bs=p.bs,bench=p.build==='bench',light=p.light==='yes';
-  const E=M.E=clamp(0.2*Math.max(W,D,H),60,360),Ds=D-bT;
-  const dt=clamp(R(T*0.7),10,18),by0=bench?T:(J.doors==='kendon'?5+dt+4:11+2*dt);
-  const sides=[0,1].map(ix=>M.add({name:ix?'Right side':'Left side',key:'side',role:'side',pos:[BOX(ix?W-T:0,ix?W:T,0,Ds,T,H-T)],grain:2,thk:0,ex:[(ix?1:-1)*E*0.6,0,0]}));
-  const bottom=M.add({name:'Bottom',role:'bottom',pos:[BOX(T,W-T,0,Ds,0,T)],grain:0,thk:2,ex:[0,0,-E*0.4]});
-  const pc=(tail,pin,F,lbl)=>plyCornerJ(M,{conn:'plyCorner',jointId:J.plyCorner,F,T,L:Ds,b0:by0,tail,pin,bs,label:lbl});
-  pc(bottom,sides[0],frame([0,0,0],[1,0,0],[0,0,1],[0,1,0]),'Bottom ↔ left side');
-  pc(bottom,sides[1],frame([W,0,0],[-1,0,0],[0,0,1],[0,1,0]),'Bottom ↔ right side');
-  const cb=J.plyCorner==='batten'?bs:0;let top=null;const zz=[0,T];
-  const back=M.add({name:'Back panel',key:'back',role:'back',pos:[BOX(0,W,Ds,D,0,bench?H-T:H)],grain:2,thk:1,ex:[0,E*0.6,0]});
-  let holeA=0;
-  if(light){const Hb=bench?H-T:H,m=70,bar=60,hw=W-2*m,hh=Hb-2*m;
-    if(hw>120&&hh>90){const two=hw>560,w1=two?(hw-bar)/2:hw;
-      for(let i=0;i<(two?2:1);i++){const x0=m+i*(w1+bar);back.neg.push(BOX(x0,x0+w1,Ds-1,D+1,m,m+hh));holeA+=w1*hh*bT;}}}
-  if(bench){
-    const front=M.add({name:'Front',key:'front',role:'front',pos:[BOX(T,W-T,0,T,T,H-T)],grain:0,thk:1,ex:[0,-E*0.6,0]});
-    let lidCh=0;
-    if(J.plyLid==='sanbuta'){const cw=clamp(R(T*1.6),15,30),ch=clamp(R(T*1.2),10,20);lidCh=ch;
-      const lid=M.add({name:'Lid',role:'lid',pos:[BOX(0,W,0,D,H-T,H)],grain:0,thk:2,ex:[0,0,E*1.1]});const cl=[];
-      for(const ix of [0,1]){const x0=ix?W-T-1-cw:T+1;cl.push(M.add({name:'Lid batten (san)',key:'lidsan',role:'cleat',species:'batten',pos:[BOX(x0,x0+cw,T+bs+2,Ds-2,H-T-ch,H-T)],grain:1,thk:0,ex:[0,0,E*1.1]}));}
-      M.rec({conn:'plyLid',jointId:'sanbuta',parts:[lid.id,cl[0].id,sides[0].id,front.id],ex:{[lid.id]:[0,0,60],[cl[0].id]:[0,0,30]},label:'Lid',dims:{lT:T,cw,ch,clear:1},clip:[-2,140,-2,160,H-90,H+2]});
-    }else{
-      const lid=M.add({name:'Lid',role:'lid',pos:[BOX(0,W,0,D,H-T,H)],grain:0,thk:2,ex:[0,0,E*1.1]});
-      const rail=M.add({name:'Hinge rail',key:'hrail',role:'batten',species:'batten',pos:[BOX(T,W-T,Ds-bs,Ds,H-T-R(bs*1.5),H-T)],grain:0,thk:1,ex:[0,E*0.3,E*0.2]});
-      const hg=M.add({name:'Piano hinge',key:'hinge',role:'hinge',species:'steel',small:true,prio:4,count:1,pos:[cylAx(0,[Ds-2,H-T],3,15,W-15,8)],grain:0,thk:1,ex:[0,E*0.4,E*0.6],lwt:[W-30,32,1.2]});
-      M.rec({conn:'plyLid',jointId:'hinge',parts:[lid.id,rail.id,hg.id,back.id],ex:{[lid.id]:[0,0,50],[hg.id]:[0,0,25]},label:'Lid',dims:{L:R(W-30),ns:2*Math.max(4,R((W-30)/90)),bs},clip:[-2,160,Ds-90,D+8,H-100,H+2]});
-    }
-    // front fixed to battens behind it: up each side and along the bottom
-    for(const ix of [0,1]){const F=frame([ix?W:0,0,0],[ix?-1:1,0,0],[0,1,0],[0,0,1]);
-      battenJoint(M,{conn:'plyFront',F,u0:T,v0:T,w0:T+cb,w1:H-T-(lidCh?0:0),A:sides[ix],B:front,tA:T,tB:T,bs,label:`Front ↔ ${ix?'right':'left'} side`});}
-    battenJoint(M,{conn:'plyFront',F:frame([0,0,0],[0,0,1],[0,1,0],[1,0,0]),u0:T,v0:T,w0:T+bs,w1:W-T-bs,A:bottom,B:front,tA:T,tB:T,bs,label:'Front ↔ bottom'});
-    zz.push(H-T,H);
-  }else{
-    top=M.add({name:p.build==='galley'?'Worktop':'Top',role:'top',pos:[BOX(T,W-T,0,Ds,H-T,H)],grain:0,thk:2,ex:[0,0,E*0.7]});
-    pc(top,sides[0],frame([0,0,H],[1,0,0],[0,0,-1],[0,1,0]),'Top ↔ left side');
-    pc(top,sides[1],frame([W,0,H],[-1,0,0],[0,0,-1],[0,1,0]),'Top ↔ right side');
-    const n=p.nShelves|0,clear=H-2*T-n*T,gap=clear/(n+1);
-    for(let k=1;k<=n;k++){const z0=R(T+k*gap+(k-1)*T);zz.push(z0,z0+T);
-      const sh=M.add({name:'Shelf',key:'shelf',role:'shelf',pos:[BOX(T,W-T,by0,Ds,z0,z0+T)],grain:0,thk:2,ex:[0,-E*0.25,(k/(n+1)-0.5)*E*0.3]});
-      if(light&&W-2*T>360){const hw=W-2*T-160,hd=Ds-by0-140;if(hd>80){sh.neg.push(BOX(T+80,T+80+hw,by0+70,by0+70+hd,z0-1,z0+T+1));holeA+=hw*hd*T;}}
-      for(const ix of [0,1]){
-        if(J.plyShelf==='cleat')battenJoint(M,{conn:'plyShelf',jointId:'cleat',name:'Shelf cleat',key:'cleat',role:'cleat',F:frame([ix?W:0,0,z0+T],[ix?-1:1,0,0],[0,0,-1],[0,1,0]),u0:T,v0:T,w0:by0,w1:Ds,A:sides[ix],B:sh,tA:T,tB:T,bs,label:'Shelf ↔ side'});
-        else shelfJoint(M,{conn:'plyShelf',jointId:'oire',F:frame([ix?W-T:T,by0,0],[ix?1:-1,0,0],[0,0,1],[0,1,0]),depth:T,shelf:sh,side:sides[ix],h:[z0,z0+T],Ds:Ds-by0,label:'Shelf ↔ side'});}}
-    doorBay(M,{ox0:T,ox1:W-T,z0:T,z1:H-T,lower:bottom,upper:top,sides});
-    zz.push(H-T,H);
-    const span=W-2*T;if(n&&span>T*45)M.warn.push(`Shelves span ${R(span)} mm. At ${T} mm thick they may sag under load; keep spans under about ${R(T*45)} mm or add a divider.`);
+  const M=new Model('ply',p),J=p.J,W=p.W,D=p.D,H=p.H,L=p.L,rH=p.rH,b=p.build,E=M.E=clamp(0.2*Math.max(W,D,H),60,360);
+  const zz=new Set([0,H]);let Fm;
+  if(b==='bench'){
+    const Hf=H-p.lidT,xs=[0,W-L];Fm=vanFrame(M,p,xs,[Hf,Hf]);
+    const lo=Fm.ring(0,p.legH,p.legH+rH,'bottom rail'),up=Fm.ring(0,Hf-rH,Hf,'top rail');
+    const bk=Fm.panelX(0,1,lo.b,up.b,'Back panel');Fm.recPanel(bk,0,lo.b,'Back panel');
+    Fm.panelY(0,lo.l,up.l,'Side panel');Fm.panelY(1,lo.r,up.r,'Side panel');
+    Fm.panelH(0,lo,'Bottom panel',false);
+    slatFront(M,Fm,0,lo.f,up.f,'tate',p.ks,true);
+    vanLid(M,Fm,0,1,up,{x0:-12,x1:W+12,ov:12,name:'Seat lid'});
+    [p.legH,p.legH+rH,Hf-rH,Hf].forEach(z=>zz.add(z));
+  }else if(b==='steps'){
+    const H2=R((H-p.lidT)*0.52),Hf=H-p.lidT,xm=R(W*0.5-L/2),xs=[0,xm,W-L];Fm=vanFrame(M,p,xs,[Hf,Hf,H2]);
+    const l0=Fm.ring(0,p.legH,p.legH+rH,'bottom rail'),l1=Fm.ring(1,p.legH,p.legH+rH,'bottom rail');
+    const u0=Fm.ring(0,Hf-rH,Hf,'top rail'),u1=Fm.ring(1,H2-rH,H2,'step rail');
+    const bp=Fm.panelX(0,1,l0.b,u0.b,'Back panel');Fm.recPanel(bp,0,l0.b,'Back panel');Fm.panelX(1,1,l1.b,u1.b,'Back panel');
+    for(const [j,lo,up] of [[0,l0,u0],[1,l1,u1]])slatFront(M,Fm,j,lo.f,up.f,'yoko',p.ks,j===0);
+    const sp0=Fm.panelY(0,l0.l,u0.l,'Side panel');Fm.panelY(2,l1.r,u1.r,'Side panel');marumado(sp0,0,Fm,l0.z1,u0.z0,0.62);
+    Fm.panelY(1,l0.r,u1.l,'Divider panel',[0,0,-E*0.2]);Fm.panelY(1,u1.l,u0.r,'Upper side panel',[E*0.6,0,E*0.3]);
+    Fm.panelH(0,l0,'Bottom panel',false);Fm.panelH(1,l1,'Bottom panel',false);
+    vanLid(M,Fm,0,1,u0,{x0:-12,x1:xm+L+12,ov:15,name:'Upper step lid',hole:1});
+    vanLid(M,Fm,1,2,u1,{x0:xm+L+1,x1:W+12,ov:15,name:'Lower step lid',hole:1,exz:-E*0.4});
+    zz.add(H2+p.lidT);[p.legH,p.legH+rH,H2-rH,H2,Hf-rH,Hf].forEach(z=>zz.add(z));
+  }else if(b==='overhead'){
+    const two=W>1100,xs=two?[0,R(W/2-L/2),W-L]:[0,W-L];Fm=vanFrame(M,p,xs,xs.map(()=>H));
+    const deep=[0,2*(5+2)+6+6+4];
+    for(let j=0;j<xs.length-1;j++){
+      const lo=Fm.ring(j,0,rH,'bottom rail',deep),up=Fm.ring(j,H-rH,H,'top rail',deep);
+      const bk=Fm.panelX(j,1,lo.b,up.b,'Back panel');if(!j)Fm.recPanel(bk,0,lo.b,'Back panel');
+      Fm.panelH(j,lo,'Bottom panel',false);Fm.panelH(j,up,'Top panel',true);
+      if(j===0)Fm.panelY(0,lo.l,up.l,'Side panel');
+      Fm.panelY(j+1,lo.r,up.r,j+1===xs.length-1?'Side panel':'Divider panel',j+1===xs.length-1?null:[0,0,-E*0.25]);
+      vanDoors(M,Fm,j,lo.f,up.f);}
+    [rH,H-rH].forEach(z=>zz.add(z));
+  }else{ // galley: mizuya with sliding doors and chigaidana
+    const Hf=H-p.lidT,xm=R(W*0.52-L/2),xs=[0,xm,W-L];Fm=vanFrame(M,p,xs,[Hf,Hf,Hf]);
+    const deep=[0,2*(5+2)+6+6+4];
+    const l0=Fm.ring(0,p.legH,p.legH+rH,'bottom rail',deep),l1=Fm.ring(1,p.legH,p.legH+rH,'bottom rail');
+    const u0=Fm.ring(0,Hf-rH,Hf,'top rail',deep),u1=Fm.ring(1,Hf-rH,Hf,'top rail');
+    const bk=Fm.panelX(0,1,l0.b,u0.b,'Back panel');Fm.recPanel(bk,0,l0.b,'Back panel');Fm.panelX(1,1,l1.b,u1.b,'Back panel');
+    marumado(Fm.panelY(0,l0.l,u0.l,'Side panel'),0,Fm,l0.z1,u0.z0,0.6);const rs=Fm.panelY(2,l1.r,u1.r,'Side panel');const dv=Fm.panelY(1,l0.r,u0.r,'Divider panel',[0,0,-E*0.3]);
+    Fm.panelH(0,l0,'Bottom panel',false);Fm.panelH(1,l1,'Bottom panel',false);
+    vanDoors(M,Fm,0,l0.f,u0.f);
+    // worktop with a raised back rail
+    const wt=M.add({name:'Worktop',key:'worktop',role:'top',pos:[BOX(-10,W+10,-25,D,Hf,H)],grain:0,thk:2,ex:[0,0,E*1.1]});
+    M.add({name:'Back upstand',key:'upstand',role:'rail',species:'batten',pos:[BOX(-10,W+10,D-18,D,H,H+45)],grain:0,thk:1,ex:[0,E*0.3,E*1.3]});
+    // chigaidana: two shelves at different heights joined by an ebizuka
+    const t=p.T,sT=p.lidT,bs=18,xa=xs[1]+L/2+t/2,xb=xs[2]+L/2-t/2,yb=D-L/2-t/2,ya=L+1,bayH=(Hf-rH)-(p.legH+rH);
+    const zl=R(p.legH+rH+bayH*0.36),zu=R(p.legH+rH+bayH*0.62),es=clamp(R(sT*1.6),24,34),xe=R((xa+xb)/2-es/2),ye=R((ya+yb)/2-es/2);
+    const up=M.add({name:'Upper shelf',key:'shelfU',role:'shelf',lwt:[R(xe+es-xa),R(yb-ya),sT],pos:[BOX(xa,xe+es,ya,yb,zu,zu+sT)],grain:0,thk:2,ex:[-E*0.15,-E*0.1,E*0.3]});
+    const lw=M.add({name:'Lower shelf',key:'shelfL',role:'shelf',pos:[BOX(xe,xb,ya,yb,zl,zl+sT)],grain:0,thk:2,ex:[E*0.15,-E*0.1,-E*0.05]});
+    const fl=Math.min(24,R((xe+es-xa)*0.12)),fh=Math.max(8,R(sT*0.6));
+    const xR=xe+es;up.pos.push(BOX(xR-fl,xR,ya,yb,zu+sT,zu+sT+fh).concat([planeAt([-fh*0.7,0,fl],[xR,0,zu+sT+fh])]));
+    battenJoint(M,{conn:'plyShelf',jointId:'cleat',name:'Shelf cleat',key:'cleat',role:'cleat',F:frame([xa-t,0,zu+sT],[1,0,0],[0,0,-1],[0,1,0]),u0:t,v0:sT,w0:ya,w1:yb-bs,A:dv,B:up,tA:t,tB:sT,bs,label:'Upper shelf ↔ divider'});
+    battenJoint(M,{conn:'plyShelf',jointId:'cleat',name:'Shelf cleat',key:'cleat',role:'cleat',F:frame([xb+t,0,zl+sT],[-1,0,0],[0,0,-1],[0,1,0]),u0:t,v0:sT,w0:ya,w1:yb-bs,A:rs,B:lw,tA:t,tB:sT,bs,label:'Lower shelf ↔ side'});
+    const bkR=M.parts.filter(q=>q.name==='Back panel')[1];
+    battenJoint(M,{conn:'plyShelf',jointId:'cleat',name:'Shelf cleat',key:'cleatB',role:'cleat',F:frame([0,yb+t,zu+sT],[0,-1,0],[0,0,-1],[1,0,0]),u0:t,v0:sT,w0:xa+bs,w1:xe+es-10,A:bkR,B:up,tA:t,tB:sT,bs,label:'Upper shelf ↔ back'});
+    battenJoint(M,{conn:'plyShelf',jointId:'cleat',name:'Shelf cleat',key:'cleatB',role:'cleat',F:frame([0,yb+t,zl+sT],[0,-1,0],[0,0,-1],[1,0,0]),u0:t,v0:sT,w0:xe+10,w1:xb-bs,A:bkR,B:lw,tA:t,tB:sT,bs,label:'Lower shelf ↔ back'});
+    const eb=M.add({name:'Ebizuka post',key:'ebizuka',role:'ebizuka',species:'batten',pos:[BOX(xe,xe+es,ye,ye+es,zl+sT,zu)],grain:2,thk:0,ex:[0,-E*0.1,E*0.12]});
+    const shE=Math.max(3,R(es*0.18));
+    for(const [post,ze,dn] of [[lw,zl+sT,1],[up,zu,-1]])
+      railToPost(M,{conn:'ebizuka',jointId:J.ebizuka||'hira',F:frame([0,0,ze],[0,0,dn===1?-1:1],[1,0,0],[0,1,0]),depth:sT,rail:eb,post,railH:[xe,xe+es],railT:[ye,ye+es],postT:[ya,yb],postH:[xe-60,xe+es+60],
+        shTop:shE,shBot:shE,pegFrom:-1,postGrain:'h',label:dn===1?'Ebizuka ↔ lower shelf':'Ebizuka ↔ upper shelf'});
+    [p.legH,p.legH+rH,zl,zu,Hf-rH,Hf].forEach(z=>zz.add(z));
+    if(Fm.xs[2]-Fm.xs[1]<300)M.warn.push('The open bay is narrow for staggered shelves; widen the unit.');
   }
-  M.dims.push({view:'front',side:'bottom',tier:0,pts:[[0,0,0],[T,0,0],[W-T,0,0],[W,0,0]]},{view:'front',side:'bottom',tier:1,pts:[[0,0,0],[W,0,0]]});
-  zz.sort((a,b)=>a-b);M.dims.push({view:'front',side:'left',tier:0,pts:[...new Set(zz)].map(z=>[0,0,z])},{view:'front',side:'left',tier:1,pts:[[0,0,0],[0,0,H]]});
-  M.dims.push({view:'side',side:'bottom',tier:0,pts:[[W,0,0],[W,Ds,0],[W,D,0]]});
-  if(T<9)M.warn.push('Panels under 9 mm are too thin to screw into battens reliably; 12–15 mm is usual for van carcasses.');
-  if(bs<15)M.warn.push(`${bs} mm battens are small for screws; 18–20 mm square is a good minimum.`);
-  if(p.build==='overhead'&&H>450)M.warn.push('Overhead lockers over about 450 mm tall get heavy and eat headroom.');
+  for(const q of M.parts)if(q.role==='rail'||q.role==='leg'||q.role==='cleat'||q.role==='kumiko'||q.role==='ebizuka'||q.role==='slat')q.species=q.species==='steel'?'steel':'batten';
+  const xsD=[];for(const x of Fm.xs)xsD.push([x,0,0],[x+L,0,0]);
+  M.dims.push({view:'front',side:'bottom',tier:0,pts:xsD},{view:'front',side:'bottom',tier:1,pts:[[0,0,0],[W,0,0]]});
+  M.dims.push({view:'front',side:'left',tier:0,pts:[...zz].sort((a,b)=>a-b).map(z=>[0,0,z])},{view:'front',side:'left',tier:1,pts:[[0,0,0],[0,0,H]]});
+  M.dims.push({view:'side',side:'bottom',tier:0,pts:[[W,0,0],[W,L,0],[W,D-L,0],[W,D,0]]});
+  if(L<3*tenonThk(Fm.rT))M.warn.push(`Posts ${L} mm square are thin for tenons from two sides; ${Math.ceil(3*tenonThk(Fm.rT)/2)*2} mm or more is safer.`);
+  if(b==='overhead'&&H>450)M.warn.push('Overhead lockers over about 450 mm tall get heavy and eat headroom.');
+  if(b!=='overhead'&&p.legH<20)M.warn.push('Without legs the bottom rail sits on the floor; a little lift keeps it out of spills and lets air through.');
   finalizeModel(M);
-  const den=(SPECIES[p.species]||{}).dens||550;let kg=0;
-  for(const q of M.parts){if(q.species==='batten')q.wood=SPECIES.spruce;if(q.species==='steel')q.wood=STEEL;
-    const v=q.dimsLWT[0]*q.dimsLWT[1]*q.dimsLWT[2]/1e9;kg+=q.species==='steel'?(q.role==='hinge'?0.5*(W/1000):q.count*0.004):v*(q.species==='batten'?SPECIES.spruce.dens:den);}
-  M.kg=Math.max(0,kg-holeA/1e9*den);
+  const fw=SPECIES[p.fw]||SPECIES.sugi,den=(SPECIES[p.species]||{}).dens||550,fden=FRAME_DENS[p.fw]||420;let kg=0;
+  for(const q of M.parts){if(q.species==='batten')q.wood=fw;if(q.species==='steel')q.wood=STEEL;
+    const v=q.small&&q.pos.length?q.pos.reduce((a,pr)=>a+(pr.bb[1]-pr.bb[0])*(pr.bb[3]-pr.bb[2])*(pr.bb[5]-pr.bb[4]),0)/1e9:q.dimsLWT[0]*q.dimsLWT[1]*q.dimsLWT[2]/1e9;
+    kg+=q.species==='steel'?(q.role==='hinge'?0.5*(W/1000):q.count*0.004):q.species==='accent'?v*700:v*(q.species==='batten'?fden:den);}
+  M.kg=kg;M.frame=Fm;
   return M;
 }
 function plySheets(){const by={};for(const q of M.parts){if(q.species!=='main'||q.small)continue;const d=pieceLWT(q),t=Math.round(d[2]*10)/10;by[t]=(by[t]||0)+d[0]*d[1]*(q.count||1);}
-  return Object.entries(by).map(([t,a])=>({t:+t,n:Math.max(1,Math.ceil(a*1.25/(PLY_SHEET[0]*PLY_SHEET[1])*2)/2),a})).sort((a,b)=>b.t-a.t);}
+  return Object.entries(by).map(([t,a])=>({t:+t,n:Math.max(0.5,Math.ceil(a*1.25/(PLY_SHEET[0]*PLY_SHEET[1])*2)/2),a})).sort((a,b)=>b.t-a.t);}
 function plySteps(){
-  const gs=jointGroups(),p=S.p,ph=[],spn=SPECIES[S.species].name;
-  let batL=0,nScr=0,sl=new Set();for(const q of M.parts){if(q.species==='batten')batL+=pieceLWT(q)[0];if(q.role==='screw'){nScr+=q.count;sl.add(q.name.replace('Screws, ',''));}}
-  const doors=activeConns().includes('doors'),lid=S.J.plyLid;
+  const gs=jointGroups(),p=S.p,ph=[],spn=SPECIES[S.species].name,fw=SPECIES[p.fw]||SPECIES.sugi,b=p.build,Fm=M.frame;
+  const secs={};let nScr=0,sl=new Set();
+  for(const q of M.parts){if(q.species==='batten'&&!q.small){const d=pieceLWT(q),k=R(d[1])+' × '+R(d[2]);secs[k]=(secs[k]||0)+d[0]*(q.count||1);}
+    if(q.role==='screw'){nScr+=q.count;sl.add(q.name.replace('Screws, ',''));}}
+  const doors=b==='overhead'||b==='galley',lid=b==='bench'||b==='steps';
   ph.push({h:'Materials',items:[
-    ...plySheets().map(s=>`${s.n} sheet${s.n>1?'s':''} of ${fmt(s.t)} ${esc(spn.toLowerCase())}, ${PLY_SHEET[0]} × ${PLY_SHEET[1]} mm (the panels plus 25% for cutting waste and grain matching).`),
-    ...(batL?[`About ${(batL*1.2/1000).toFixed(1)} m of ${fmt(p.bs)} square battens in straight, dry spruce or pine (or ash if you want them tougher), including 20% spare.`]:[]),
-    ...(nScr?[`About ${Math.ceil(nScr*1.15/10)*10} countersunk wood screws, ${[...sl].join(' and ')}, and a waterproof wood glue (PVA D3 or polyurethane).`]:[`Waterproof wood glue (PVA D3 or polyurethane).`]),
-    doors?`Hardware: push-button or cam latches for the doors, so they stay shut while driving, and felt strips so they don't rattle.`:lid==='hinge'?`Hardware: a ${fmt(p.W-30)} piano hinge with its screws, a lid stay, and a push-button or cam latch so the lid stays shut while driving.`:`Hardware: two lid catches or a strap, so the lid stays put while driving.`,
-    `The model weighs about ${Math.round(M.kg)} kg before finish and hardware. ${S.species==='poplarply'?'Poplar plywood keeps it light.':'Poplar plywood would make it about a third lighter.'}`]});
+    ...plySheets().map(s=>`${s.n===0.5?'Half a sheet':s.n+' sheet'+(s.n>1?'s':'')} of ${fmt(s.t)} ${esc(spn.toLowerCase())}, ${PLY_SHEET[0]} × ${PLY_SHEET[1]} mm (the panels plus 25% for cutting waste; many suppliers cut half sheets).`),
+    `Frame timber in ${esc(fw.name.split(' (')[0].toLowerCase())}, straight-grained and dry: ${Object.entries(secs).sort((a,b)=>b[1]-a[1]).map(([k,l])=>`about ${(l*1.2/1000).toFixed(1)} m of ${k} mm`).join(', ')} (20% spare included). The kōshi slats can be ripped from the same stock.`,
+    `Waterproof wood glue (PVA D3 or polyurethane)${nScr?`, and about ${Math.ceil(nScr*1.15/10)*10} countersunk wood screws, ${[...sl].join(' and ')}, for the shelf cleats`:''}.`,
+    doors?`Hardware: a push-button or cam latch for each pair of sliding doors, so they stay shut while driving.`:S.J.plyLid==='hinge'?`Hardware: a piano hinge, a lid stay and a front catch.`:`Hardware: two catches or a strap per lid, so the lids stay put while driving.`,
+    `The model weighs about ${Math.round(M.kg)} kg before finish and hardware. The frame carries the load, so the panels can be thin: ${fmt(p.T)} ply is plenty.`]});
+  ph.push({h:'Make the frame',items:[
+    `Plane the frame timber four-square and mark a face and an edge on every piece. Cut the posts and rails to the lengths in the cut list; rail lengths include their tenons.`,
+    `Bundle all the posts together and mark the rail positions across them at once, so every joint lines up. Do the same for each set of rails.`,
+    `Cut the mortises and tenons (see the joint cards below). Each post takes rails from two directions, so one tenon sits in the upper half of the rail and the other in the lower half; they pass each other inside the post.`,
+    `Rout or plough a ${fmt(Fm.t)} wide, ${fmt(Fm.g)} deep groove along every edge that holds a panel, centred on the rail. Stop the grooves in the posts at the rails, so they don't show.`,
+    `Soften every edge with a few plane strokes. In a van, people brush past this furniture all day.`]});
   ph.push({h:'Cut the panels',items:[
-    `Mark the good face of each sheet. With a circular or track saw cut with the good face down; on a table saw, good face up. A strip of masking tape along the line and a scored knife cut stop the face veneer from splintering.`,
-    `Cut the largest panels first, then the smaller ones from the offcuts. Check each panel for square by measuring its diagonals.`,
-    `Rip the battens to ${fmt(p.bs)} square if you are making them yourself, and cut them to the lengths in the cut list.`,
-    ...(p.light==='yes'?[`Lightening holes: drill each corner with a 30 mm hole saw, then join the holes with a jigsaw. Leave at least 60–70 mm of panel around every hole, and sand the edges smooth.`]:[]),
-    `Lightly round and sand all edges that will show (a 2 mm round-over or a few strokes of sandpaper) before assembly.`]});
+    `Mark the good face of each sheet. With a circular or track saw cut with the good face down; on a table saw, good face up. Masking tape and a scored knife line stop the face veneer from splintering.`,
+    `Cut each panel ${fmt(2*Fm.g-1)} larger than its opening in both directions, so it sits ${fmt(Fm.g-0.5)} into each groove. Notch the corners of the bottom${b==='overhead'?' and top':''} panels around the posts.`,
+    `Sand the panels to 180 grit before assembly; it is much harder inside a finished frame.`]});
   ph.push({h:'Cut the joints',items:gs.map(g=>{const J=JOINTS[jkey(g.conn,g.id)];return `<a href="#joints" data-card="${g.conn}-${g.id}">${J.ro}</a>: ${g.n} × ${J.en.toLowerCase()} (${esc([...g.labels].slice(0,2).join(', ').toLowerCase())}).`;})});
-  const asm=[];
-  if(S.J.plyCorner==='batten')asm.push(`Glue and screw the corner battens to both sides first, flush with their edges, drilling a pilot hole and countersinking each screw. Wipe off squeeze-out with a damp cloth.`);
-  asm.push(`Stand the sides up, glue the ${p.build==='bench'?'bottom':'bottom and top'} in place${S.J.plyCorner==='batten'?' and screw through the battens into them':' with the finger joints, and clamp both ways'}. Check the diagonals before the glue grabs.`);
-  if(p.build==='bench')asm.push(`Fit the front panel between the sides, glue and screw it to its battens, then add the lid.`);
-  else{if(p.nShelves)asm.push(S.J.plyShelf==='cleat'?`Fix the shelf cleats level on both sides and screw the shelves down onto them.`:`Slide the shelves into their housings with glue.`);
-    asm.push(S.J.doors==='kendon'?`Fit the lift-in panel last, after the finish.`:`Wax the door grooves and drop the doors in after finishing. Add a latch and a strip of felt so they don't rattle.`);}
-  asm.push(`Glue and pin or screw the back panel on, about every 100 mm. It squares the carcass and stops it racking, so line it up carefully with the sides.`);
+  const asm=[`Dry-fit everything first. The frame should close by hand with every panel in its groove.`,
+    `Glue up the two ${b==='steps'||b==='galley'||(b==='overhead'&&Fm.xs.length>2)?'end frames and the middle frame':'end frames'} first: posts, side rails and side panel${b==='steps'?'s':''}. Check them for square and wind on a flat surface.`,
+    `Stand them up and join them with the front and back rails, sliding the back${b==='bench'||b==='steps'?', bottom and slatted front':' and bottom'}${b==='overhead'?', top':''} panels into their grooves as you go. Glue the panels in, clamp, and check the diagonals before the glue grabs.`];
+  if(S.J.plyFrame==='komisen')asm.push(`Drive the draw-pins while the glue is wet. They pull every shoulder tight and hold the frame even if the glue fails.`);
+  if(b==='bench'||b==='steps')asm.push(`The slatted front${b==='bench'?' (tategoshi, upright slats)':'s (yokogoshi, horizontal slats, like a genkan shoe cupboard)'} ${b==='bench'?'is':'are'} assembled flat with half-laps and go${b==='bench'?'es':''} in with the front rails. Slats let air through, so damp shoes, towels or bedding dry instead of going mouldy.`);
+  if(lid)asm.push(S.J.plyLid==='hinge'?`Screw the piano hinge to the back rail and the lid, then fit the stay and catch.`:`Glue and screw the battens under the ${b==='steps'?'step lids':'lid'} so they drop just inside the side rails. The lid then lifts straight off but can't slide about.`);
+  if(b==='steps')asm.push(`Each step is a storage box. The finger holes in the lids let you lift them without tools; glue a thin anti-slip strip or a cork sheet on top of each tread.`);
+  if(doors)asm.push(`Glue the kōshi slats to the door faces on a flat board, wax the grooves, and drop the doors in after finishing: lift each door into the deep top groove, swing it in and let it down into the bottom groove.`);
+  if(b==='galley')asm.push(`Fix the shelf cleats, glue the ebizuka into both shelves, and lay the shelf pair onto the cleats in one go. Screw up through the cleats into the shelves. Fix the worktop with screws up through the top rails, in slotted holes.`);
   ph.push({h:'Assemble',items:asm});
   ph.push({h:'Fit it in the van',items:[
-    `Fix the furniture to the van's structure, not to the wall lining or insulation. Bolt through the battens into rivnuts or existing threaded points in the floor and body ribs, with M6 or M8 bolts and large washers.`,
-    `In a sudden stop, furniture and its contents push forward with many times their weight, so use several fixings at each fixing line and keep heavy things low and forward of the axle where you can.`,
-    p.build==='overhead'?`Hang overhead lockers on rails fixed to the roof ribs, and keep only light things in them.`:`Leave a gap of 5–10 mm to the van wall so the body can flex and cables can pass.`,
-    `Check your country's rules for converted vans. Some require fixings and seats to meet set strength standards.`]});
-  ph.push({h:'Finish',items:[`Sand to 180 grit and apply two or three coats of water-based varnish or hard-wax oil. Seal every edge too, because condensation in a van gets into bare plywood edges.`,`Leave the finish to cure for a few days before loading the cupboards.`]});
+    `Fix the furniture to the van's structure, not to the wall lining. Bolt through the bottom rails or posts into rivnuts or existing threaded points in the floor and body ribs, with M6 or M8 bolts and large washers.`,
+    `In a sudden stop, furniture and its contents push forward with many times their weight. Use several fixings, and keep heavy things low and forward of the axle where you can.`,
+    b==='overhead'?`Hang the locker by its top rails from rails fixed to the roof ribs, and keep only light things in it.`:`Leave a gap of 5–10 mm to the van wall so the body can flex and cables can pass.`,
+    `Check your country's rules for converted vans. Some require furniture and seats to meet set strength standards.`]});
+  ph.push({h:'Finish',items:[`Two or three coats of hard-wax oil or water-based varnish on the frame and panels. Seal every plywood edge too, because condensation gets into bare edges.`,
+    `Leave the finish to cure for a few days before loading.${fw===SPECIES.hinoki?' Hinoki can be left unfinished on the inside, where its scent lasts for years.':''}`]});
   return ph;
 }
 
@@ -2179,7 +2290,7 @@ function jointDoc(I,ctx){
   case 'sanbuta':
     T.push(['Lid thickness',f(d.lT)],['Battens',f(d.cw)+' × '+f(d.ch)],['Clearance inside walls',f(d.clear)]);
     S.push(`Flatten the lid panel, then fit the battens so they drop inside the end walls with ${f(d.clear)} clearance.`,
-      `Glue each batten at its centre only, and pin it with bamboo pins, so the lid can still move across its width.`,
+      d.ply?`Plywood doesn't move, so glue and screw the battens along their full length.`:`Glue each batten at its centre only, and pin it with bamboo pins, so the lid can still move across its width.`,
       `Ease the batten edges so the lid drops on easily.`);
     break;
   case 'hashibami':
@@ -2207,17 +2318,24 @@ function jointDoc(I,ctx){
       `Clamp all the bars of one direction together, ends aligned, and mark every notch across the whole bundle at once.`,
       `Saw the notch walls ${f(d.kd/2)} deep across the whole bundle (gang-cutting), then chop out the waste with a 3 to 6 mm chisel and level each notch floor.`,
       `Notch the verticals from the back and the horizontals from the front, so the bars lock together flush on both faces.`,
-      `Tap the lattice together dry, fit it into the frame with its ${f(d.kt)} stub tenons, and then paste on the washi. Mist the paper lightly with water so it tightens as it dries.`);
+      d.paper?`Tap the lattice together dry, fit it into the frame with its ${f(d.kt)} stub tenons, and then paste on the washi. Mist the paper lightly with water so it tightens as it dries.`:`Tap the lattice together dry and fit it into the frame with its ${f(d.kt)} stub tenons as the frame is assembled. A drop of glue in each notch keeps it from rattling.`);
     break;
   case 'hikido': case 'kendon':
     T.push(['Door thickness',f(d.dt)],['Bottom groove depth',f(d.gB)],['Top groove depth',f(d.gT)]);
     if(id==='hikido')T.push(['Door width',f(d.w)],['Overlap',f(d.ov)],['Door height',f(d.h)],['Track spacing',f(d.tr)]);
     else T.push(['Panel width',f(d.w)],['Side grooves',f(d.side)+' deep'],['Panel height',f(d.h)]);
-    S.push(`Plough ${id==='hikido'?'two parallel':'a'} ${f(d.dt+1)} groove${id==='hikido'?'s':''}: ${f(d.gB)} deep in the board below the bay and ${f(d.gT)} deep in the board above${id==='kendon'?`, plus ${f(d.side)} deep in both sides`:''}. Do this before assembling the carcass.`,
-      `Make the ${id==='hikido'?'doors':'panel'} from quarter-sawn stock and let ${id==='hikido'?'them':'it'} rest a few days before final thicknessing, so ${id==='hikido'?'they stay':'it stays'} flat.`,
+    S.push(`Plough ${id==='hikido'?'two parallel':'a'} ${f(d.dt+1)} groove${id==='hikido'?'s':''}: ${f(d.gB)} deep in the ${d.ply?'rail':'board'} below the bay and ${f(d.gT)} deep in the ${d.ply?'rail':'board'} above${id==='kendon'?`, plus ${f(d.side)} deep in both sides`:''}. Do this before assembling the carcass.`,
+      d.ply?`Cut the doors from flat ${f(d.dt)} plywood and glue the kōshi slats to the outside face, clamped flat on a board. The slats stiffen the thin door and give it its look.`:`Make the ${id==='hikido'?'doors':'panel'} from quarter-sawn stock and let ${id==='hikido'?'them':'it'} rest a few days before final thicknessing, so ${id==='hikido'?'they stay':'it stays'} flat.`,
       `Size the height so the ${id==='hikido'?'door':'panel'} lifts into the top groove with 2–3 mm to spare, swings in at the bottom and drops into the lower groove.`,
       `Cut a shallow finger recess (hikite) near the ${id==='hikido'?'leading edge':'top'}.`,
       `Rub the grooves with candle wax (rō) so the ${id==='hikido'?'doors glide':'panel slides'} easily.`);
+    break;
+  case 'plyGroove':
+    T.push(['Panel thickness',f(d.t)],['Groove',f(d.t)+' wide × '+f(d.g)+' deep'],['Panel oversize',f(2*d.g-1)+' on each dimension']);
+    S.push(`Cut the grooves before assembly with a router and a ${f(d.t)} straight bit, or a plough plane. Plywood is often a little thinner than its nominal size, so set the width from an offcut of the actual sheet.`,
+      `Run the groove centred on the rails, and stop it in the posts at the rails so it doesn't show.`,
+      `Size the panel ${f(2*d.g-1)} larger than the opening each way, so it sits ${f(d.g-0.5)} into each groove with room for glue.`,
+      `Glue the panel in. Plywood barely moves with the seasons, so a glued panel is safe and turns each frame into a stiff box.`);
     break;
   case 'panelGroove':
     T.push(['Panel thickness',f(d.t)],['Groove depth',f(d.g)],['Clearance','about '+f(d.clear)+' across the grain']);
@@ -2476,10 +2594,10 @@ function normPts(P){const x0=Math.min(...P.map(q=>q[0])),y0=Math.min(...P.map(q=
 function regPoly(n,side){const r=side/(2*Math.sin(Math.PI/n)),a0=-Math.PI/2-Math.PI/n,P=[];for(let k=0;k<n;k++){const a=a0+k*2*Math.PI/n;P.push([r*Math.cos(a),r*Math.sin(a)]);}return normPts(P);}
 const PRESETS={
   ply:{
-    bench:{label:'Van bench seat with storage',p:{W:900,D:450,H:420,build:'bench',T:15,backT:6,bs:20,nShelves:0,light:'yes'},sp:'poplarply',J:{plyCorner:'batten',plyFront:'batten',plyLid:'hinge'}},
-    bed:{label:'Van bed base (storage box)',p:{W:1300,D:620,H:380,build:'bench',T:15,backT:6,bs:20,nShelves:0,light:'yes'},sp:'poplarply',J:{plyCorner:'batten',plyFront:'batten',plyLid:'hinge'}},
-    overhead:{label:'Overhead locker',p:{W:900,D:320,H:340,build:'overhead',T:12,backT:6,bs:18,nShelves:0,light:'yes'},sp:'poplarply',J:{plyCorner:'batten',doors:'hikido'}},
-    galley:{label:'Van kitchen unit',p:{W:800,D:450,H:880,build:'galley',T:18,backT:6,bs:20,nShelves:1,light:'yes'},sp:'poplarply',J:{plyCorner:'batten',plyShelf:'cleat',doors:'hikido'}}
+    bench:{label:'Engawa bench with slatted front',p:{W:1000,D:420,H:440,build:'bench',T:9,L:34,rH:40,legH:90,lidT:18,ks:34,fw:'hinoki'},sp:'poplarply',J:{plyFrame:'komisen',plyPanel:'plyGroove',kumiko:'aigaki',plyLid:'sanbuta'}},
+    steps:{label:'Kaidan step boxes with slatted fronts',p:{W:820,D:380,H:560,build:'steps',T:9,L:34,rH:40,legH:30,lidT:18,ks:40,fw:'sugi'},sp:'poplarply',J:{plyFrame:'hira',plyPanel:'plyGroove',kumiko:'aigaki',plyLid:'sanbuta'}},
+    overhead:{label:'Todana overhead locker with kōshi doors',p:{W:900,D:320,H:340,build:'overhead',T:6,L:30,rH:32,legH:0,lidT:18,ks:34,fw:'hinoki'},sp:'poplarply',J:{plyFrame:'hira',plyPanel:'plyGroove',plyDoors:'hikido'}},
+    galley:{label:'Mizuya kitchen unit with staggered shelves',p:{W:1000,D:450,H:880,build:'galley',T:9,L:36,rH:45,legH:100,lidT:21,ks:34,fw:'sugi'},sp:'poplarply',J:{plyFrame:'komisen',plyPanel:'plyGroove',plyDoors:'hikido',plyShelf:'cleat',ebizuka:'hira'}}
   },
   frame:{
     dining:{label:'Dining table',p:FR({W:1800,D:900,H:720,topT:30,nBoards:4,ovX:120,ovY:80,legS:65,apH:90,apT:24,apIn:8,chamfer:3})},
@@ -2642,11 +2760,13 @@ const PRESETS={
 const strShow=p=>p.str!=='none',isScreen=p=>p.style!=='lamp',isLamp=p=>p.style==='lamp';
 const FIELDS={
   ply:[
-    {k:'W',l:'Width',g:'S',min:300,max:2000},{k:'D',l:'Depth',g:'S',min:200,max:800},{k:'H',l:'Height',g:'S',min:150,max:1200},
-    {k:'build',l:'Build as',g:'M',sel:[['bench','Bench or bed box with a lid'],['overhead','Overhead locker with doors'],['galley','Kitchen unit with doors']],wide:1},
-    {k:'T',l:'Panel thickness',g:'M',min:6,max:25},{k:'backT',l:'Back panel',g:'M',min:3,max:15},
-    {k:'bs',l:'Batten size (square)',g:'M',min:12,max:40},{k:'nShelves',l:'Shelves',g:'M',min:0,max:4,int:1,show:p=>p.build!=='bench'},
-    {k:'light',l:'Lightening holes',g:'M',sel:[['yes','In the back and shelves'],['no','None']],wide:1}
+    {k:'W',l:'Width',g:'S',min:400,max:2000},{k:'D',l:'Depth',g:'S',min:250,max:700},{k:'H',l:'Height',g:'S',min:200,max:1100},
+    {k:'build',l:'Build as',g:'M',sel:[['bench','Bench seat with a slatted front'],['steps','Two step boxes with lift-off treads'],['overhead','Overhead locker with sliding doors'],['galley','Kitchen unit with doors and staggered shelves']],wide:1},
+    {k:'fw',l:'Frame timber',g:'M',sel:[['hinoki','Hinoki'],['sugi','Sugi'],['spruce','Spruce or pine']]},
+    {k:'T',l:'Panel thickness',g:'M',min:4,max:12},{k:'L',l:'Post size (square)',g:'M',min:28,max:60},{k:'rH',l:'Rail height',g:'M',min:25,max:80},
+    {k:'legH',l:'Legs (height to bottom rail)',g:'M',min:0,max:200,show:p=>p.build!=='overhead'},
+    {k:'lidT',l:'Lid, worktop and shelf thickness',g:'M',min:12,max:30,show:p=>p.build!=='overhead'},
+    {k:'ks',l:'Slat spacing',g:'M',min:20,max:60,show:p=>p.build==='bench'||p.build==='steps'}
   ],
   frame:[
     {k:'W',l:'Length',g:'S',min:250,max:3000},{k:'D',l:'Depth',g:'S',min:200,max:1400},{k:'H',l:'Height',g:'S',min:150,max:1200},
@@ -2709,11 +2829,11 @@ const FIELDS={
     {k:'wallT',l:'Wall thickness',g:'M',min:5,max:40},{k:'bottomT',l:'Bottom thickness',g:'M',min:3,max:30},{k:'lidT',l:'Lid thickness',g:'M',min:4,max:40,show:()=>S.J.lid!=='none'}
   ]
 };
-const KIND_CONNS={ply:['plyCorner','plyFront','plyShelf','doors','plyLid'],frame:['legApron','legStretcher','stretcherCross','topAttach','topEnds','boardEdge','accent'],case:['caseCorner','shelf','ebizuka','back'],
+const KIND_CONNS={ply:['plyFrame','plyPanel','kumiko','plyDoors','plyLid','plyShelf','ebizuka'],frame:['legApron','legStretcher','stretcherCross','topAttach','topEnds','boardEdge','accent'],case:['caseCorner','shelf','ebizuka','back'],
   tansu:['caseCorner','shelf','drawerCorner','bottom','doors','back'],lattice:['frameCorner','frameRail','feet','postRail','kumiko','panel','base'],box:['boxCorner','bottom','lid'],
   custom:['polyCorner','pbottom','plid','pshelf','ptop','pLegApron','ptopAttach']};
 const ORDER={tansu:['caseCorner','shelf','drawerCorner','drawerBack','bottom','doors','back']};
-const CONN_LABEL={tansu:{caseCorner:'Carcass corners',shelf:'Dividers',bottom:'Drawer bottoms',back:'Back'},case:{caseCorner:'Top & bottom corners'}};
+const CONN_LABEL={ply:{kumiko:'Slatted front (kōshi)',ebizuka:'Ebizuka post'},tansu:{caseCorner:'Carcass corners',shelf:'Dividers',bottom:'Drawer bottoms',back:'Back'},case:{caseCorner:'Top & bottom corners'}};
 const connLabel=c=>(CONN_LABEL[S.kind]&&CONN_LABEL[S.kind][c])||CONNS[c].label;
 const KIND_DEF={ply:'bench',frame:'dining',case:'bookshelf',tansu:'kodansu',lattice:'tsuitate',box:'chest',custom:'cutcab'};
 const KEYNAMES={apronX:'Front & back apron',apronY:'Side apron',strY:'Side stretcher',strX:'Front & back stretcher',side:'Side',wallX:'Front & back wall',wallY:'End wall',linerX:'Liner, long',linerY:'Liner, short',rimX:'Lid rim, long',rimY:'Lid rim, short',trX:'Top rail',trY:'Top rail',brX:'Bottom rail',brY:'Bottom rail',stile:'Stile'};
@@ -2734,7 +2854,7 @@ function newState(kind,preset,lv,keep){
 }
 function activeConns(){const p=S.p,lamp=p.style==='lamp';return KIND_CONNS[S.kind].filter(c=>{
   switch(c){case 'legStretcher':return p.str!=='none';case 'stretcherCross':return p.str==='H';case 'boardEdge':case 'accent':return p.nBoards>1&&!(p.gap>0);
-  case 'topEnds':return p.shape!=='round';case 'ebizuka':return p.layout==='chigai';case 'doors':return S.kind==='ply'?p.build!=='bench':p.doorRows>0;case 'plyFront':case 'plyLid':return p.build==='bench';case 'plyShelf':return p.build!=='bench'&&p.nShelves>0;
+  case 'topEnds':return p.shape!=='round';case 'ebizuka':return S.kind==='ply'?p.build==='galley':p.layout==='chigai';case 'doors':return p.doorRows>0;case 'plyDoors':return p.build==='overhead'||p.build==='galley';case 'plyLid':return p.build==='bench'||p.build==='steps';case 'plyShelf':return p.build==='galley';case 'kumiko':return S.kind!=='ply'||p.build==='bench'||p.build==='steps';
   case 'polyCorner':return p.build!=='table';case 'pbottom':case 'plid':return p.build==='box';case 'pshelf':case 'ptop':return p.build==='case';case 'pLegApron':case 'ptopAttach':return p.build==='table';
   case 'frameCorner':case 'frameRail':case 'feet':return !lamp;case 'panel':return !lamp&&p.koshiH>0;case 'postRail':case 'base':return lamp;default:return true;}});}
 // ---------- units
@@ -2775,9 +2895,12 @@ function sanitize(){
     p.nShelves=c(p.nShelves,0,Math.max(0,Math.floor((p.H-2*p.T-p.baseH)/(p.shelfT+60))-1));
     p.backT=c(p.backT,6,Math.max(6,p.D/4));
   }else if(S.kind==='ply'){
-    if(!['bench','overhead','galley'].includes(p.build))p.build='bench';if(p.light!=='no')p.light='yes';
-    p.T=c(p.T,6,Math.min(25,p.W/8,p.D/6));p.backT=c(p.backT,3,Math.min(15,p.D/8));p.bs=c(p.bs,12,Math.min(40,p.H/5,p.W/6));
-    p.H=Math.max(p.H,2*p.T+2*p.bs+40);p.nShelves=c(p.nShelves|0,0,Math.max(0,Math.floor((p.H-2*p.T)/(p.T+100))-1));
+    if(!['bench','steps','overhead','galley'].includes(p.build))p.build='bench';if(!FRAME_DENS[p.fw])p.fw='hinoki';
+    p.L=Math.max(p.L,R(p.T+2*Math.min(6,R((p.L-p.T)/4))+1)+8,R(p.T)+20);p.L=c(p.L,28,Math.min(60,p.W/6,p.D/4));
+    if(p.build==='overhead')p.legH=0;
+    const lid=p.build==='overhead'?0:p.lidT;p.rH=c(p.rH,25,Math.max(25,(p.H-lid-p.legH-80)/2));
+    p.H=Math.max(p.H,lid+p.legH+2*p.rH+(p.build==='steps'?2*p.rH+160:p.build==='galley'?300:80));
+    if(p.build==='steps')p.W=Math.max(p.W,4*p.L+300);if(p.build==='galley')p.W=Math.max(p.W,3*p.L+500);
   }else if(S.kind==='custom'){
     if(!Array.isArray(p.pts)||p.pts.length<3)p.pts=PRESETS.custom.cutcab.p.pts.map(q=>q.slice());
     p.pts=normPts(p.pts.map(q=>[+q[0]||0,+q[1]||0]));
@@ -2823,7 +2946,7 @@ function title(){return PRESETS[S.kind][S.preset]?PRESETS[S.kind][S.preset].labe
 function overall(){const p=S.p;return `${fmtN(p.W)} × ${fmtN(p.D)} × ${fmtN(p.H)}${S.units==='mm'?' mm':''}`;}
 function summary(){
   const e=estimate();
-  $('#summary').innerHTML=`<b>${esc(title())}</b><span>${overall()}</span><span class="lvl">${LEVELS[e.lv]} · ${'●'.repeat(e.lv)}${'○'.repeat(4-e.lv)}</span><span>≈ ${e.h} h handwork</span><span>${M.parts.filter(p=>!p.small).length} parts · ${e.joints} joints${e.laps?' · '+e.laps+' kumiko laps':''}${M.nDrawers?' · '+M.nDrawers+' drawers':''}${S.kind==='ply'?` · ≈ ${Math.round(M.kg)} kg · ${S.J.plyCorner==='batten'||S.J.plyLid==='hinge'?'glue and screws':'glued'}`:' · no screws'}</span>`;
+  $('#summary').innerHTML=`<b>${esc(title())}</b><span>${overall()}</span><span class="lvl">${LEVELS[e.lv]} · ${'●'.repeat(e.lv)}${'○'.repeat(4-e.lv)}</span><span>≈ ${e.h} h handwork</span><span>${M.parts.filter(p=>!p.small).length} parts · ${e.joints} joints${e.laps?' · '+e.laps+' kumiko laps':''}${M.nDrawers?' · '+M.nDrawers+' drawers':''}${S.kind==='ply'?` · ≈ ${Math.round(M.kg)} kg`:' · no screws'}</span>`;
 }
 function checks(){
   const items=M.warn.map(w=>`<li><span class="dot"></span>${esc(w)}</li>`);
@@ -2869,7 +2992,7 @@ function renderSide(){
   $('#uMM').setAttribute('aria-pressed',S.units==='mm');$('#uIN').setAttribute('aria-pressed',S.units==='in');
 }
 // board-thickness fields that follow the thicknesses you can buy
-const THK={ply:['T','backT'],frame:['topT'],case:['T','shelfT','backT'],tansu:['T','backT'],box:['wallT','bottomT','lidT'],custom:['wallT','bottomT','lidT','topT','shelfT']};
+const THK={ply:['T','lidT'],frame:['topT'],case:['T','shelfT','backT'],tansu:['T','backT'],box:['wallT','bottomT','lidT'],custom:['wallT','bottomT','lidT','topT','shelfT']};
 const boardOpts=f=>(S.boards&&S.boards.length&&(THK[S.kind]||[]).includes(f.k))?S.boards.filter(v=>v>=f.min&&v<=f.max):[];
 // snap to the nearest board you can buy, unless none is close (then the field stays free, e.g. 21 mm shelves from 10.5 mm stock)
 function snapBoards(){const p=S.p;for(const f of FIELDS[S.kind]){const o=boardOpts(f);if(!o.length)continue;const n=o.reduce((a,b)=>Math.abs(b-p[f.k])<Math.abs(a-p[f.k])?b:a);if(Math.abs(n-p[f.k])<=Math.max(3,p[f.k]*0.35))p[f.k]=n;}}
@@ -3500,7 +3623,7 @@ function getSheet(i){
     const views={front:VIEWS.front,top:VIEWS.top,side:VIEWS.side};
     const lines=linesFor(M.parts,views);
     svg=composeSheet({views,parts:M.parts,lines,dims:M.dims,fmt:fmtN,title:m.title,subtitle:'General arrangement · '+m.dims,material:m.material,units:m.units,sheet:`${s.n} / ${s.of}`,
-      iso:isoImage(M.parts,1000,700),hidden:S.hidden,date:m.date,notes:[S.kind==='ply'?'Plywood panels glued and screwed to timber battens. Fix to the vehicle structure.':'No screws or nails. All joints are cut in wood.','Dimensions are finished sizes. See part sheets for joint positions.']}).svg;
+      iso:isoImage(M.parts,1000,700),hidden:S.hidden,date:m.date,notes:[S.kind==='ply'?'Plywood panels glued into grooves in a jointed timber frame. Fix to the vehicle structure.':'No screws or nails. All joints are cut in wood.','Dimensions are finished sizes. See part sheets for joint positions.']}).svg;
   }else{
     const g=s.g,p=g.parts[0];
     const views=viewsFrom(p.B[0],p.B[1]);const parts=[p];const lines=linesFor(parts,views);
@@ -3558,14 +3681,14 @@ function renderCut(){
   const bf=v=>v/25.4**3/144;
   const row=g=>{const a=allow(g);return `<tr><td data-l="Part">${esc(g.name)}</td><td class="n" data-l="Qty">${g.count}</td><td class="n" data-l="Length">${fmt(g.L)}</td><td class="n" data-l="Width">${fmt(g.W)}</td><td class="n" data-l="Thickness">${fmt(g.T)}</td><td class="n" data-l="Rough blank">${g.small?'':fmtN(a[0])+' × '+fmtN(a[1])+' × '+fmtN(a[2])}</td><td data-l="Notes">${esc(g.note||NOTE[g.role]||'')}</td></tr>`;};
   const head='<thead><tr><th>Part</th><th class="n">Qty</th><th class="n">Length</th><th class="n">Width</th><th class="n">Thick</th><th class="n">Rough blank</th><th>Notes</th></tr></thead>';
-  $('#cut').innerHTML=`<h2>Cut list</h2><p class="hint">${S.kind==='ply'?'Finished sizes include fingers and tongues. Rough sizes add 3 mm for trimming panels square.':'Finished sizes include tenons and tongues. Rough blanks add length and milling allowance.'}</p>
+  $('#cut').innerHTML=`<h2>Cut list</h2><p class="hint">${S.kind==='ply'?'Finished sizes include tenons and the panel edges that sit in grooves. Rough sizes add 3 mm for trimming.':'Finished sizes include tenons and tongues. Rough blanks add length and milling allowance.'}</p>
   <div class="tot">${S.kind==='ply'?`<div>Plywood<b>${plySheets().map(s=>s.n+' × '+fmtN(s.t)+(S.units==='mm'?' mm':'')).join(' + ')}</b><span class="hint">sheets of ${PLY_SHEET[0]} × ${PLY_SHEET[1]} mm · ${esc(SPECIES[S.species].name)}</span></div>`:`<div>Main wood<b>${(vol/1e9).toFixed(3)} m³</b><span class="hint">${bf(vol).toFixed(1)} board ft rough · ${esc(SPECIES[S.species].name.split(' (')[0])}</span></div>`}
   <div>Pieces<b>${main.reduce((a,g)=>a+g.count,0)}</b><span class="hint">${main.length} different sizes</span></div>
-  <div>Small parts<b>${small.reduce((a,g)=>a+g.count,0)}</b><span class="hint">${S.kind==='ply'?'screws and hardware':'pegs, wedges, pins, keys'}</span></div>
-  <div>Joints<b>${estimate().joints}</b><span class="hint">${S.kind==='ply'?'glued, with screws into battens':'no screws or nails'}</span></div></div>
+  <div>Small parts<b>${small.reduce((a,g)=>a+g.count,0)}</b><span class="hint">${S.kind==='ply'?'pegs, slats, screws, hardware':'pegs, wedges, pins, keys'}</span></div>
+  <div>Joints<b>${estimate().joints}</b><span class="hint">${S.kind==='ply'?'cut in wood, panels glued':'no screws or nails'}</span></div></div>
   <div class="btns"><button class="btn" id="dlCSV">Download CSV</button></div>
   <h3>Main parts</h3><div class="scroll"><table class="stack">${head}<tbody>${main.map(row).join('')}</tbody></table></div>
-  ${small.length?`<h3>${S.kind==='ply'?'Small parts · screws and hardware':`Small parts · pegs and wedges in ${esc(SPECIES[S.accent].name.split(' (')[0])}`}</h3><div class="scroll"><table class="stack">${head}<tbody>${small.map(row).join('')}</tbody></table></div>`:''}`;
+  ${small.length?`<h3>${S.kind==='ply'?'Small parts · pegs, slats and hardware':`Small parts · pegs and wedges in ${esc(SPECIES[S.accent].name.split(' (')[0])}`}</h3><div class="scroll"><table class="stack">${head}<tbody>${small.map(row).join('')}</tbody></table></div>`:''}`;
   $('#dlCSV').addEventListener('click',()=>{const u=S.units==='in'?'in':'mm',c=v=>S.units==='in'?(v/25.4).toFixed(3):v.toFixed(1);
     const lines=['Part,Qty,Length ('+u+'),Width ('+u+'),Thickness ('+u+'),Rough length,Rough width,Rough thickness,Wood,Notes'];
     for(const g of gs){const a=allow(g);lines.push([g.name,g.count,c(g.L),c(g.W),c(g.T),g.small?'':c(a[0]),g.small?'':c(a[1]),g.small?'':c(a[2]),(g.wood.name||'Bamboo').split(' (')[0],g.note||NOTE[g.role]||''].map(x=>`"${String(x).replace(/"/g,'""')}"`).join(','));}
