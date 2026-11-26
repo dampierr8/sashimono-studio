@@ -1913,21 +1913,21 @@ function battenJoint(M,c){
 }
 // ---------- the frame: posts in columns xs (front and back), rails in rings per bay
 function vanFrame(M,p,xs,hs){
-  const L=p.L,D=p.D,E=M.E,t=p.T,g=Math.min(6,R((L-t)/4)),rT=clamp(R(t+2*g+1),16,L-6),aI=(L-rT)/2,nc=xs.length,J=p.J.plyFrame;
-  const F={L,D,E,t,g,rT,aI,xs,hs,posts:[],yr:{},bays:[]};
+  const L=p.L,Ly=p.Ld||p.L,Lm=Math.min(L,Ly),D=p.D,E=M.E,t=p.T,g=Math.min(6,R((Lm-t)/4)),rT=clamp(R(t+2*g+1),16,Lm-6),aX=(Ly-rT)/2,aY=(L-rT)/2,nc=xs.length,J=p.J.plyFrame;
+  const F={L,Ly,D,E,t,g,rT,xs,hs,posts:[],yr:{},bays:[]};
   for(let j=0;j<nc;j++){F.posts.push([0,1].map(iy=>M.add({name:'Post (hashira)',key:'post'+R(hs[j]),role:'leg',species:'batten',
-    pos:[BOX(xs[j],xs[j]+L,iy?D-L:0,iy?D:L,0,hs[j])],grain:2,thk:0,ex:[(j===0?-1:j===nc-1?1:0)*E*0.55,(iy?1:-1)*E*0.55,0]})));}
+    pos:[BOX(xs[j],xs[j]+L,iy?D-Ly:0,iy?D:Ly,0,hs[j])],grain:2,thk:0,ex:[(j===0?-1:j===nc-1?1:0)*E*0.55,(iy?1:-1)*E*0.55,0]})));}
   const depth=j=>j===0||j===nc-1?L:L/2-1;
   const tj=(rail,post,Fr,d,rh,rt,pt,pf,lbl,upper)=>{const [z0,z1]=rh,sh=Math.max(4,R((z1-z0)*0.12)),zc=(z0+z1)/2;
     railToPost(M,{conn:'plyFrame',jointId:J,F:Fr,depth:d,rail,post,railH:rh,railT:rt,postT:pt,postH:[0,Math.max(z1+40,200)],tenH:upper?[zc+1,z1-sh]:[z0+sh,zc-1],shTop:sh,shBot:sh,pegFrom:pf,postGrain:'h',label:lbl});};
-  F.yRail=(j,z0,z1,nm)=>{const k=j+':'+z0;if(F.yr[k])return F.yr[k];const x0=xs[j]+aI,x1=x0+rT;
-    const r=M.add({name:nm||'Side rail',key:'yr'+R(D),role:'rail',species:'batten',pos:[BOX(x0,x1,L,D-L,z0,z1)],grain:1,thk:0,ex:[(j===0?-1:j===nc-1?1:0)*E*0.3,0,0],geo:{a:x0,b:x1,z0,z1}});
-    for(const iy of [0,1])tj(r,F.posts[j][iy],frame([0,iy?D-L:L,0],[0,iy?1:-1,0],[0,0,1],[1,0,0]),L,[z0,z1],[x0,x1],[xs[j],xs[j]+L],j===nc-1?1:-1,(nm||'Side rail')+' ↔ post',false);
+  F.yRail=(j,z0,z1,nm)=>{const k=j+':'+z0;if(F.yr[k])return F.yr[k];const x0=xs[j]+aY,x1=x0+rT;
+    const r=M.add({name:nm||'Side rail',key:'yr'+R(D),role:'rail',species:'batten',pos:[BOX(x0,x1,Ly,D-Ly,z0,z1)],grain:1,thk:0,ex:[(j===0?-1:j===nc-1?1:0)*E*0.3,0,0],geo:{a:x0,b:x1,z0,z1}});
+    for(const iy of [0,1])tj(r,F.posts[j][iy],frame([0,iy?D-Ly:Ly,0],[0,iy?1:-1,0],[0,0,1],[1,0,0]),Ly,[z0,z1],[x0,x1],[xs[j],xs[j]+L],j===nc-1?1:-1,(nm||'Side rail')+' ↔ post',false);
     return F.yr[k]=r;};
-  F.xRail=(j,iy,z0,z1,nm,yr)=>{const [a,b]=yr||(iy?[D-L+aI,D-L+aI+rT]:[aI,aI+rT]);
+  F.xRail=(j,iy,z0,z1,nm,yr)=>{const [a,b]=yr||(iy?[D-Ly+aX,D-Ly+aX+rT]:[aX,aX+rT]);
     const r=M.add({name:nm,key:'xr'+R(xs[j+1]-xs[j]-L)+(yr?'d':''),role:'rail',species:'batten',pos:[BOX(xs[j]+L,xs[j+1],a,b,z0,z1)],grain:0,thk:1,ex:[0,(iy?1:-1)*E*0.3,0],geo:{a,b,z0,z1}});
-    tj(r,F.posts[j][iy],frame([xs[j]+L,0,0],[-1,0,0],[0,0,1],[0,1,0]),depth(j),[z0,z1],[a,b],[iy?D-L:0,iy?D:L],iy?1:-1,nm+' ↔ post',true);
-    tj(r,F.posts[j+1][iy],frame([xs[j+1],0,0],[1,0,0],[0,0,1],[0,1,0]),depth(j+1),[z0,z1],[a,b],[iy?D-L:0,iy?D:L],iy?1:-1,nm+' ↔ post',true);
+    tj(r,F.posts[j][iy],frame([xs[j]+L,0,0],[-1,0,0],[0,0,1],[0,1,0]),depth(j),[z0,z1],[a,b],[iy?D-Ly:0,iy?D:Ly],iy?1:-1,nm+' ↔ post',true);
+    tj(r,F.posts[j+1][iy],frame([xs[j+1],0,0],[1,0,0],[0,0,1],[0,1,0]),depth(j+1),[z0,z1],[a,b],[iy?D-Ly:0,iy?D:Ly],iy?1:-1,nm+' ↔ post',true);
     return r;};
   // a ring of four rails around bay j; front rail may be deeper (door tracks)
   F.ring=(j,z0,z1,nm,front)=>{const r={f:F.xRail(j,0,z0,z1,'Front '+nm,front),b:F.xRail(j,1,z0,z1,'Back '+nm),l:F.yRail(j,z0,z1,'Side '+nm),r:F.yRail(j+1,z0,z1,'Side '+nm),z0,z1};return r;};
@@ -1937,19 +1937,19 @@ function vanFrame(M,p,xs,hs){
     F.posts[j][iy].neg.push(BOX(xa-g,xa,y0,y1,za,zb));F.posts[j+1][iy].neg.push(BOX(xb,xb+g,y0,y1,za,zb));
     lo.neg.push(BOX(xa,xb,y0,y1,za-g,za));up.neg.push(BOX(xa,xb,y0,y1,zb,zb+g));return pn;};
   // vertical panel in the Y plane at column j
-  F.panelY=(j,lo,up,nm,ex)=>{const xc=xs[j]+L/2,x0=xc-t/2,x1=xc+t/2,ya=L,yb=D-L,za=lo.geo.z1,zb=up.geo.z0;
+  F.panelY=(j,lo,up,nm,ex)=>{const xc=xs[j]+L/2,x0=xc-t/2,x1=xc+t/2,ya=Ly,yb=D-Ly,za=lo.geo.z1,zb=up.geo.z0;
     const pn=M.add({name:nm,key:'py'+R(yb-ya)+'x'+R(zb-za),role:'side',pos:[BOX(x0,x1,ya-g+0.5,yb+g-0.5,za,zb),BOX(x0,x1,ya,yb,za-g+0.5,zb+g-0.5)],grain:2,thk:0,ex:ex||[(j===0?-1:j===nc-1?1:0)*E*0.85,0,0]});
     F.posts[j][0].neg.push(BOX(x0,x1,ya-g,ya,za,zb));F.posts[j][1].neg.push(BOX(x0,x1,yb,yb+g,za,zb));
     lo.neg.push(BOX(x0,x1,ya,yb,za-g,za));up.neg.push(BOX(x0,x1,ya,yb,zb,zb+g));return pn;};
   // horizontal panel in grooves on the inner faces of a ring; top=true puts it at the bottom of an upper ring
   F.panelH=(j,rg,nm,top,ex)=>{const fI=rg.f.geo.b,bI=rg.b.geo.a,lI=rg.l.geo.b,rI=rg.r.geo.a,z0=top?rg.z0+4:rg.z1-4-t,z1=z0+t;
-    const pn=M.add({name:nm,key:'ph'+R(xs[j+1]-xs[j])+'x'+R(bI-fI),role:top?'top':'bottom',pos:[BOX(xs[j]+L,xs[j+1],fI-g+0.5,bI+g-0.5,z0,z1),BOX(lI-g+0.5,rI+g-0.5,L,D-L,z0,z1)],grain:0,thk:2,ex:ex||[0,0,(top?0.5:-0.5)*E]});
+    const pn=M.add({name:nm,key:'ph'+R(xs[j+1]-xs[j])+'x'+R(bI-fI),role:top?'top':'bottom',pos:[BOX(xs[j]+L,xs[j+1],fI-g+0.5,bI+g-0.5,z0,z1),BOX(lI-g+0.5,rI+g-0.5,Ly,D-Ly,z0,z1)],grain:0,thk:2,ex:ex||[0,0,(top?0.5:-0.5)*E]});
     rg.f.neg.push(BOX(xs[j]+L,xs[j+1],fI-g,fI,z0,z1));rg.b.neg.push(BOX(xs[j]+L,xs[j+1],bI,bI+g,z0,z1));
-    rg.l.neg.push(BOX(lI-g,lI,L,D-L,z0,z1));rg.r.neg.push(BOX(rI,rI+g,L,D-L,z0,z1));return pn;};
+    rg.l.neg.push(BOX(lI-g,lI,Ly,D-Ly,z0,z1));rg.r.neg.push(BOX(rI,rI+g,Ly,D-Ly,z0,z1));return pn;};
   F.recPanel=(pn,j,lo,label)=>{const x=xs[j]+L,z=lo.geo.z1,iy=pn.role==='back'?1:0;
-    M.rec({conn:'plyPanel',jointId:'plyGroove',parts:[pn.id,F.posts[j][iy].id,lo.id],ex:{[pn.id]:[0,iy?45:-45,25]},label,dims:{t,g,clear:0.5},clip:[x-L-2,x+90,iy?D-L-30:-2,iy?D+2:L+30,z-lo.geo.z1+lo.geo.z0-4,z+90]});};
+    M.rec({conn:'plyPanel',jointId:'plyGroove',parts:[pn.id,F.posts[j][iy].id,lo.id],ex:{[pn.id]:[0,iy?45:-45,25]},label,dims:{t,g,clear:0.5},clip:[x-L-2,x+90,iy?D-Ly-30:-2,iy?D+2:Ly+30,z-lo.geo.z1+lo.geo.z0-4,z+90]});};
   F.recPanelY=(pn,j,lo,label)=>{const x=xs[j],z=lo.geo.z1;
-    M.rec({conn:'plyPanel',jointId:'plyGroove',parts:[pn.id,F.posts[j][0].id,lo.id],ex:{[pn.id]:[(j===0?-1:1)*45,0,25]},label,dims:{t,g,clear:0.5},clip:[x-4,x+L+4,-2,L+90,z-(lo.geo.z1-lo.geo.z0)-4,z+90]});};
+    M.rec({conn:'plyPanel',jointId:'plyGroove',parts:[pn.id,F.posts[j][0].id,lo.id],ex:{[pn.id]:[(j===0?-1:1)*45,0,25]},label,dims:{t,g,clear:0.5},clip:[x-4,x+L+4,-2,Ly+90,z-(lo.geo.z1-lo.geo.z0)-4,z+90]});};
   return F;
 }
 // two sliding kōshi doors in the deep front rails of bay j
@@ -1966,20 +1966,20 @@ function vanDoors(M,F,j,lo,up){
     const sh=M.add({name:'Door slat, cross (kōshi)',key:'slatH'+R(dw),role:'slat',species:'batten',small:true,prio:3,count:2,pos:[BOX(x0+10,x0+dw-10,yA-sd,yA,za+6,za+6+sw),BOX(x0+10,x0+dw-10,yA-sd,yA,zb-6-sw,zb-6)],grain:0,thk:1,lwt:[R(dw-20),sw,sd],ex:[exx*E,(exy-0.12)*E,0]});
     ds.push(d,sl,sh);}
   M.rec({conn:'plyDoors',jointId:'hikido',parts:[ds[3].id,ds[4].id,ds[5].id,ds[0].id,lo.id],ex:{[ds[3].id]:[0,-40,30],[ds[4].id]:[0,-40,30],[ds[5].id]:[0,-40,30],[ds[0].id]:[0,-14,30]},label:'Door bay',
-    dims:{dt,gB,gT,ov:2*ov,w:R(dw),h:R(zd1-zd0),tr:R(y2-y1),ply:1},clip:[(ox0+ox1)/2-110,(ox0+ox1)/2+110,-2,F.L+20,za-(lo.geo.z1-lo.geo.z0)-2,za+80]});
+    dims:{dt,gB,gT,ov:2*ov,w:R(dw),h:R(zd1-zd0),tr:R(y2-y1),ply:1},clip:[(ox0+ox1)/2-110,(ox0+ox1)/2+110,-2,F.Ly+20,za-(lo.geo.z1-lo.geo.z0)-2,za+80]});
   return y2+dt+4;
 }
 // lift-off lid with locating battens (sanbuta) or a piano hinge, over bay columns j0..j1
 function vanLid(M,F,j0,j1,rg,o){
   const E=M.E,J=M.p.J.plyLid,lT=M.p.lidT,ov=o.ov,x0=o.x0,x1=o.x1,y0=-ov,y1=J==='hinge'?F.D:F.D+ov,z=rg.z1;
   const lid=M.add({name:o.name||'Lid',key:'lid'+R(x1-x0),role:'lid',pos:[BOX(x0,x1,y0,y1,z,z+lT)],grain:0,thk:2,ex:[0,0,E*1.1+(o.exz||0)]});
-  if(o.hole){const cx=(x0+x1)/2;lid.neg.push(BOX(cx-50,cx+50,F.D-F.L-60,F.D-F.L-35,z-1,z+lT+1));}
+  if(o.hole){const cx=(x0+x1)/2;lid.neg.push(BOX(cx-50,cx+50,F.D-F.Ly-60,F.D-F.Ly-35,z-1,z+lT+1));}
   if(J==='hinge'){const hg=M.add({name:'Piano hinge',key:'hinge',role:'hinge',species:'steel',small:true,prio:4,count:1,pos:[cylAx(0,[F.D-3,z+0.5],3,x0+15,x1-15,8)],grain:0,thk:1,ex:[0,E*0.2,E*0.6+(o.exz||0)],lwt:[x1-x0-30,32,1.2]});
     M.rec({conn:'plyLid',jointId:'hinge',parts:[lid.id,hg.id,rg.b.id,F.posts[j1][1].id],ex:{[lid.id]:[0,0,50],[hg.id]:[0,0,25]},label:o.name||'Lid',dims:{L:R(x1-x0-30),ns:2*Math.max(4,R((x1-x0-30)/90)),bs:F.L},clip:[x1-170,x1+2,F.D-90,F.D+8,z-80,z+lT+2]});
     return lid;}
   const cw=clamp(R(lT*1.3),16,30),ch=clamp(R(lT),12,22),cl=[];
   for(const [xa,xb] of [[rg.l.geo.b+1,rg.l.geo.b+1+cw],[rg.r.geo.a-1-cw,rg.r.geo.a-1]])
-    cl.push(M.add({name:'Lid batten (san)',key:'lidsan'+R(F.D),role:'cleat',species:'batten',pos:[BOX(xa,xb,F.L+2,F.D-F.L-2,z-ch,z)],grain:1,thk:0,ex:[0,0,E*1.1+(o.exz||0)]}));
+    cl.push(M.add({name:'Lid batten (san)',key:'lidsan'+R(F.D),role:'cleat',species:'batten',pos:[BOX(xa,xb,F.Ly+2,F.D-F.Ly-2,z-ch,z)],grain:1,thk:0,ex:[0,0,E*1.1+(o.exz||0)]}));
   M.rec({conn:'plyLid',jointId:'sanbuta',parts:[lid.id,cl[0].id,rg.l.id,F.posts[j0][0].id],ex:{[lid.id]:[0,0,60],[cl[0].id]:[0,0,30]},label:o.name||'Lid',dims:{lT,cw,ch,clear:1,ply:1},clip:[x0-2,x0+150,-ov-2,170,z-90,z+lT+2]});
   return lid;
 }
@@ -1990,7 +1990,7 @@ function slatFront(M,F,j,lo,up,pat,ks,record){
   for(const q of [...k.V,...k.H]){q.species='batten';q.name=q.name.replace('Kumiko','Slat');}
 }
 // a round window (marumado) cut through a side panel at column j
-function marumado(pn,j,F,za,zb,k){const r=R(Math.min((F.D-2*F.L)*0.36,(zb-za)*0.3,170)),xc=F.xs[j]+F.L/2;if(r<40)return;
+function marumado(pn,j,F,za,zb,k){const r=R(Math.min((F.D-2*F.Ly)*0.36,(zb-za)*0.3,170)),xc=F.xs[j]+F.L/2;if(r<40)return;
   pn.neg.push(cylAx(0,[F.D/2,za+(zb-za)*k],r,xc-F.t,xc+F.t,40));pn.name='Side panel with round window';pn.key+='m';}
 function genPly(p){
   const M=new Model('ply',p),J=p.J,W=p.W,D=p.D,H=p.H,L=p.L,rH=p.rH,b=p.build,E=M.E=clamp(0.2*Math.max(W,D,H),60,360);
@@ -2040,7 +2040,7 @@ function genPly(p){
     const wt=M.add({name:'Worktop',key:'worktop',role:'top',pos:[BOX(-10,W+10,-25,D,Hf,H)],grain:0,thk:2,ex:[0,0,E*1.1]});
     M.add({name:'Back upstand',key:'upstand',role:'rail',species:'batten',pos:[BOX(-10,W+10,D-18,D,H,H+45)],grain:0,thk:1,ex:[0,E*0.3,E*1.3]});
     // chigaidana: two shelves at different heights joined by an ebizuka
-    const t=p.T,sT=p.lidT,bs=18,xa=xs[1]+L/2+t/2,xb=xs[2]+L/2-t/2,yb=D-L/2-t/2,ya=L+1,bayH=(Hf-rH)-(p.legH+rH);
+    const t=p.T,sT=p.lidT,bs=18,xa=xs[1]+L/2+t/2,xb=xs[2]+L/2-t/2,yb=D-Fm.Ly/2-t/2,ya=Fm.Ly+1,bayH=(Hf-rH)-(p.legH+rH);
     const zl=R(p.legH+rH+bayH*0.36),zu=R(p.legH+rH+bayH*0.62),es=clamp(R(sT*1.6),24,34),xe=R((xa+xb)/2-es/2),ye=R((ya+yb)/2-es/2);
     const up=M.add({name:'Upper shelf',key:'shelfU',role:'shelf',lwt:[R(xe+es-xa),R(yb-ya),sT],pos:[BOX(xa,xe+es,ya,yb,zu,zu+sT)],grain:0,thk:2,ex:[-E*0.15,-E*0.1,E*0.3]});
     const lw=M.add({name:'Lower shelf',key:'shelfL',role:'shelf',pos:[BOX(xe,xb,ya,yb,zl,zl+sT)],grain:0,thk:2,ex:[E*0.15,-E*0.1,-E*0.05]});
@@ -2063,8 +2063,8 @@ function genPly(p){
   const xsD=[];for(const x of Fm.xs)xsD.push([x,0,0],[x+L,0,0]);
   M.dims.push({view:'front',side:'bottom',tier:0,pts:xsD},{view:'front',side:'bottom',tier:1,pts:[[0,0,0],[W,0,0]]});
   M.dims.push({view:'front',side:'left',tier:0,pts:[...zz].sort((a,b)=>a-b).map(z=>[0,0,z])},{view:'front',side:'left',tier:1,pts:[[0,0,0],[0,0,H]]});
-  M.dims.push({view:'side',side:'bottom',tier:0,pts:[[W,0,0],[W,L,0],[W,D-L,0],[W,D,0]]});
-  if(L<3*tenonThk(Fm.rT))M.warn.push(`Posts ${L} mm square are thin for tenons from two sides; ${Math.ceil(3*tenonThk(Fm.rT)/2)*2} mm or more is safer.`);
+  M.dims.push({view:'side',side:'bottom',tier:0,pts:[[W,0,0],[W,Fm.Ly,0],[W,D-Fm.Ly,0],[W,D,0]]});
+  if(Math.min(L,Fm.Ly)<3*tenonThk(Fm.rT))M.warn.push(`Posts ${L} × ${Fm.Ly} mm are thin for tenons from two sides; ${Math.ceil(3*tenonThk(Fm.rT)/2)*2} mm or more is safer.`);
   if(b==='overhead'&&H>450)M.warn.push('Overhead lockers over about 450 mm tall get heavy and eat headroom.');
   if(b!=='overhead'&&p.legH<20)M.warn.push('Without legs the bottom rail sits on the floor; a little lift keeps it out of spills and lets air through.');
   finalizeModel(M);
@@ -2594,10 +2594,10 @@ function normPts(P){const x0=Math.min(...P.map(q=>q[0])),y0=Math.min(...P.map(q=
 function regPoly(n,side){const r=side/(2*Math.sin(Math.PI/n)),a0=-Math.PI/2-Math.PI/n,P=[];for(let k=0;k<n;k++){const a=a0+k*2*Math.PI/n;P.push([r*Math.cos(a),r*Math.sin(a)]);}return normPts(P);}
 const PRESETS={
   ply:{
-    bench:{label:'Engawa bench with slatted front',p:{W:1000,D:420,H:440,build:'bench',T:9,L:34,rH:40,legH:90,lidT:18,ks:34,fw:'hinoki'},sp:'poplarply',J:{plyFrame:'komisen',plyPanel:'plyGroove',kumiko:'aigaki',plyLid:'sanbuta'}},
-    steps:{label:'Kaidan step boxes with slatted fronts',p:{W:820,D:380,H:560,build:'steps',T:9,L:34,rH:40,legH:30,lidT:18,ks:40,fw:'sugi'},sp:'poplarply',J:{plyFrame:'hira',plyPanel:'plyGroove',kumiko:'aigaki',plyLid:'sanbuta'}},
-    overhead:{label:'Todana overhead locker with kōshi doors',p:{W:900,D:320,H:340,build:'overhead',T:6,L:30,rH:32,legH:0,lidT:18,ks:34,fw:'hinoki'},sp:'poplarply',J:{plyFrame:'hira',plyPanel:'plyGroove',plyDoors:'hikido'}},
-    galley:{label:'Mizuya kitchen unit with staggered shelves',p:{W:1000,D:450,H:880,build:'galley',T:9,L:36,rH:45,legH:100,lidT:21,ks:34,fw:'sugi'},sp:'poplarply',J:{plyFrame:'komisen',plyPanel:'plyGroove',plyDoors:'hikido',plyShelf:'cleat',ebizuka:'hira'}}
+    bench:{label:'Engawa bench with slatted front',p:{W:1000,D:420,H:440,build:'bench',T:9,L:34,Ld:34,rH:40,legH:90,lidT:18,ks:34,fw:'hinoki'},sp:'poplarply',J:{plyFrame:'komisen',plyPanel:'plyGroove',kumiko:'aigaki',plyLid:'sanbuta'}},
+    steps:{label:'Kaidan step boxes with slatted fronts',p:{W:820,D:380,H:560,build:'steps',T:9,L:34,Ld:34,rH:40,legH:30,lidT:18,ks:40,fw:'sugi'},sp:'poplarply',J:{plyFrame:'hira',plyPanel:'plyGroove',kumiko:'aigaki',plyLid:'sanbuta'}},
+    overhead:{label:'Todana overhead locker with kōshi doors',p:{W:900,D:320,H:340,build:'overhead',T:6,L:30,Ld:34,rH:32,legH:0,lidT:18,ks:34,fw:'hinoki'},sp:'poplarply',J:{plyFrame:'hira',plyPanel:'plyGroove',plyDoors:'hikido'}},
+    galley:{label:'Mizuya kitchen unit with staggered shelves',p:{W:1000,D:450,H:880,build:'galley',T:9,L:36,Ld:36,rH:45,legH:100,lidT:21,ks:34,fw:'sugi'},sp:'poplarply',J:{plyFrame:'komisen',plyPanel:'plyGroove',plyDoors:'hikido',plyShelf:'cleat',ebizuka:'hira'}}
   },
   frame:{
     dining:{label:'Dining table',p:FR({W:1800,D:900,H:720,topT:30,nBoards:4,ovX:120,ovY:80,legS:65,apH:90,apT:24,apIn:8,chamfer:3})},
@@ -2763,7 +2763,7 @@ const FIELDS={
     {k:'W',l:'Width',g:'S',min:400,max:2000},{k:'D',l:'Depth',g:'S',min:250,max:700},{k:'H',l:'Height',g:'S',min:200,max:1100},
     {k:'build',l:'Build as',g:'M',sel:[['bench','Bench seat with a slatted front'],['steps','Two step boxes with lift-off treads'],['overhead','Overhead locker with sliding doors'],['galley','Kitchen unit with doors and staggered shelves']],wide:1},
     {k:'fw',l:'Frame timber',g:'M',sel:[['hinoki','Hinoki'],['sugi','Sugi'],['spruce','Spruce or pine']]},
-    {k:'T',l:'Panel thickness',g:'M',min:4,max:12},{k:'L',l:'Post size (square)',g:'M',min:28,max:60},{k:'rH',l:'Rail height',g:'M',min:25,max:80},
+    {k:'T',l:'Panel thickness',g:'M',min:4,max:12},{k:'L',l:'Post width (side to side)',g:'M',min:28,max:80},{k:'Ld',l:'Post depth (front to back)',g:'M',min:28,max:80},{k:'rH',l:'Rail height',g:'M',min:25,max:80},
     {k:'legH',l:'Legs (height to bottom rail)',g:'M',min:0,max:200,show:p=>p.build!=='overhead'},
     {k:'lidT',l:'Lid, worktop and shelf thickness',g:'M',min:12,max:30,show:p=>p.build!=='overhead'},
     {k:'ks',l:'Slat spacing',g:'M',min:20,max:60,show:p=>p.build==='bench'||p.build==='steps'}
@@ -2866,6 +2866,7 @@ const fromUI=v=>S.units==='in'?v*25.4:v;
 // ---------- sanitize
 function sanitize(){
   const p=S.p,c=clamp;
+  if(S.kind==='ply'&&!(+p.Ld))p.Ld=p.L;
   for(const f of FIELDS[S.kind]){if(f.sel)continue;let v=+p[f.k];if(!isFinite(v))v=f.min;v=c(v,f.min,f.max);if(f.int)v=Math.round(v);p[f.k]=v;}
   snapBoards();
   if(S.kind==='frame'){
@@ -2896,7 +2897,7 @@ function sanitize(){
     p.backT=c(p.backT,6,Math.max(6,p.D/4));
   }else if(S.kind==='ply'){
     if(!['bench','steps','overhead','galley'].includes(p.build))p.build='bench';if(!FRAME_DENS[p.fw])p.fw='hinoki';
-    p.L=Math.max(p.L,R(p.T+2*Math.min(6,R((p.L-p.T)/4))+1)+8,R(p.T)+20);p.L=c(p.L,28,Math.min(60,p.W/6,p.D/4));
+    const pmin=R(p.T)+20;p.L=c(Math.max(p.L,pmin),28,Math.min(80,p.W/6));p.Ld=c(Math.max(p.Ld,pmin,p.build==='overhead'||p.build==='galley'?34:0),28,Math.min(80,p.D/4));
     if(p.build==='overhead')p.legH=0;
     const lid=p.build==='overhead'?0:p.lidT;p.rH=c(p.rH,25,Math.max(25,(p.H-lid-p.legH-80)/2));
     p.H=Math.max(p.H,lid+p.legH+2*p.rH+(p.build==='steps'?2*p.rH+160:p.build==='galley'?300:80));
