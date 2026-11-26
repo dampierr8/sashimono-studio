@@ -239,12 +239,66 @@ body[data-pview=ex] aside>.sec:not(#secPractice){display:none}
 .sides .calc{color:var(--mute);font-variant-numeric:tabular-nums;white-space:nowrap}
 .sides .rm{border:1px solid var(--line);background:var(--bg);border-radius:8px;min-height:32px;min-width:32px;cursor:pointer;color:var(--mute)}
 
+/* theory & history */
+body[data-mode=learn] .app,body[data-mode=learn] .summary{display:none}
+.learn{flex:1;min-height:0;overflow:auto;background:var(--bg)}
+.learn[hidden]{display:none}
+.lnav{position:sticky;top:0;z-index:4}
+.lwrap{max-width:1180px;margin:0 auto;padding:18px max(2vw,16px) 64px}
+.lwrap.narrow{max-width:820px}
+.lh{margin:4px 0 4px;font-size:24px}
+.lintro{color:var(--mute);margin:0 0 12px;max-width:760px}
+.gtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 6px;position:sticky;top:45px;background:var(--bg);z-index:3;padding:8px 0}
+.gtools input{max-width:300px}
+.gchips{display:flex;flex-wrap:wrap;gap:6px}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:12px;align-items:start}
+.ghead{grid-column:1/-1;margin:16px 0 0;font-size:13px;color:var(--mute);font-weight:700;border-bottom:1px solid var(--line);padding-bottom:6px}
+.gent{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg);scroll-margin-top:130px;transition:box-shadow .3s}
+.gent.flash{box-shadow:0 0 0 2px var(--shu)}
+.gent header{display:flex;gap:12px;align-items:center}
+.gent .kj{font-size:22px;line-height:1.1;color:var(--shu);min-width:2.4em}
+.gent h3{margin:0;font-size:17px;line-height:1.2}
+.gent .en{color:var(--mute);font-size:13px}
+.gent p{margin:8px 0 0}
+.gsee{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px}
+.gsee button{border:1px solid transparent;background:var(--chip);border-radius:6px;padding:2px 9px;cursor:pointer;font-size:13px;min-height:30px}
+.gsee button.w{background:transparent;border-color:var(--shu);color:var(--shu)}
+.tline{list-style:none;padding:0;margin:18px 0 0 8px;border-left:2px solid var(--line)}
+.tline li{position:relative;padding:0 0 24px 24px}
+.tline li::before{content:'';position:absolute;left:-7px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--shu);box-shadow:0 0 0 3px var(--bg)}
+.tline .d{font-weight:700;color:var(--shu);font-size:14px}
+.tline h3{margin:0 0 4px;font-size:18px}.tline p{margin:0}
+.wgrid{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;align-items:start}
+.wlist{display:grid;gap:6px;position:sticky;top:62px}
+.wlist button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 12px;cursor:pointer;display:grid;gap:1px;min-height:44px}
+.wlist button[aria-current=true]{border-color:var(--shu);box-shadow:inset 0 0 0 1px var(--shu)}
+.wlist .wn{font-weight:500;line-height:1.25}.wlist .wd{font-size:12.5px;color:var(--mute);line-height:1.3}
+.whead{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.whead .big{font-size:26px;line-height:1.15;color:var(--shu);max-width:5.5em}
+.whead h2{margin:0;font-size:24px;line-height:1.2}
+.wfacts{display:flex;flex-wrap:wrap;gap:2px 16px;color:var(--mute);font-size:14px}
+.wstage{position:relative;height:min(62vh,580px);min-height:320px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--stage)}
+.wstage canvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab;display:block}
+.wstage canvas:active{cursor:grabbing}
+.jstage{height:min(52vh,460px)}
+.wdet h3 .kj{color:var(--shu);font-weight:500;margin-left:6px}
+.wnote{border-left:3px solid var(--shu);background:var(--panel);padding:8px 12px;border-radius:0 8px 8px 0;font-size:14px;margin:12px 0}
+.wdet h3{margin:18px 0 6px;font-size:17px}.wlook{margin:0;padding-left:20px}.wlook li{margin:4px 0}
+@media(max-width:899px){
+  .learn{overflow:visible}
+  .wgrid{grid-template-columns:1fr}
+  .wlist{position:static;grid-auto-flow:column;grid-auto-columns:minmax(190px,1fr);overflow-x:auto;padding-bottom:4px}
+  .wstage{height:56svh}
+  .whead{flex-direction:column;align-items:flex-start;gap:2px}.whead .big{font-size:18px;max-width:none}
+  .gtools{top:45px}
+  .modes button{padding:0 11px}
+}
 </style>
 </head>
 <body data-tab="model">
 <header class="top">
   <div class="brand"><div class="seal kj" aria-hidden="true">指物</div><div><h1>Sashimono Studio</h1><p>Japanese joinery furniture, drawn to size</p></div></div>
-  <nav class="modes" aria-label="Mode"><button data-m="design" aria-pressed="true">Design</button><button data-m="practice" aria-pressed="false">Practice</button></nav>
+  <nav class="modes" aria-label="Mode"><button data-m="design" aria-pressed="true">Design</button><button data-m="practice" aria-pressed="false">Practice</button><button data-m="learn" aria-pressed="false">Theory &amp; history</button></nav>
   <div class="summary" id="summary" aria-live="polite"></div>
 </header>
 <div class="app">
@@ -296,6 +350,7 @@ body[data-pview=ex] aside>.sec:not(#secPractice){display:none}
         <button class="kind" data-k="tansu" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M8 3h28v25H8zM8 11h28M8 19h28M22 3v8M19 15h6M19 23h6M14 7h3M27 7h3"/></svg>Tansu</button>
         <button class="kind" data-k="lattice" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M13 2h18v22H13zM13 9h18M13 16h18M19 2v22M25 2v22M8 28h11M25 28h11M15 24v4M29 24v4"/></svg>Screen &amp; lamp</button>
         <button class="kind" data-k="box" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M5 12h34v15H5zM4 8h36v4H4zM5 20h34"/></svg>Box &amp; chest</button>
+        <button class="kind" data-k="ply" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M4 13h36v13H4zM4 13l3-4h30l3 4M7 13v13M37 13v13M7 17h30M15 20h14"/></svg>Van &amp; plywood</button>
         <button class="kind" data-k="custom" aria-pressed="false"><svg viewBox="0 0 44 30"><path d="M8 27h28l4-12-18-12L4 15z"/><circle cx="8" cy="27" r="1.6"/><circle cx="36" cy="27" r="1.6"/><circle cx="40" cy="15" r="1.6"/><circle cx="22" cy="3" r="1.6"/><circle cx="4" cy="15" r="1.6"/></svg>Your own shape</button>
       </div>
       <div class="row"><select id="preset" aria-label="Starting point"></select></div>
@@ -323,6 +378,7 @@ body[data-pview=ex] aside>.sec:not(#secPractice){display:none}
     </div>
   </aside>
 </div>
+<div class="learn" id="learn" hidden></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
 {
@@ -502,7 +558,12 @@ Object.assign(SPECIES,{
   yamazakura:{name:'Yamazakura (mountain cherry)',col:[0.78,0.55,0.42],late:[0.62,0.40,0.29],coef:0.0027,soft:false,note:'Fine, dense and slightly lustrous. Takes crisp joinery and a beautiful planed finish.'},
   tochi:{name:'Tochi (horse chestnut)',col:[0.92,0.84,0.70],late:[0.82,0.70,0.55],coef:0.0026,soft:false,note:'Pale and often rippled. Soft for a hardwood, so mind tear-out on figure.'}
 });
-const SP_ORDER=['hinoki','sugi','kiri','keyaki','kuri','yamazakura','tochi','oak','walnut','cherry','maple'];
+Object.assign(SPECIES,{
+  poplarply:{name:'Poplar plywood',col:[0.93,0.86,0.70],late:[0.87,0.78,0.60],coef:0.0003,soft:false,dens:450,ply:true,note:'About a third lighter than birch plywood, so it is the favourite for van builds. Softer faces; seal the edges.'},
+  birchply:{name:'Birch plywood',col:[0.92,0.82,0.64],late:[0.85,0.73,0.54],coef:0.0003,soft:false,dens:680,ply:true,note:'Strong and stiff with many thin plies and clean edges, but heavier. Good where edges show or loads are high.'},
+  spruce:{name:'Spruce (battens)',col:[0.94,0.86,0.68],late:[0.82,0.68,0.46],coef:0.0025,soft:true,dens:450,note:'Light, straight softwood for battens and cleats.'}
+});
+const SP_ORDER=['hinoki','sugi','kiri','keyaki','kuri','yamazakura','tochi','oak','walnut','cherry','maple','poplarply','birchply'];
 const PAPER={name:'Washi (shoji paper)',col:[0.99,0.98,0.95],late:[0.99,0.98,0.95],flat:true};
 const BAMBOO={col:[0.86,0.80,0.55],late:[0.74,0.66,0.40]};
 
@@ -1696,7 +1757,7 @@ function genPolyTable(M,p,P,Ls,ang){
   return finalizeModel(M);
 }
 
-const GENERATORS={frame:genFrame,case:genCase,tansu:genTansu,lattice:genLattice,box:genBox,custom:genCustom};
+const GENERATORS={frame:genFrame,case:genCase,tansu:genTansu,lattice:genLattice,box:genBox,custom:genCustom,ply:genPly};
 
 // ===== Joint library: metadata, parametric dimensions and instructions =====
 const LEVELS=['','Beginner','Intermediate','Advanced','Expert'];
@@ -1811,6 +1872,142 @@ const JOINTS={
 };
 const SHELF_KEY={oire:'oire',kusabi:'skusabi',arigata:'arigata'};
 const jkey=(conn,id)=>conn==='shelf'?SHELF_KEY[id]:id;
+// ================= PLYWOOD: light van furniture on a timber skeleton =================
+Object.assign(TOOLS,{csaw:'Track saw, or circular saw with a guide rail',drill:'Drill-driver, pilot bit and countersink',jig:'Jigsaw and hole saw (for lightening holes)',hinge:'Hacksaw and file (to cut the hinge)'});
+Object.assign(CONNS,{
+  plyCorner:{label:'Top & bottom corners',opts:['batten','arare']},
+  plyFront:{label:'Front panel',opts:['batten']},
+  plyShelf:{label:'Shelves',opts:['oire','cleat']},
+  plyLid:{label:'Lid',opts:['sanbuta','hinge']}
+});
+Object.assign(JOINTS,{
+  batten:{ro:'San',kj:'桟',en:'Glued and screwed corner batten',lv:1,glue:'Glue and screws',min:20,tools:['csaw','sashi','drill','clamps','glue'],
+    what:d=>`A ${d.bs} mm square timber batten runs along the inside of the corner. Both panels are glued and screwed to it, so the screws bite into solid wood instead of the plywood edge, and together the battens form a light frame inside the piece. This is the usual way to build strong, light plywood furniture for vans.`},
+  cleat:{ro:'Tana-zan',kj:'棚桟',en:'Shelf on glued cleats',lv:1,glue:'Glue and screws',min:20,tools:['csaw','sashi','drill','clamps','glue'],
+    what:d=>`The shelf rests on ${d.bs} mm timber cleats glued and screwed to the sides. The cleats also stiffen the sides, and screws up through them hold the shelf down on rough roads.`},
+  hinge:{ro:'Chōtsugai',kj:'蝶番',en:'Lid on a piano hinge',lv:1,glue:'Screwed',min:30,tools:['hinge','drill','sashi'],
+    what:d=>`A continuous piano hinge runs the length of the lid along a timber hinge rail, spreading the load over many small screws. Add a stay so the lid stays open, and a latch so it stays shut while driving.`}
+});
+const PLY_SHEET=[2440,1220];
+const STEEL={name:'Steel',col:[0.66,0.67,0.70],late:[0.66,0.67,0.70],flat:true};
+// a timber batten in the inside corner of two panels; in frame F the batten fills u∈[u0,u0+bs], v∈[v0,v0+bs], w∈[w0,w1];
+// panel A lies at u<u0 (screws along −U), panel B at v<v0 (screws along −V)
+function battenJoint(M,c){
+  const {F,u0,v0,w0,w1,A,B,bs,conn,label,jointId}=c,E=M.E,L=w1-w0;if(L<20)return null;
+  const bat=M.add({name:c.name||'Corner batten',key:c.key||'batten',role:c.role||'batten',species:'batten',pos:[F.box(u0,u0+bs,v0,v0+bs,w0,w1)],grain:axisOf(F.W),thk:axisOf(F.U),
+    ex:vadd(c.exBase||[0,0,0],F.vec(E*0.18,E*0.18,0))});
+  const tA=c.tA,tB=c.tB,sl=Math.max(16,R((bs+Math.min(tA,tB)*0.7)/5)*5),sp=150,n=Math.max(2,R(L/sp)),raws=[];
+  for(let i=0;i<n;i++){const w=w0+L*(i+0.5)/n,dw=L/n/4;
+    raws.push(rod(F,true,3.5,1,2,0,v0+bs/2,w-dw,u0+bs-sl,u0+bs));
+    raws.push(rod(F,true,3.5,0,2,1,u0+bs/2,w+dw,v0+bs-sl,v0+bs));}
+  const sc=M.add({name:`Screws, 3.5 × ${sl} mm`,key:'screw'+sl,role:'screw',species:'steel',pos:raws,grain:axisOf(F.U),thk:axisOf(F.V),small:true,prio:4,count:raws.length,
+    ex:vadd(c.exBase||[0,0,0],F.vec(E*0.32,E*0.32,0))});
+  const I={conn,jointId:jointId||'batten',parts:[A.id,B.id,bat.id,sc.id],ex:{[A.id]:F.vec(-40,0,0),[B.id]:F.vec(0,-40,0),[bat.id]:F.vec(18,18,0),[sc.id]:F.vec(42,42,0)},label,
+    dims:{bs,L:R(L),n:raws.length,sl,sp,tA,tB,aName:A.name,bName:B.name}};
+  I.clip=F.aabb(-2,u0+bs+45,-2,v0+bs+45,w0-Math.min(tA,tB)-2,Math.min(w1,w0+180));
+  return M.rec(I);
+}
+function plyCornerJ(M,c){
+  if(c.jointId==='arare')return cornerJoint(M,{conn:c.conn,jointId:'arare',F:c.F,tP:c.T,tT:c.T,L:c.L,tail:c.tail,pin:c.pin,slope:1/8,label:c.label});
+  c.pin.pos.push(c.F.box(0,c.T,0,c.T,0,c.L));
+  return battenJoint(M,{conn:c.conn,F:c.F,u0:c.T,v0:c.T,w0:c.b0,w1:c.L,A:c.pin,B:c.tail,tA:c.T,tB:c.T,bs:c.bs,label:c.label});
+}
+function genPly(p){
+  const M=new Model('ply',p),J=p.J;const W=p.W,D=p.D,H=p.H,T=p.T,bT=p.backT,bs=p.bs,bench=p.build==='bench',light=p.light==='yes';
+  const E=M.E=clamp(0.2*Math.max(W,D,H),60,360),Ds=D-bT;
+  const dt=clamp(R(T*0.7),10,18),by0=bench?T:(J.doors==='kendon'?5+dt+4:11+2*dt);
+  const sides=[0,1].map(ix=>M.add({name:ix?'Right side':'Left side',key:'side',role:'side',pos:[BOX(ix?W-T:0,ix?W:T,0,Ds,T,H-T)],grain:2,thk:0,ex:[(ix?1:-1)*E*0.6,0,0]}));
+  const bottom=M.add({name:'Bottom',role:'bottom',pos:[BOX(T,W-T,0,Ds,0,T)],grain:0,thk:2,ex:[0,0,-E*0.4]});
+  const pc=(tail,pin,F,lbl)=>plyCornerJ(M,{conn:'plyCorner',jointId:J.plyCorner,F,T,L:Ds,b0:by0,tail,pin,bs,label:lbl});
+  pc(bottom,sides[0],frame([0,0,0],[1,0,0],[0,0,1],[0,1,0]),'Bottom ↔ left side');
+  pc(bottom,sides[1],frame([W,0,0],[-1,0,0],[0,0,1],[0,1,0]),'Bottom ↔ right side');
+  const cb=J.plyCorner==='batten'?bs:0;let top=null;const zz=[0,T];
+  const back=M.add({name:'Back panel',key:'back',role:'back',pos:[BOX(0,W,Ds,D,0,bench?H-T:H)],grain:2,thk:1,ex:[0,E*0.6,0]});
+  let holeA=0;
+  if(light){const Hb=bench?H-T:H,m=70,bar=60,hw=W-2*m,hh=Hb-2*m;
+    if(hw>120&&hh>90){const two=hw>560,w1=two?(hw-bar)/2:hw;
+      for(let i=0;i<(two?2:1);i++){const x0=m+i*(w1+bar);back.neg.push(BOX(x0,x0+w1,Ds-1,D+1,m,m+hh));holeA+=w1*hh*bT;}}}
+  if(bench){
+    const front=M.add({name:'Front',key:'front',role:'front',pos:[BOX(T,W-T,0,T,T,H-T)],grain:0,thk:1,ex:[0,-E*0.6,0]});
+    let lidCh=0;
+    if(J.plyLid==='sanbuta'){const cw=clamp(R(T*1.6),15,30),ch=clamp(R(T*1.2),10,20);lidCh=ch;
+      const lid=M.add({name:'Lid',role:'lid',pos:[BOX(0,W,0,D,H-T,H)],grain:0,thk:2,ex:[0,0,E*1.1]});const cl=[];
+      for(const ix of [0,1]){const x0=ix?W-T-1-cw:T+1;cl.push(M.add({name:'Lid batten (san)',key:'lidsan',role:'cleat',species:'batten',pos:[BOX(x0,x0+cw,T+bs+2,Ds-2,H-T-ch,H-T)],grain:1,thk:0,ex:[0,0,E*1.1]}));}
+      M.rec({conn:'plyLid',jointId:'sanbuta',parts:[lid.id,cl[0].id,sides[0].id,front.id],ex:{[lid.id]:[0,0,60],[cl[0].id]:[0,0,30]},label:'Lid',dims:{lT:T,cw,ch,clear:1},clip:[-2,140,-2,160,H-90,H+2]});
+    }else{
+      const lid=M.add({name:'Lid',role:'lid',pos:[BOX(0,W,0,D,H-T,H)],grain:0,thk:2,ex:[0,0,E*1.1]});
+      const rail=M.add({name:'Hinge rail',key:'hrail',role:'batten',species:'batten',pos:[BOX(T,W-T,Ds-bs,Ds,H-T-R(bs*1.5),H-T)],grain:0,thk:1,ex:[0,E*0.3,E*0.2]});
+      const hg=M.add({name:'Piano hinge',key:'hinge',role:'hinge',species:'steel',small:true,prio:4,count:1,pos:[cylAx(0,[Ds-2,H-T],3,15,W-15,8)],grain:0,thk:1,ex:[0,E*0.4,E*0.6],lwt:[W-30,32,1.2]});
+      M.rec({conn:'plyLid',jointId:'hinge',parts:[lid.id,rail.id,hg.id,back.id],ex:{[lid.id]:[0,0,50],[hg.id]:[0,0,25]},label:'Lid',dims:{L:R(W-30),ns:2*Math.max(4,R((W-30)/90)),bs},clip:[-2,160,Ds-90,D+8,H-100,H+2]});
+    }
+    // front fixed to battens behind it: up each side and along the bottom
+    for(const ix of [0,1]){const F=frame([ix?W:0,0,0],[ix?-1:1,0,0],[0,1,0],[0,0,1]);
+      battenJoint(M,{conn:'plyFront',F,u0:T,v0:T,w0:T+cb,w1:H-T-(lidCh?0:0),A:sides[ix],B:front,tA:T,tB:T,bs,label:`Front ↔ ${ix?'right':'left'} side`});}
+    battenJoint(M,{conn:'plyFront',F:frame([0,0,0],[0,0,1],[0,1,0],[1,0,0]),u0:T,v0:T,w0:T+bs,w1:W-T-bs,A:bottom,B:front,tA:T,tB:T,bs,label:'Front ↔ bottom'});
+    zz.push(H-T,H);
+  }else{
+    top=M.add({name:p.build==='galley'?'Worktop':'Top',role:'top',pos:[BOX(T,W-T,0,Ds,H-T,H)],grain:0,thk:2,ex:[0,0,E*0.7]});
+    pc(top,sides[0],frame([0,0,H],[1,0,0],[0,0,-1],[0,1,0]),'Top ↔ left side');
+    pc(top,sides[1],frame([W,0,H],[-1,0,0],[0,0,-1],[0,1,0]),'Top ↔ right side');
+    const n=p.nShelves|0,clear=H-2*T-n*T,gap=clear/(n+1);
+    for(let k=1;k<=n;k++){const z0=R(T+k*gap+(k-1)*T);zz.push(z0,z0+T);
+      const sh=M.add({name:'Shelf',key:'shelf',role:'shelf',pos:[BOX(T,W-T,by0,Ds,z0,z0+T)],grain:0,thk:2,ex:[0,-E*0.25,(k/(n+1)-0.5)*E*0.3]});
+      if(light&&W-2*T>360){const hw=W-2*T-160,hd=Ds-by0-140;if(hd>80){sh.neg.push(BOX(T+80,T+80+hw,by0+70,by0+70+hd,z0-1,z0+T+1));holeA+=hw*hd*T;}}
+      for(const ix of [0,1]){
+        if(J.plyShelf==='cleat')battenJoint(M,{conn:'plyShelf',jointId:'cleat',name:'Shelf cleat',key:'cleat',role:'cleat',F:frame([ix?W:0,0,z0+T],[ix?-1:1,0,0],[0,0,-1],[0,1,0]),u0:T,v0:T,w0:by0,w1:Ds,A:sides[ix],B:sh,tA:T,tB:T,bs,label:'Shelf ↔ side'});
+        else shelfJoint(M,{conn:'plyShelf',jointId:'oire',F:frame([ix?W-T:T,by0,0],[ix?1:-1,0,0],[0,0,1],[0,1,0]),depth:T,shelf:sh,side:sides[ix],h:[z0,z0+T],Ds:Ds-by0,label:'Shelf ↔ side'});}}
+    doorBay(M,{ox0:T,ox1:W-T,z0:T,z1:H-T,lower:bottom,upper:top,sides});
+    zz.push(H-T,H);
+    const span=W-2*T;if(n&&span>T*45)M.warn.push(`Shelves span ${R(span)} mm. At ${T} mm thick they may sag under load; keep spans under about ${R(T*45)} mm or add a divider.`);
+  }
+  M.dims.push({view:'front',side:'bottom',tier:0,pts:[[0,0,0],[T,0,0],[W-T,0,0],[W,0,0]]},{view:'front',side:'bottom',tier:1,pts:[[0,0,0],[W,0,0]]});
+  zz.sort((a,b)=>a-b);M.dims.push({view:'front',side:'left',tier:0,pts:[...new Set(zz)].map(z=>[0,0,z])},{view:'front',side:'left',tier:1,pts:[[0,0,0],[0,0,H]]});
+  M.dims.push({view:'side',side:'bottom',tier:0,pts:[[W,0,0],[W,Ds,0],[W,D,0]]});
+  if(T<9)M.warn.push('Panels under 9 mm are too thin to screw into battens reliably; 12–15 mm is usual for van carcasses.');
+  if(bs<15)M.warn.push(`${bs} mm battens are small for screws; 18–20 mm square is a good minimum.`);
+  if(p.build==='overhead'&&H>450)M.warn.push('Overhead lockers over about 450 mm tall get heavy and eat headroom.');
+  finalizeModel(M);
+  const den=(SPECIES[p.species]||{}).dens||550;let kg=0;
+  for(const q of M.parts){if(q.species==='batten')q.wood=SPECIES.spruce;if(q.species==='steel')q.wood=STEEL;
+    const v=q.dimsLWT[0]*q.dimsLWT[1]*q.dimsLWT[2]/1e9;kg+=q.species==='steel'?(q.role==='hinge'?0.5*(W/1000):q.count*0.004):v*(q.species==='batten'?SPECIES.spruce.dens:den);}
+  M.kg=Math.max(0,kg-holeA/1e9*den);
+  return M;
+}
+function plySheets(){const by={};for(const q of M.parts){if(q.species!=='main'||q.small)continue;const d=pieceLWT(q),t=Math.round(d[2]*10)/10;by[t]=(by[t]||0)+d[0]*d[1]*(q.count||1);}
+  return Object.entries(by).map(([t,a])=>({t:+t,n:Math.max(1,Math.ceil(a*1.25/(PLY_SHEET[0]*PLY_SHEET[1])*2)/2),a})).sort((a,b)=>b.t-a.t);}
+function plySteps(){
+  const gs=jointGroups(),p=S.p,ph=[],spn=SPECIES[S.species].name;
+  let batL=0,nScr=0,sl=new Set();for(const q of M.parts){if(q.species==='batten')batL+=pieceLWT(q)[0];if(q.role==='screw'){nScr+=q.count;sl.add(q.name.replace('Screws, ',''));}}
+  const doors=activeConns().includes('doors'),lid=S.J.plyLid;
+  ph.push({h:'Materials',items:[
+    ...plySheets().map(s=>`${s.n} sheet${s.n>1?'s':''} of ${fmt(s.t)} ${esc(spn.toLowerCase())}, ${PLY_SHEET[0]} × ${PLY_SHEET[1]} mm (the panels plus 25% for cutting waste and grain matching).`),
+    ...(batL?[`About ${(batL*1.2/1000).toFixed(1)} m of ${fmt(p.bs)} square battens in straight, dry spruce or pine (or ash if you want them tougher), including 20% spare.`]:[]),
+    ...(nScr?[`About ${Math.ceil(nScr*1.15/10)*10} countersunk wood screws, ${[...sl].join(' and ')}, and a waterproof wood glue (PVA D3 or polyurethane).`]:[`Waterproof wood glue (PVA D3 or polyurethane).`]),
+    doors?`Hardware: push-button or cam latches for the doors, so they stay shut while driving, and felt strips so they don't rattle.`:lid==='hinge'?`Hardware: a ${fmt(p.W-30)} piano hinge with its screws, a lid stay, and a push-button or cam latch so the lid stays shut while driving.`:`Hardware: two lid catches or a strap, so the lid stays put while driving.`,
+    `The model weighs about ${Math.round(M.kg)} kg before finish and hardware. ${S.species==='poplarply'?'Poplar plywood keeps it light.':'Poplar plywood would make it about a third lighter.'}`]});
+  ph.push({h:'Cut the panels',items:[
+    `Mark the good face of each sheet. With a circular or track saw cut with the good face down; on a table saw, good face up. A strip of masking tape along the line and a scored knife cut stop the face veneer from splintering.`,
+    `Cut the largest panels first, then the smaller ones from the offcuts. Check each panel for square by measuring its diagonals.`,
+    `Rip the battens to ${fmt(p.bs)} square if you are making them yourself, and cut them to the lengths in the cut list.`,
+    ...(p.light==='yes'?[`Lightening holes: drill each corner with a 30 mm hole saw, then join the holes with a jigsaw. Leave at least 60–70 mm of panel around every hole, and sand the edges smooth.`]:[]),
+    `Lightly round and sand all edges that will show (a 2 mm round-over or a few strokes of sandpaper) before assembly.`]});
+  ph.push({h:'Cut the joints',items:gs.map(g=>{const J=JOINTS[jkey(g.conn,g.id)];return `<a href="#joints" data-card="${g.conn}-${g.id}">${J.ro}</a>: ${g.n} × ${J.en.toLowerCase()} (${esc([...g.labels].slice(0,2).join(', ').toLowerCase())}).`;})});
+  const asm=[];
+  if(S.J.plyCorner==='batten')asm.push(`Glue and screw the corner battens to both sides first, flush with their edges, drilling a pilot hole and countersinking each screw. Wipe off squeeze-out with a damp cloth.`);
+  asm.push(`Stand the sides up, glue the ${p.build==='bench'?'bottom':'bottom and top'} in place${S.J.plyCorner==='batten'?' and screw through the battens into them':' with the finger joints, and clamp both ways'}. Check the diagonals before the glue grabs.`);
+  if(p.build==='bench')asm.push(`Fit the front panel between the sides, glue and screw it to its battens, then add the lid.`);
+  else{if(p.nShelves)asm.push(S.J.plyShelf==='cleat'?`Fix the shelf cleats level on both sides and screw the shelves down onto them.`:`Slide the shelves into their housings with glue.`);
+    asm.push(S.J.doors==='kendon'?`Fit the lift-in panel last, after the finish.`:`Wax the door grooves and drop the doors in after finishing. Add a latch and a strip of felt so they don't rattle.`);}
+  asm.push(`Glue and pin or screw the back panel on, about every 100 mm. It squares the carcass and stops it racking, so line it up carefully with the sides.`);
+  ph.push({h:'Assemble',items:asm});
+  ph.push({h:'Fit it in the van',items:[
+    `Fix the furniture to the van's structure, not to the wall lining or insulation. Bolt through the battens into rivnuts or existing threaded points in the floor and body ribs, with M6 or M8 bolts and large washers.`,
+    `In a sudden stop, furniture and its contents push forward with many times their weight, so use several fixings at each fixing line and keep heavy things low and forward of the axle where you can.`,
+    p.build==='overhead'?`Hang overhead lockers on rails fixed to the roof ribs, and keep only light things in them.`:`Leave a gap of 5–10 mm to the van wall so the body can flex and cables can pass.`,
+    `Check your country's rules for converted vans. Some require fixings and seats to meet set strength standards.`]});
+  ph.push({h:'Finish',items:[`Sand to 180 grit and apply two or three coats of water-based varnish or hard-wax oil. Seal every edge too, because condensation in a van gets into bare plywood edges.`,`Leave the finish to cure for a few days before loading the cupboards.`]});
+  return ph;
+}
 
 // Instructions — returns {dims:[[label,value]], steps:[...]}
 // how to make pins from each stock
@@ -1963,6 +2160,21 @@ function jointDoc(I,ctx){
     S.push(d.poly?`Plough a ${f(d.bT)} groove ${f(d.g)} deep, ${f(d.zg0)} up from the bottom edge, on the inside of every wall. Run it right through the mitres: the grooves meet inside the corners, where they stay hidden.`:`Plough a ${f(d.bT)} groove ${f(d.g)} deep, ${f(d.zg0)} up from the bottom edge, on the inside of all four walls. Stop it before the corner joints so it doesn't show.`,
       `Size the bottom panel so it bottoms out along the grain but has about ${f(1)} of play across it.`,
       `Assemble the corners with the panel in place, without glue in the grooves.`);
+    break;
+  case 'batten': case 'cleat':
+    T.push(['Batten section',f(d.bs)+' × '+f(d.bs)],['Batten length',f(d.L)],['Screws',d.n+' × 3.5 × '+d.sl+' mm'],['Screw spacing','about '+f(d.sp)+', staggered']);
+    S.push(`Cut the ${id==='cleat'?'cleat':'batten'} ${f(d.L)} long from straight, dry stock planed ${f(d.bs)} square. Check it is straight by sighting along it.`,
+      id==='cleat'?`Mark the underside of the shelf on the ${d.aName.toLowerCase()} with a square and a level line, so both cleats come out level with each other.`:`Mark where the ${d.bName.toLowerCase()} will sit on the ${d.aName.toLowerCase()}, ${f(d.tB)} in from the edge, using the panel itself as the gauge.`,
+      `Spread glue on the batten and clamp it to the ${d.aName.toLowerCase()} on the line. Drill ${d.n/2|0} pilot holes through the batten, countersink them, and drive ${d.sl} mm screws into the panel, about every ${f(d.sp)}.`,
+      `At assembly, glue the ${d.bName.toLowerCase()} to the other face of the batten and screw through the batten into it, offsetting these screws from the first row so they don't meet.`,
+      `Use screws no longer than ${d.sl} mm: they must not come through the outside face of ${f(Math.min(d.tA,d.tB))} plywood.`);
+    break;
+  case 'hinge':
+    T.push(['Hinge length',f(d.L)],['Screws','about '+d.ns],['Hinge rail',f(d.bs)+' × '+f(Math.round(d.bs*1.5))]);
+    S.push(`Glue and screw the hinge rail inside the back panel, flush with the tops of the sides.`,
+      `Cut the piano hinge to ${f(d.L)} with a hacksaw between two knuckles, and file the cut ends smooth.`,
+      `Lay the lid upside down against the carcass, line up the hinge, and drill and screw the first, middle and last holes. Check that the lid opens and closes cleanly, then fill in the rest.`,
+      `Fit a lid stay so the lid can't fall on fingers, and a catch at the front so it stays shut while driving.`);
     break;
   case 'sanbuta':
     T.push(['Lid thickness',f(d.lT)],['Battens',f(d.cw)+' × '+f(d.ch)],['Clearance inside walls',f(d.clear)]);
@@ -2263,6 +2475,12 @@ const CU=o=>Object.assign({build:'box',W:300,D:300,H:120,wallT:10.5,bottomT:6,li
 function normPts(P){const x0=Math.min(...P.map(q=>q[0])),y0=Math.min(...P.map(q=>q[1]));return P.map(q=>[Math.round((q[0]-x0)*1000)/1000,Math.round((q[1]-y0)*1000)/1000]);}
 function regPoly(n,side){const r=side/(2*Math.sin(Math.PI/n)),a0=-Math.PI/2-Math.PI/n,P=[];for(let k=0;k<n;k++){const a=a0+k*2*Math.PI/n;P.push([r*Math.cos(a),r*Math.sin(a)]);}return normPts(P);}
 const PRESETS={
+  ply:{
+    bench:{label:'Van bench seat with storage',p:{W:900,D:450,H:420,build:'bench',T:15,backT:6,bs:20,nShelves:0,light:'yes'},sp:'poplarply',J:{plyCorner:'batten',plyFront:'batten',plyLid:'hinge'}},
+    bed:{label:'Van bed base (storage box)',p:{W:1300,D:620,H:380,build:'bench',T:15,backT:6,bs:20,nShelves:0,light:'yes'},sp:'poplarply',J:{plyCorner:'batten',plyFront:'batten',plyLid:'hinge'}},
+    overhead:{label:'Overhead locker',p:{W:900,D:320,H:340,build:'overhead',T:12,backT:6,bs:18,nShelves:0,light:'yes'},sp:'poplarply',J:{plyCorner:'batten',doors:'hikido'}},
+    galley:{label:'Van kitchen unit',p:{W:800,D:450,H:880,build:'galley',T:18,backT:6,bs:20,nShelves:1,light:'yes'},sp:'poplarply',J:{plyCorner:'batten',plyShelf:'cleat',doors:'hikido'}}
+  },
   frame:{
     dining:{label:'Dining table',p:FR({W:1800,D:900,H:720,topT:30,nBoards:4,ovX:120,ovY:80,legS:65,apH:90,apT:24,apIn:8,chamfer:3})},
     zataku:{label:'Zataku (floor table)',p:FR({W:1200,D:750,H:330,topT:30,nBoards:3,ovX:90,ovY:70,legS:55,apH:70,apT:22,apIn:6,chamfer:3,shape:'sumimaru',cr:40})},
@@ -2423,6 +2641,13 @@ const PRESETS={
 };
 const strShow=p=>p.str!=='none',isScreen=p=>p.style!=='lamp',isLamp=p=>p.style==='lamp';
 const FIELDS={
+  ply:[
+    {k:'W',l:'Width',g:'S',min:300,max:2000},{k:'D',l:'Depth',g:'S',min:200,max:800},{k:'H',l:'Height',g:'S',min:150,max:1200},
+    {k:'build',l:'Build as',g:'M',sel:[['bench','Bench or bed box with a lid'],['overhead','Overhead locker with doors'],['galley','Kitchen unit with doors']],wide:1},
+    {k:'T',l:'Panel thickness',g:'M',min:6,max:25},{k:'backT',l:'Back panel',g:'M',min:3,max:15},
+    {k:'bs',l:'Batten size (square)',g:'M',min:12,max:40},{k:'nShelves',l:'Shelves',g:'M',min:0,max:4,int:1,show:p=>p.build!=='bench'},
+    {k:'light',l:'Lightening holes',g:'M',sel:[['yes','In the back and shelves'],['no','None']],wide:1}
+  ],
   frame:[
     {k:'W',l:'Length',g:'S',min:250,max:3000},{k:'D',l:'Depth',g:'S',min:200,max:1400},{k:'H',l:'Height',g:'S',min:150,max:1200},
     {k:'shape',l:'Top shape',g:'M',sel:[['rect','Rectangle'],['sumikiri','Cut corners (sumi-kiri)'],['sumimaru','Rounded corners (sumi-maru)'],['round','Round or oval']],wide:1},
@@ -2484,13 +2709,13 @@ const FIELDS={
     {k:'wallT',l:'Wall thickness',g:'M',min:5,max:40},{k:'bottomT',l:'Bottom thickness',g:'M',min:3,max:30},{k:'lidT',l:'Lid thickness',g:'M',min:4,max:40,show:()=>S.J.lid!=='none'}
   ]
 };
-const KIND_CONNS={frame:['legApron','legStretcher','stretcherCross','topAttach','topEnds','boardEdge','accent'],case:['caseCorner','shelf','ebizuka','back'],
+const KIND_CONNS={ply:['plyCorner','plyFront','plyShelf','doors','plyLid'],frame:['legApron','legStretcher','stretcherCross','topAttach','topEnds','boardEdge','accent'],case:['caseCorner','shelf','ebizuka','back'],
   tansu:['caseCorner','shelf','drawerCorner','bottom','doors','back'],lattice:['frameCorner','frameRail','feet','postRail','kumiko','panel','base'],box:['boxCorner','bottom','lid'],
   custom:['polyCorner','pbottom','plid','pshelf','ptop','pLegApron','ptopAttach']};
 const ORDER={tansu:['caseCorner','shelf','drawerCorner','drawerBack','bottom','doors','back']};
 const CONN_LABEL={tansu:{caseCorner:'Carcass corners',shelf:'Dividers',bottom:'Drawer bottoms',back:'Back'},case:{caseCorner:'Top & bottom corners'}};
 const connLabel=c=>(CONN_LABEL[S.kind]&&CONN_LABEL[S.kind][c])||CONNS[c].label;
-const KIND_DEF={frame:'dining',case:'bookshelf',tansu:'kodansu',lattice:'tsuitate',box:'chest',custom:'cutcab'};
+const KIND_DEF={ply:'bench',frame:'dining',case:'bookshelf',tansu:'kodansu',lattice:'tsuitate',box:'chest',custom:'cutcab'};
 const KEYNAMES={apronX:'Front & back apron',apronY:'Side apron',strY:'Side stretcher',strX:'Front & back stretcher',side:'Side',wallX:'Front & back wall',wallY:'End wall',linerX:'Liner, long',linerY:'Liner, short',rimX:'Lid rim, long',rimY:'Lid rim, short',trX:'Top rail',trY:'Top rail',brX:'Bottom rail',brY:'Bottom rail',stile:'Stile'};
 const LV_HINT=['','Straight cuts, glue and simple housings. Good for a first project.','Pinned, bridled and splined joints, many needing no clamps or glue.','Through-wedged tenons, dovetails, sliding battens and lift-in doors.','Exposed knock-down joinery, mitred bridles and blind dovetails.'];
 let S=null,M=null,ver=0;const undo=[];
@@ -2509,7 +2734,7 @@ function newState(kind,preset,lv,keep){
 }
 function activeConns(){const p=S.p,lamp=p.style==='lamp';return KIND_CONNS[S.kind].filter(c=>{
   switch(c){case 'legStretcher':return p.str!=='none';case 'stretcherCross':return p.str==='H';case 'boardEdge':case 'accent':return p.nBoards>1&&!(p.gap>0);
-  case 'topEnds':return p.shape!=='round';case 'ebizuka':return p.layout==='chigai';case 'doors':return p.doorRows>0;
+  case 'topEnds':return p.shape!=='round';case 'ebizuka':return p.layout==='chigai';case 'doors':return S.kind==='ply'?p.build!=='bench':p.doorRows>0;case 'plyFront':case 'plyLid':return p.build==='bench';case 'plyShelf':return p.build!=='bench'&&p.nShelves>0;
   case 'polyCorner':return p.build!=='table';case 'pbottom':case 'plid':return p.build==='box';case 'pshelf':case 'ptop':return p.build==='case';case 'pLegApron':case 'ptopAttach':return p.build==='table';
   case 'frameCorner':case 'frameRail':case 'feet':return !lamp;case 'panel':return !lamp&&p.koshiH>0;case 'postRail':case 'base':return lamp;default:return true;}});}
 // ---------- units
@@ -2549,6 +2774,10 @@ function sanitize(){
     p.baseH=p.baseH>0?c(p.baseH,30,p.H/4):0;
     p.nShelves=c(p.nShelves,0,Math.max(0,Math.floor((p.H-2*p.T-p.baseH)/(p.shelfT+60))-1));
     p.backT=c(p.backT,6,Math.max(6,p.D/4));
+  }else if(S.kind==='ply'){
+    if(!['bench','overhead','galley'].includes(p.build))p.build='bench';if(p.light!=='no')p.light='yes';
+    p.T=c(p.T,6,Math.min(25,p.W/8,p.D/6));p.backT=c(p.backT,3,Math.min(15,p.D/8));p.bs=c(p.bs,12,Math.min(40,p.H/5,p.W/6));
+    p.H=Math.max(p.H,2*p.T+2*p.bs+40);p.nShelves=c(p.nShelves|0,0,Math.max(0,Math.floor((p.H-2*p.T)/(p.T+100))-1));
   }else if(S.kind==='custom'){
     if(!Array.isArray(p.pts)||p.pts.length<3)p.pts=PRESETS.custom.cutcab.p.pts.map(q=>q.slice());
     p.pts=normPts(p.pts.map(q=>[+q[0]||0,+q[1]||0]));
@@ -2594,7 +2823,7 @@ function title(){return PRESETS[S.kind][S.preset]?PRESETS[S.kind][S.preset].labe
 function overall(){const p=S.p;return `${fmtN(p.W)} × ${fmtN(p.D)} × ${fmtN(p.H)}${S.units==='mm'?' mm':''}`;}
 function summary(){
   const e=estimate();
-  $('#summary').innerHTML=`<b>${esc(title())}</b><span>${overall()}</span><span class="lvl">${LEVELS[e.lv]} · ${'●'.repeat(e.lv)}${'○'.repeat(4-e.lv)}</span><span>≈ ${e.h} h handwork</span><span>${M.parts.filter(p=>!p.small).length} parts · ${e.joints} joints${e.laps?' · '+e.laps+' kumiko laps':''}${M.nDrawers?' · '+M.nDrawers+' drawers':''} · no screws</span>`;
+  $('#summary').innerHTML=`<b>${esc(title())}</b><span>${overall()}</span><span class="lvl">${LEVELS[e.lv]} · ${'●'.repeat(e.lv)}${'○'.repeat(4-e.lv)}</span><span>≈ ${e.h} h handwork</span><span>${M.parts.filter(p=>!p.small).length} parts · ${e.joints} joints${e.laps?' · '+e.laps+' kumiko laps':''}${M.nDrawers?' · '+M.nDrawers+' drawers':''}${S.kind==='ply'?` · ≈ ${Math.round(M.kg)} kg · ${S.J.plyCorner==='batten'||S.J.plyLid==='hinge'?'glue and screws':'glued'}`:' · no screws'}</span>`;
 }
 function checks(){
   const items=M.warn.map(w=>`<li><span class="dot"></span>${esc(w)}</li>`);
@@ -2610,7 +2839,7 @@ function renderSide(){
   const opt=([k,v])=>`<option value="${k}" ${k===S.preset?'selected':''}>${esc(v.label)}</option>`,ents=Object.entries(PRESETS[S.kind]);
   const fe=ents.filter(([,v])=>!v.practice),cpr=PRESETS[S.kind][S.preset],pm=S.mode==='practice';
   $('#preset').innerHTML=fe.map(opt).join('')+(cpr&&!cpr.practice?'':'<option selected>Custom</option>');
-  document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===(pm?'practice':'design')));
+  document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===(document.body.dataset.mode==='learn'?'learn':pm?'practice':'design')));
   $('#secPiece').hidden=pm;$('#secLevel').hidden=pm;$('#secPractice').hidden=!pm;if(!pm)delete document.body.dataset.pview;$('#t-exercise').hidden=!pm;if(!pm&&location.hash==='#exercise')location.hash='#model';$('#customHint').hidden=S.kind!=='custom';
   if(pm)renderPractice();
   renderShape();
@@ -2640,7 +2869,7 @@ function renderSide(){
   $('#uMM').setAttribute('aria-pressed',S.units==='mm');$('#uIN').setAttribute('aria-pressed',S.units==='in');
 }
 // board-thickness fields that follow the thicknesses you can buy
-const THK={frame:['topT'],case:['T','shelfT','backT'],tansu:['T','backT'],box:['wallT','bottomT','lidT'],custom:['wallT','bottomT','lidT','topT','shelfT']};
+const THK={ply:['T','backT'],frame:['topT'],case:['T','shelfT','backT'],tansu:['T','backT'],box:['wallT','bottomT','lidT'],custom:['wallT','bottomT','lidT','topT','shelfT']};
 const boardOpts=f=>(S.boards&&S.boards.length&&(THK[S.kind]||[]).includes(f.k))?S.boards.filter(v=>v>=f.min&&v<=f.max):[];
 // snap to the nearest board you can buy, unless none is close (then the field stays free, e.g. 21 mm shelves from 10.5 mm stock)
 function snapBoards(){const p=S.p;for(const f of FIELDS[S.kind]){const o=boardOpts(f);if(!o.length)continue;const n=o.reduce((a,b)=>Math.abs(b-p[f.k])<Math.abs(a-p[f.k])?b:a);if(Math.abs(n-p[f.k])<=Math.max(3,p[f.k]*0.35))p[f.k]=n;}}
@@ -2692,7 +2921,9 @@ function setMode(m){
   undo.push(JSON.stringify(S));S=nx;try{localStorage.setItem('sashimono-stash',JSON.stringify(stash));}catch(e){}
   renderSide();rebuild(false);
 }
-document.querySelector('.modes').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(b)setMode(b.dataset.m);});
+document.querySelector('.modes').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;
+  if(b.dataset.m==='learn'){if(!location.hash.startsWith('#learn'))location.hash='#learn';return;}
+  if(location.hash.startsWith('#learn'))location.hash='#model';setMode(b.dataset.m);});
 
 // ---------- joint exercises (practice mode)
 // Short bench exercises on offcuts: one joint (or skill) each, with a twist that makes it a real test.
@@ -3229,6 +3460,7 @@ let pendingCard=null;
 // ---------- tabs
 const TABS=['model','drawings','joints','cutlist','steps','exercise'];const done={};
 function route(){
+  if(location.hash.startsWith('#learn')){LEARN.show(location.hash.slice(7));return;}LEARN.hide();
   let t=location.hash.slice(1);if(!TABS.includes(t)||(t==='exercise'&&S.mode!=='practice'))t='model';S.tab=t;document.body.dataset.tab=t;
   for(const k of TABS){const on=k===t;document.getElementById('tab-'+k).classList.toggle('on',on);document.getElementById('t-'+k).setAttribute('aria-selected',on);}
   if(t==='model')viewer.request(1);else renderTab(t);
@@ -3268,7 +3500,7 @@ function getSheet(i){
     const views={front:VIEWS.front,top:VIEWS.top,side:VIEWS.side};
     const lines=linesFor(M.parts,views);
     svg=composeSheet({views,parts:M.parts,lines,dims:M.dims,fmt:fmtN,title:m.title,subtitle:'General arrangement · '+m.dims,material:m.material,units:m.units,sheet:`${s.n} / ${s.of}`,
-      iso:isoImage(M.parts,1000,700),hidden:S.hidden,date:m.date,notes:['No screws or nails. All joints are cut in wood.','Dimensions are finished sizes. See part sheets for joint positions.']}).svg;
+      iso:isoImage(M.parts,1000,700),hidden:S.hidden,date:m.date,notes:[S.kind==='ply'?'Plywood panels glued and screwed to timber battens. Fix to the vehicle structure.':'No screws or nails. All joints are cut in wood.','Dimensions are finished sizes. See part sheets for joint positions.']}).svg;
   }else{
     const g=s.g,p=g.parts[0];
     const views=viewsFrom(p.B[0],p.B[1]);const parts=[p];const lines=linesFor(parts,views);
@@ -3314,26 +3546,26 @@ function partGroups(){
   const out=[...m.values()];for(const g of out){g.name=g.names.size===1?[...g.names][0]:(KEYNAMES[g.k]||[...g.names].join(' / '));}
   return out;
 }
-const NOTE={leg:'Straight, rift-sawn; grain vertical',apron:'Straight grain; best face out',stretcher:'Straight grain',top:'Alternate heart side; match colour',batten:'Quarter-sawn, very dry',
+const NOTE={front:'Best face out',screw:'Countersunk wood screws',hinge:'Piano hinge, cut to length',hrail:'Straight, dry softwood',leg:'Straight, rift-sawn; grain vertical',apron:'Straight grain; best face out',stretcher:'Straight grain',top:'Alternate heart side; match colour',batten:'Quarter-sawn, very dry',
   side:'Grain vertical; match the pair',shelf:'Stiffest boards',bottom:'Grain front to back is fine',back:'Flat-sawn is fine',wall:'Grain runs round the box',lid:'Best figured board',cleat:'Quarter-sawn',liner:'Thin, straight-grained',rim:'Cut from one strip so grain wraps',
   peg:'Riven or straight-grained',wedge:'Straight grain along the wedge',pin:'Split bamboo or tough hardwood',key:'Grain along the key',spline:'Grain across the spline',dowel:'Straight-grained',
   cap:'Quarter-sawn, very dry',ebizuka:'Straight, fine-grained',divider:'Stable, quarter-sawn',dfront:'Best figure; grain runs across',dside:'Quarter-sawn, stable',dback:'Plain stock is fine',dbottom:'Thin, flat-sawn is fine',door:'Quarter-sawn and very flat',
   stile:'Dead straight, rift-sawn',rail:'Straight grain',foot:'Dense stock for weight',kumiko:'Knot-free, straight-grained strips',paper:'Shoji washi, one sheet per opening',panel:'Thin, quarter-sawn'};
-function allow(g){return [g.L+(g.L>1000?30:g.small?0:20),g.W+(g.small?0:6),g.T+(g.small?0:5)];}
+function allow(g){if(S.kind==='ply')return [g.L+(g.small?0:3),g.W+(g.small?0:3),g.T];return [g.L+(g.L>1000?30:g.small?0:20),g.W+(g.small?0:6),g.T+(g.small?0:5)];}
 function renderCut(){
   const gs=partGroups();const main=gs.filter(g=>!g.small),small=gs.filter(g=>g.small);
   let vol=0,volA=0;for(const g of gs){const a=allow(g);const v=a[0]*a[1]*a[2]*g.count;if(g.species==='main')vol+=v;else volA+=v;}
   const bf=v=>v/25.4**3/144;
   const row=g=>{const a=allow(g);return `<tr><td data-l="Part">${esc(g.name)}</td><td class="n" data-l="Qty">${g.count}</td><td class="n" data-l="Length">${fmt(g.L)}</td><td class="n" data-l="Width">${fmt(g.W)}</td><td class="n" data-l="Thickness">${fmt(g.T)}</td><td class="n" data-l="Rough blank">${g.small?'':fmtN(a[0])+' × '+fmtN(a[1])+' × '+fmtN(a[2])}</td><td data-l="Notes">${esc(g.note||NOTE[g.role]||'')}</td></tr>`;};
   const head='<thead><tr><th>Part</th><th class="n">Qty</th><th class="n">Length</th><th class="n">Width</th><th class="n">Thick</th><th class="n">Rough blank</th><th>Notes</th></tr></thead>';
-  $('#cut').innerHTML=`<h2>Cut list</h2><p class="hint">Finished sizes include tenons and tongues. Rough blanks add length and milling allowance.</p>
-  <div class="tot"><div>Main wood<b>${(vol/1e9).toFixed(3)} m³</b><span class="hint">${bf(vol).toFixed(1)} board ft rough · ${esc(SPECIES[S.species].name.split(' (')[0])}</span></div>
+  $('#cut').innerHTML=`<h2>Cut list</h2><p class="hint">${S.kind==='ply'?'Finished sizes include fingers and tongues. Rough sizes add 3 mm for trimming panels square.':'Finished sizes include tenons and tongues. Rough blanks add length and milling allowance.'}</p>
+  <div class="tot">${S.kind==='ply'?`<div>Plywood<b>${plySheets().map(s=>s.n+' × '+fmtN(s.t)+(S.units==='mm'?' mm':'')).join(' + ')}</b><span class="hint">sheets of ${PLY_SHEET[0]} × ${PLY_SHEET[1]} mm · ${esc(SPECIES[S.species].name)}</span></div>`:`<div>Main wood<b>${(vol/1e9).toFixed(3)} m³</b><span class="hint">${bf(vol).toFixed(1)} board ft rough · ${esc(SPECIES[S.species].name.split(' (')[0])}</span></div>`}
   <div>Pieces<b>${main.reduce((a,g)=>a+g.count,0)}</b><span class="hint">${main.length} different sizes</span></div>
-  <div>Small parts<b>${small.reduce((a,g)=>a+g.count,0)}</b><span class="hint">pegs, wedges, pins, keys</span></div>
-  <div>Joints<b>${estimate().joints}</b><span class="hint">no screws or nails</span></div></div>
+  <div>Small parts<b>${small.reduce((a,g)=>a+g.count,0)}</b><span class="hint">${S.kind==='ply'?'screws and hardware':'pegs, wedges, pins, keys'}</span></div>
+  <div>Joints<b>${estimate().joints}</b><span class="hint">${S.kind==='ply'?'glued, with screws into battens':'no screws or nails'}</span></div></div>
   <div class="btns"><button class="btn" id="dlCSV">Download CSV</button></div>
   <h3>Main parts</h3><div class="scroll"><table class="stack">${head}<tbody>${main.map(row).join('')}</tbody></table></div>
-  ${small.length?`<h3>Small parts · pegs and wedges in ${esc(SPECIES[S.accent].name.split(' (')[0])}</h3><div class="scroll"><table class="stack">${head}<tbody>${small.map(row).join('')}</tbody></table></div>`:''}`;
+  ${small.length?`<h3>${S.kind==='ply'?'Small parts · screws and hardware':`Small parts · pegs and wedges in ${esc(SPECIES[S.accent].name.split(' (')[0])}`}</h3><div class="scroll"><table class="stack">${head}<tbody>${small.map(row).join('')}</tbody></table></div>`:''}`;
   $('#dlCSV').addEventListener('click',()=>{const u=S.units==='in'?'in':'mm',c=v=>S.units==='in'?(v/25.4).toFixed(3):v.toFixed(1);
     const lines=['Part,Qty,Length ('+u+'),Width ('+u+'),Thickness ('+u+'),Rough length,Rough width,Rough thickness,Wood,Notes'];
     for(const g of gs){const a=allow(g);lines.push([g.name,g.count,c(g.L),c(g.W),c(g.T),g.small?'':c(a[0]),g.small?'':c(a[1]),g.small?'':c(a[2]),(g.wood.name||'Bamboo').split(' (')[0],g.note||NOTE[g.role]||''].map(x=>`"${String(x).replace(/"/g,'""')}"`).join(','));}
@@ -3382,6 +3614,7 @@ function scrollCard(){if(!pendingCard)return;const el=document.getElementById('c
 $('#jgrid').addEventListener('click',e=>{const b=e.target.closest('.alts button');if(!b)return;pendingCard=b.dataset.c+'-'+b.dataset.j;commit(()=>{S.J[b.dataset.c]=b.dataset.j;});});
 // ---------- build steps
 function buildSteps(){
+  if(S.kind==='ply')return plySteps();
   const gs=jointGroups(),p=S.p,ph=[];const spn=SPECIES[S.species].name.split(' (')[0],acn=SPECIES[S.accent].name.split(' (')[0];
   const parts=partGroups();let vol=0;for(const g of parts){if(g.species!=='main')continue;const a=allow(g);vol+=a[0]*a[1]*a[2]*g.count;}
   const pn=practiceNow();if(pn)ph.push({h:'What this piece teaches',items:pn.pr.practice.goals.map(esc)});
@@ -3526,6 +3759,489 @@ async function buildBook(){
 <h2>Build steps</h2>${steps}</body></html>`;
   saveFile(`${S.preset}-build-book.html`,html);
 }
+// ---------- theory & history: glossary, timeline and famous works
+const GLOSS_CATS=[['idea','Ideas & trades'],['joint','Joints'],['tool','Tools'],['wood','Wood & finishes'],['form','Furniture & buildings']];
+// [category, romaji, kanji, English, explanation, related glossary terms, related works]
+const GLOSS=[
+['idea','Sashimono','指物','Cabinetmaking with fitted joints',"Furniture and boxes made by fitting boards and sticks together with cut joints, traditionally without nails or screws. The name is usually linked either to the sashi (rule) used to measure everything precisely, or to sasu, to insert one piece into another.",['Sashimono-shi','Kigumi','Tsugite & shiguchi'],['kaidan']],
+['idea','Sashimono-shi','指物師','Cabinetmaker',"The craftsman who makes sashimono: chests, cabinets, boxes, writing desks and tea-ceremony furniture. A separate trade from the daiku who builds houses and the tategu-shi who makes doors and shōji.",['Daiku','Tategu-shi']],
+['idea','Kyō-sashimono','京指物','Kyoto cabinetmaking',"The Kyoto tradition, rooted in furniture for the imperial court, temples and the tea ceremony. Known for refined proportions, fine figured woods and lacquer or plain planed surfaces.",['Edo-sashimono','Sashimono']],
+['idea','Edo-sashimono','江戸指物','Tokyo cabinetmaking',"The tradition that grew in Edo (now Tokyo) making furniture for samurai, merchants and kabuki actors. It favours plain, crisp lines and shows the beauty of the wood, often mulberry (kuwa) or zelkova (keyaki), with the joinery kept hidden.",['Kyō-sashimono','Kuwa']],
+['idea','Karaki-sashimono','唐木指物','Exotic-hardwood cabinetmaking',"Furniture in imported dense hardwoods (karaki, literally ‘Tang wood’) such as rosewood and ebony, associated above all with Osaka.",['Sashimono']],
+['idea','Daiku','大工','Carpenter',"The builder of houses and other timber buildings. Miya-daiku specialise in shrines and temples, sukiya-daiku in tea houses and the refined sukiya style.",['Miya-daiku','Sukiya-zukuri']],
+['idea','Miya-daiku','宮大工','Temple and shrine carpenter',"Carpenters who build and repair shrines and temples, working with very large timbers, complex roofs and bracket sets. Their methods are passed down by apprenticeship. In 2020 UNESCO listed the traditional skills for conserving Japan’s wooden architecture as Intangible Cultural Heritage.",['Daiku','Tokyō'],['horyuji','kiyomizu']],
+['idea','Tategu-shi','建具師','Door and screen maker',"The maker of tategu, the fittings of a house: sliding doors, shōji, fusuma and ranma transoms. Kumiko lattice is their speciality.",['Kumiko','Shōji','Ranma']],
+['idea','Kigumi','木組み','Interlocking timber',"The art of joining wood to wood so that the joints themselves hold the structure, often without metal fasteners or glue.",['Tsugite & shiguchi','Nuki']],
+['idea','Tsugite & shiguchi','継手・仕口','Splices and connections',"The two great families of Japanese joints. Tsugite join two pieces end to end to make a longer member. Shiguchi join pieces meeting at an angle, such as a beam into a post.",['Kanawa-tsugi','Okkake-daisen-tsugi','Hozo']],
+['idea','Kumiko','組子','Wooden lattice',"Thin strips of wood notched and fitted into patterns, used in shōji, ranma and screens. The strips are cut so precisely that friction alone holds them. Common patterns include asanoha (hemp leaf), kikkō (tortoise shell) and goma (sesame).",['Ai-gaki','Shōji','Tategu-shi']],
+['idea','Sumitsuke','墨付け','Marking out',"Laying out every joint in ink on the timber before cutting. Traditionally done by the master carpenter, because a mistake here spoils the piece. The studio’s drawings tab is a modern version of this.",['Sumitsubo','Sumisashi','Sashigane']],
+['idea','Itazu','板図','Board drawing',"A carpenter’s plan drawn at small scale on a planed board of wood, showing the post grid and beams. It stays on site for the whole job.",['Sumitsuke']],
+['idea','Kiwari','木割','Proportion system',"A system that sets the size of every member as a proportion of a base module, usually the post width or the bay. A famous handbook of it, the Shōmei, was written by the master carpenter Heinouchi Masanobu in 1608.",['Ken','Shaku']],
+['idea','Shaku','尺','Japanese foot',"The traditional unit of length, about 303 mm. It divides into 10 sun (about 30.3 mm), and each sun into 10 bu (about 3 mm). Many Japanese boards and timbers are still sold in these sizes.",['Ken','Sashigane']],
+['idea','Ken','間','Bay or post spacing',"The distance between post centres, the basic module of a building. A ken is typically 6 shaku (about 1.82 m) in eastern Japan; in the Kyoto tradition the module is larger. Tatami sizes follow the same grid.",['Shaku','Tatami']],
+['idea','Kigoroshi','木殺し','Compressing the wood',"Literally ‘killing the wood’. Before assembly the tenon is lightly crushed with the domed face of the hammer so it slides in; once in, the fibres swell back and lock the joint tight.",['Gennō','Hozo']],
+['idea','Kiomote & kiura','木表・木裏','Bark side and heart side',"The face of a board that was nearer the bark (kiomote) and the face nearer the heart (kiura). Boards cup towards the bark side as they dry, so carpenters choose which way each face goes.",['Masame & itame']],
+['idea','Moto & sue','元・末','Butt end and top end',"The end of a log that was nearer the roots (moto) and the end nearer the crown (sue). Posts are traditionally set the way the tree grew, with the moto at the bottom.",['Kiomote & kiura']],
+['joint','Hozo','枘','Tenon',"A tongue cut on the end of a piece to fit into a hozo-ana (mortise). The basic shiguchi joint, with many variations.",['Hira-hozo','Komisen','Wari-kusabi','Jigoku-hozo']],
+['joint','Hira-hozo','平ほぞ','Stub mortise and tenon',"A plain blind tenon in a snug mortise: the workhorse joint of frames, quick to cut and strong once glued.",['Hozo','Komisen']],
+['joint','Komisen','込栓','Draw-pinned tenon',"A tenon locked by a square peg driven across the joint. The peg hole in the tenon is offset slightly towards the shoulder, so driving the peg pulls the joint tight with no clamps or glue.",['Hozo','Sen']],
+['joint','Wari-kusabi','割楔','Wedged through tenon',"A tenon that passes right through, with saw kerfs in its end. Wedges driven into the kerfs spread it into a flared mortise so it can never pull out.",['Kusabi','Hozo']],
+['joint','Hanasen','鼻栓','Through tenon with nose pin',"A long through tenon that sticks out beyond the post, locked by a pin through its projecting end. It can be knocked apart again.",['Hozo','Sen']],
+['joint','Jigoku-hozo','地獄ほぞ','‘Hell’ tenon',"A blind tenon with hidden wedges that spread it as it is driven home. Once assembled it can never come apart again, hence the name.",['Wari-kusabi','Kusabi']],
+['joint','Kusabi','楔','Wedge',"A tapered piece driven to tighten or lock a joint. Used in through tenons, in nuki and in many splices.",['Wari-kusabi','Nuki','Shachi-sen']],
+['joint','Sen','栓','Peg or pin',"A wooden peg driven through a joint to lock it. Komisen and hanasen are both kinds of sen.",['Komisen','Hanasen','Takekugi']],
+['joint','Dabo','太枘','Hidden dowel',"A short wooden dowel set into both pieces to locate them, used for example to hold a tabletop in place.",[]],
+['joint','Ari','蟻','Dovetail',"A flared tenon or tail, named after the ant (ari) because of its narrow neck. It resists being pulled out in one direction.",['Ari-gumi','Suitsuki-arizan','Koshikake-ari-tsugi']],
+['joint','Ari-gumi','蟻組','Through dovetail',"Boards joined at a corner by interlocking tails and pins, visible on both faces. The classic box and chest corner.",['Ari','Tsutsumi-ari-gumi','Arare-gumi']],
+['joint','Tsutsumi-ari-gumi','包み蟻組','Half-blind dovetail',"A dovetail hidden from the front, as on a drawer front, so only one face shows the joint.",['Ari-gumi']],
+['joint','Arare-gumi','霰組','Box joint',"Square fingers interlocking at a board corner. The name means ‘hailstones’, after the pattern of end grain it shows.",['Ari-gumi']],
+['joint','Sanmai-gumi','三枚組','Bridle joint',"A slot in one piece, three layers thick, takes a tongue on the other. Common at the corners of frames.",['Tome']],
+['joint','Tome','留め','Mitre',"A joint cut at an angle (usually 45°) so the end grain is hidden and the figure turns the corner. Often reinforced with splines, keys or pins.",['Sanmai-gumi']],
+['joint','Ai-gaki','相欠き','Half-lap',"Two pieces crossing each other, each notched half its depth so they lie flush. The basic joint of kumiko lattice.",['Kumiko']],
+['joint','Oire','追入れ','Housing',"A shallow groove that a shelf or divider slides into. The arigata (dovetailed) version locks the sides together as well.",['Ari']],
+['joint','Hagi','矧ぎ','Edge joint',"Boards joined edge to edge to make a wider panel: imo-hagi is a plain glued joint, hon-zane a tongue and groove, yatoi-zane a loose spline.",['Chigiri','Hashibami']],
+['joint','Chigiri','契り','Butterfly key',"A bow-tie shaped key let into the surface across a joint or crack, holding the two sides together.",['Hagi']],
+['joint','Hashibami','端喰','Breadboard end',"A strip across the end of a panel, fixed so the panel can still move with the seasons while staying flat.",['Suitsuki-arizan']],
+['joint','Suitsuki-arizan','吸付蟻桟','Sliding dovetail batten',"A tapered dovetail batten slid into a groove across the underside of a board. It keeps the board flat but lets it shrink and swell freely.",['Ari','Hashibami']],
+['joint','Takekugi','竹釘','Bamboo pin',"A small nail split from bamboo, often hardened by roasting. Used in fine boxes and tansu where iron nails would rust or split the wood.",['Sen'],['kaidan']],
+['joint','Nuki','貫','Penetrating tie beam',"A flat beam that passes right through a row of posts and is locked with wedges. Nuki brace a frame against earthquakes and wind by friction and bending rather than with diagonal braces. They spread widely after the 12th century.",['Kusabi','Kigumi'],['kiyomizu']],
+['joint','Kanawa-tsugi','金輪継ぎ','Rabbeted oblique scarf',"A splice in which two angled, stepped ends lock together and are drawn tight by a square key (sen) driven through the middle. Strong in every direction, it is used to repair the rotten foot of an old post.",['Tsugite & shiguchi','Okkake-daisen-tsugi'],['horyuji']],
+['joint','Okkake-daisen-tsugi','追掛大栓継ぎ','Scarf with pegs',"A long stepped scarf joint slid together from the side and locked with large pegs. Used to join beams over a post.",['Kanawa-tsugi','Sen']],
+['joint','Koshikake-ari-tsugi','腰掛蟻継ぎ','Seated dovetail splice',"One beam end has a dovetail that drops into the other, which also gives it a ledge to sit on. A common splice for sills and beams in houses.",['Ari','Koshikake-kama-tsugi']],
+['joint','Koshikake-kama-tsugi','腰掛鎌継ぎ','Seated gooseneck splice',"Like the seated dovetail, but with a ‘sickle’ (kama) shaped head that holds better against pulling apart.",['Koshikake-ari-tsugi']],
+['joint','Shachi-sen','車知栓','Draw key',"A flat key driven into a slot across a joint to pull two members tight together.",['Kusabi','Sen']],
+['tool','Nokogiri','鋸','Saw',"Japanese saws cut on the pull stroke. Because the blade is in tension it can be thin, so the cut is narrow and easy to steer.",['Ryōba','Dōzuki','Azebiki','Maebiki-ōga']],
+['tool','Ryōba','両刃','Two-edged saw',"A saw with rip teeth on one edge (for cutting along the grain) and crosscut teeth on the other. The everyday saw of the Japanese workshop.",['Nokogiri','Dōzuki']],
+['tool','Dōzuki','胴付','Backsaw',"A fine-toothed saw with a stiffening spine along its back, for accurate joinery cuts such as tenon shoulders and dovetails.",['Nokogiri','Ryōba']],
+['tool','Azebiki','畦挽','Curved plunge saw',"A small saw with a short curved edge that can start a cut in the middle of a board, for example to cut a groove or a mortise opening.",['Nokogiri']],
+['tool','Maebiki-ōga','前挽大鋸','Large rip saw',"A big one-man saw for sawing logs into boards. Its spread in the 15th century made thin, flat boards plentiful, which helped cabinetmaking grow into its own trade. Before that, logs were split with wedges and smoothed with the chōna and yari-ganna.",['Chōna','Yari-ganna']],
+['tool','Nomi','鑿','Chisel',"Japanese chisels have a hard steel cutting layer forged onto softer iron, and a hollow on the back (ura) that makes them quick to flatten and sharpen. Main types: oire-nomi for bench work, tataki-nomi for heavy chopping, tsuki-nomi for paring by hand, and mukōmachi-nomi for deep mortises.",['Hagane & jigane','Gennō','Toishi']],
+['tool','Kanna','鉋','Plane',"A blade wedged in a wooden block, usually of white or red oak, and pulled towards you. Most modern kanna have a second iron (uragane) that reduces tear-out, an addition from the late 19th century. Specialised versions cut rebates, grooves and dovetails.",['Hira-ganna','Yari-ganna','Uzukuri']],
+['tool','Hira-ganna','平鉋','Smoothing plane',"The basic flat-soled plane. A finely set one leaves a shaving thinner than a sheet of paper and a surface that needs no sanding.",['Kanna']],
+['tool','Yari-ganna','槍鉋','Spear plane',"An older plane like a curved spear blade on a long handle, drawn along the wood. Used for smoothing before the block plane arrived around the 16th century, and revived for restoration work.",['Kanna','Chōna'],['horyuji']],
+['tool','Chōna','釿','Adze',"A curved-handled adze for shaping and smoothing beams. It leaves a rippled surface that is still valued as a decorative finish.",['Yari-ganna']],
+['tool','Sumitsubo','墨壺','Ink line',"An ink pot with a silk line on a reel. The line is pulled through ink-soaked cotton, stretched between two points and snapped to print a perfectly straight line, even on a curved log.",['Sumisashi','Sumitsuke']],
+['tool','Sumisashi','墨差し','Bamboo marking pen',"A bamboo stick split into a fine brush at one end and a flat blade at the other, dipped in the sumitsubo to write lines and marks.",['Sumitsubo']],
+['tool','Sashigane','差金','Carpenter’s square',"A thin, flexible steel L-square. The back carries scales multiplied by √2 (to read the largest square beam a log will give) and divided by π (to read a diameter from a circumference), so many calculations need no arithmetic.",['Shaku','Sumitsuke']],
+['tool','Kebiki','罫引','Marking gauge',"A fence with a small blade that scribes a line parallel to an edge. Used to mark tenon and mortise widths so matching parts agree exactly.",['Hozo']],
+['tool','Kiridashi','切出し','Marking knife',"A small single-bevel knife for scribing precise lines and for fine trimming.",[]],
+['tool','Gennō','玄翁','Hammer',"A double-headed hammer with one flat face and one slightly domed face. The domed face finishes a blow without denting the wood and is used for kigoroshi.",['Kigoroshi','Nomi']],
+['tool','Kiri','錐','Gimlet',"A hand drill spun between the palms. Different points make holes for bamboo pins and nails.",['Takekugi']],
+['tool','Toishi','砥石','Whetstone',"Sharpening stones from coarse (arato) through medium (nakato) to finishing (shiageto). Natural finishing stones from the hills around Kyoto are especially prized.",['Nomi','Kanna']],
+['tool','Hagane & jigane','鋼・地金','Steel and soft iron',"Japanese blades are made by forge-welding a thin layer of very hard steel (hagane) to a thicker back of soft iron (jigane). The hard edge stays sharp; the soft iron makes the blade tough and easy to sharpen.",['Nomi','Kanna']],
+['wood','Hinoki','檜','Japanese cypress',"Light, straight-grained, fragrant and very durable. The wood of the finest shrines and temples, including Ise and Hōryū-ji, and still the first choice for plain, unfinished work.",['Sugi'],['ise','horyuji','shosoin']],
+['wood','Sugi','杉','Japanese cedar',"Soft, light and easy to work, with pinkish heartwood. Widely used for houses, tansu and ceilings.",['Hinoki'],['kaidan']],
+['wood','Keyaki','欅','Zelkova',"A strong, boldly figured hardwood, prized for temple pillars, chests and tansu fronts.",['Kuwa'],['kiyomizu']],
+['wood','Kiri','桐','Paulownia',"Very light and stable, it buffers humidity and is said to resist fire well. The classic wood for clothing tansu and gift boxes.",['Tansu']],
+['wood','Kuwa','桑','Mulberry',"A golden, finely figured hardwood that darkens with age. A favourite of Edo-sashimono makers for small cabinets.",['Edo-sashimono']],
+['wood','Masame & itame','柾目・板目','Straight and flat grain',"Masame is quartersawn wood with straight parallel grain lines; it is stable and highly valued. Itame is flatsawn wood with arching cathedral figure; it moves more with the seasons.",['Kiomote & kiura']],
+['wood','Urushi','漆','Lacquer',"The sap of the lacquer tree, applied in many thin coats to protect and decorate wood. Fuki-urushi is a thin, wiped coat that lets the grain show. Raw urushi causes a severe rash.",['Shiage'],['tamamushi']],
+['wood','Shiage','仕上げ','Finishing',"Many traditional pieces are finished straight from the plane with no coating. Others are rubbed with tonoko (polishing powder), coloured with kakishibu (persimmon tannin) or lacquered.",['Urushi','Uzukuri']],
+['wood','Uzukuri','浮造り','Raised-grain finish',"Brushing soft wood such as kiri or sugi with a bundle of grass-root fibres, so the soft spring growth wears away and the harder grain stands out.",['Kiri','Shiage']],
+['wood','Washi','和紙','Japanese paper',"Strong, translucent paper made from long plant fibres, usually kōzo (paper mulberry). Pasted to shōji and andon to soften the light.",['Shōji']],
+['form','Tansu','箪笥','Chest of drawers',"Storage chests that became common in the 18th century, as townspeople gained more possessions. There are many types: isho-dansu for clothes, chō-dansu for a merchant’s ledgers, funa-dansu for ships and kaidan-dansu that double as stairs.",['Kaidan-dansu','Funa-dansu'],['kaidan']],
+['form','Kaidan-dansu','階段箪笥','Staircase chest',"A chest built as a flight of stairs, with drawers and cupboards inside the steps. Used in townhouses where space was scarce.",['Tansu'],['kaidan']],
+['form','Funa-dansu','船箪笥','Ship’s chest',"A small, very heavy chest of thick wood covered in iron fittings, carried by ships’ captains for money and papers. Said to float if the ship went down.",['Tansu']],
+['form','Shōji','障子','Paper sliding screen',"A sliding door or window of kumiko lattice covered with washi, letting soft light through.",['Kumiko','Washi','Tategu-shi'],['dojinsai']],
+['form','Fusuma','襖','Opaque sliding panel',"A sliding room divider of a light wooden frame covered in thick paper or cloth on both sides, often painted.",['Shōji']],
+['form','Ranma','欄間','Transom',"A panel above a sliding door, carved or filled with kumiko, that lets air and light pass between rooms.",['Kumiko']],
+['form','Tokonoma','床の間','Display alcove',"A raised alcove for a hanging scroll and flowers, the focal point of a formal room.",['Chigaidana','Shoin-zukuri']],
+['form','Chigaidana','違い棚','Staggered shelves',"Two shelves at different heights, joined by a small post (ebizuka), set beside the tokonoma. The studio’s staggered-shelf preset is based on it.",['Tokonoma','Tsuke-shoin'],['dojinsai']],
+['form','Tsuke-shoin','付書院','Built-in desk',"A desk board built into a bay window with shōji above it, for reading and writing in daylight.",['Chigaidana','Shoin-zukuri'],['dojinsai']],
+['form','Shoin-zukuri','書院造','Study-hall style',"The style of formal residences that grew from the 15th century, with tatami floors, sliding screens, tokonoma, chigaidana and tsuke-shoin. It shaped the traditional Japanese room as we know it.",['Tokonoma','Sukiya-zukuri'],['dojinsai']],
+['form','Sukiya-zukuri','数寄屋造','Tea-house style',"A lighter, more informal style influenced by the tea house, using thin members, natural materials and even unbarked posts.",['Shoin-zukuri','Daiku']],
+['form','Tatami','畳','Floor mat',"A thick mat of rice straw covered in woven rush. Rooms are measured by how many mats they hold, such as a 4½-mat tea room.",['Ken'],['dojinsai']],
+['form','Zushi','厨子','Shrine cabinet',"A small cabinet with doors for keeping a Buddhist image, relic or scripture. Many take the form of a miniature building.",[],['tamamushi']],
+['form','Azekura','校倉','Log storehouse',"A storehouse with walls of horizontal logs, often triangular in section, crossing at the corners. The best-known example is the Shōsōin in Nara.",['Kigumi'],['shosoin']],
+['form','Shinbashira','心柱','Central pillar',"The pillar running up the middle of a pagoda. The storeys are built around it rather than resting on it.",['Tokyō'],['horyuji']],
+['form','Tokyō','斗栱','Bracket set',"Stacked blocks (to) and arms (hijiki) under the eaves of a temple, spreading the roof load onto the posts and carrying the deep overhang. Also called kumimono.",['Shinbashira','Miya-daiku'],['horyuji','tamamushi']],
+['form','Kakezukuri','懸造','Hillside stage building',"A building whose front stands on a tall framework of posts over a slope or cliff, braced with nuki.",['Nuki'],['kiyomizu']],
+['form','Shinmei-zukuri','神明造','Ise shrine style',"The ancient shrine style of Ise: plain unpainted wood, posts set straight into the ground, a thatched gable roof entered from the long side, and chigi and katsuogi on the ridge.",['Chigi & katsuogi','Hottate-bashira'],['ise']],
+['form','Chigi & katsuogi','千木・鰹木','Roof finials',"Chigi are the crossed boards rising above the gable ends of a shrine roof; katsuogi are the short logs laid across the ridge.",['Shinmei-zukuri'],['ise']],
+['form','Hottate-bashira','掘立柱','Earth-fast post',"A post set directly in a hole in the ground instead of on a foundation stone. An ancient method, kept at Ise.",['Shinmei-zukuri'],['ise']]
+];
+const HISTORY=[
+['Before 538','Prehistory',"Excavated timbers from the Jōmon and Yayoi periods already show notches and holes for joining wood. Raised-floor storehouses appear in pictures cast on Yayoi bronze bells.",[]],
+['538–710','Asuka period',"Buddhism arrives from the Korean peninsula. The Nihon Shoki records temple builders sent from the kingdom of Baekje in 588 to build Asuka-dera. Bracket sets, tiled roofs and pagodas come with them. Hōryū-ji is rebuilt after a fire recorded in 670, and the Tamamushi Shrine is made.",['horyuji','tamamushi']],
+['690','Ise begins its rebuildings',"By tradition, the first Shikinen Sengū, the rebuilding of the Ise shrines every 20 years, takes place. The 62nd was held in 2013.",['ise']],
+['710–794','Nara period',"Great state temples such as Tōdai-ji are built in the capital. After Emperor Shōmu’s death in 756, his treasures are given to Tōdai-ji and kept in the Shōsōin storehouse, along with cabinets, boxes and chests that are among the oldest surviving Japanese furniture.",['shosoin']],
+['794–1185','Heian period',"Aristocratic mansions in the shinden style have open rooms divided by screens and blinds. Furniture is light and movable: legged chests (kara-bitsu), low tables and folding screens (byōbu).",[]],
+['1180s–1190s','Great Buddha style',"Rebuilding Tōdai-ji after a fire, the monk Chōgen brings in a building style from Song China (daibutsuyō). It relies on nuki, tie beams that pass through the posts, and they spread through Japanese carpentry.",['kiyomizu']],
+['1336–1573','Muromachi period',"The shoin style creates the classic Japanese room, with tatami, tokonoma, staggered shelves and built-in desks; the Dōjinsai is built in 1486. The large rip saw (maebiki-ōga) spreads, making sawn boards common, and cabinetmaking begins to separate from carpentry.",['dojinsai']],
+['Around 1600','New tools and handbooks',"The plane with its blade set in a wooden block comes into use. In 1608 the master carpenter Heinouchi Masanobu writes the Shōmei, a handbook of the kiwari proportion system.",[]],
+['1603–1868','Edo period',"Peace and growing cities create a large market for furniture. Sashimono becomes a guild trade in Kyoto, Edo and Osaka. Tansu spread through ordinary homes, kumiko and shōji become ever more refined, and Kiyomizu-dera’s main hall is rebuilt in 1633.",['kaidan','kiyomizu']],
+['1868–1912','Meiji period',"Western furniture and machinery arrive. Tansu are made in great numbers, many for export, and plane irons gain a second iron to reduce tear-out. Edward S. Morse’s 1886 book Japanese Homes and Their Surroundings shows Japanese carpentry to the West.",[]],
+['20th century','Preservation and revival',"Master temple carpenters such as Nishioka Tsunekazu lead the restoration of Hōryū-ji and rebuild Yakushi-ji’s halls with traditional methods. Kyoto, Edo and other regional sashimono are officially recognised as Traditional Crafts of Japan.",['horyuji']],
+['2020','World heritage of skills',"UNESCO lists the traditional skills, techniques and knowledge for conserving and passing on Japan’s wooden architecture as Intangible Cultural Heritage of Humanity.",[]]
+];
+// ----- famous works: representative 3D models built from the same convex-solid parts as the studio
+const LMATS={
+  lacquer:{name:'Black lacquer (urushi)',col:[0.27,0.19,0.15],late:[0.22,0.15,0.12],flat:true},
+  gilt:{name:'Gilt bronze',col:[0.86,0.69,0.34],late:[0.86,0.69,0.34],flat:true},
+  tile:{name:'Clay roof tiles (kawara)',col:[0.47,0.48,0.50],late:[0.41,0.42,0.44],flat:true},
+  thatch:{name:'Miscanthus thatch (kaya)',col:[0.78,0.66,0.44],late:[0.64,0.52,0.32]},
+  bark:{name:'Cypress-bark roofing (hiwada-buki)',col:[0.52,0.35,0.26],late:[0.42,0.27,0.20]},
+  stone:{name:'Stone',col:[0.74,0.73,0.70],late:[0.74,0.73,0.70],flat:true},
+  earth:{name:'Hillside',col:[0.60,0.62,0.50],late:[0.60,0.62,0.50],flat:true},
+  plaster:{name:'Clay plaster',col:[0.94,0.91,0.84],late:[0.94,0.91,0.84],flat:true},
+  iron:{name:'Iron',col:[0.24,0.24,0.25],late:[0.24,0.24,0.25],flat:true},
+  bronze:{name:'Bronze',col:[0.56,0.48,0.31],late:[0.56,0.48,0.31],flat:true},
+  tatami:{name:'Tatami',col:[0.82,0.80,0.58],late:[0.72,0.71,0.48]},
+  paper:PAPER
+};
+function lpart(M,name,pos,o){return M.add(Object.assign({name,pos:typeof pos[0][0]==='number'?[pos]:pos,grain:0,thk:2,ex:[0,0,0]},o||{}));}
+function lfinish(M){finalizeModel(M);for(const p of M.parts)if(p.mat){p.wood=LMATS[p.mat];if(!p.wood.flat)p.ring=7;}return M;}
+// hip (or gable, when ends=false) roof volume: eaves at z0 (edge thickness te), rising at slope s, cut flat at z1
+function hipRoof(x0,x1,y0,y1,z0,z1,te,s,ends=true){
+  const e=z0+te,pl=[[0,-s,1,e-s*y0],[0,s,1,e+s*y1]];if(ends)pl.push([-s,0,1,e-s*x0],[s,0,1,e+s*x1]);
+  return BOX(x0,x1,y0,y1,z0,z1).concat(pl);
+}
+const lcylZ=(x,y,r,z0,z1,n)=>cylAx(2,[x,y],r,z0,z1,n||14);
+const lcylY=(z,x,r,y0,y1,n)=>cylAx(1,[z,x],r,y0,y1,n||10);
+// rectangle given by a start point, a direction and a width, in the y-z plane, extruded along x
+function slab(A,dir,L,w,x0,x1){const l=Math.hypot(dir[0],dir[1]),d=[dir[0]/l,dir[1]/l],n=[-d[1],d[0]];
+  const B=[A[0]+d[0]*L,A[1]+d[1]*L];return prismAx(0,[A,B,[B[0]+n[0]*w,B[1]+n[1]*w],[A[0]+n[0]*w,A[1]+n[1]*w]],x0,x1);}
+
+const WORKS=[
+{id:'tamamushi',name:'Tamamushi Shrine',kj:'玉虫厨子',ro:'Tamamushi no zushi',date:'7th century, Asuka period',place:'Hōryū-ji, Nara',status:'National Treasure',size:'About 2.3 m tall',
+ intro:"A Buddhist shrine cabinet made as a miniature temple hall, standing on a tall pedestal. It takes its name from the iridescent wings of the jewel beetle (tamamushi) once set beneath its openwork gilt-bronze fittings. Its lacquered panels carry some of the oldest surviving Japanese paintings, including the story of the prince who gave his body to a starving tigress.",
+ look:["The roof, bracket sets and posts copy full-size Asuka-period architecture, so the shrine is also a record of how temple halls of its time were built.","The cloud-shaped brackets under the eaves are the same kind as those of Hōryū-ji’s own Golden Hall and pagoda.","Everything is lacquered black over wood; the gilt-bronze openwork follows the edges of the pedestal and the hall."],
+ model:"Representative model. The roof is simplified to a plain hip-and-gable form, the side doors and paintings are left out, and proportions are approximate.",terms:['Zushi','Urushi','Tokyō'],joint:null,nojoint:"The joints inside the shrine are not published in enough detail to model them reliably, so there is no close-up for this one.",sp:'hinoki',cam:{yaw:-2.1,pitch:0.32},build:mTamamushi},
+{id:'horyuji',name:'Hōryū-ji Five-storey Pagoda',kj:'法隆寺五重塔',ro:'Hōryū-ji gojū-no-tō',date:'Late 7th to early 8th century',place:'Ikaruga, Nara',status:'National Treasure · UNESCO World Heritage',size:'About 32 m tall with its finial',
+ intro:"One of the oldest wooden buildings in the world, built of hinoki after the temple burned in 670. Each storey is narrower than the one below: the top storey is about half the width of the first. Tree-ring dating of the central pillar points to a tree felled in 594, older than the building, and why is still discussed.",
+ look:["The central pillar (shinbashira) runs up the middle and carries the bronze finial, but the storeys are built around it rather than resting on it.","Each storey’s deep eaves are carried on cloud-shaped bracket sets (kumo-tokyō).","Japanese pagodas have survived many earthquakes. The loosely stacked storeys and the central pillar are often credited for this, though engineers still debate exactly why."],
+ model:"Representative model. The roof curves, bracket arms, the later pent roof (mokoshi) round the ground storey and the inside are simplified, and the stacking is shown schematically.",terms:['Shinbashira','Tokyō','Hinoki','Miya-daiku'],joint:{title:'How a bracket set stacks',kj:'斗栱',text:"Bracket sets are built up from separate blocks (to) and arms (hijiki), each sitting in a notch in the part below and located by hidden dowels (dabo), with no nails. Here a large bearing block (daito) sits on the post, a cloud-shaped arm (kumo-hijiki) lies in a slot across its top, and small blocks on the arm carry the beam above.",note:"Simplified close-up showing how the parts stack and lock. At Hōryū-ji the blocks and arms are carved in flowing cloud shapes, and the set also reaches outwards to carry the eaves.",build:dBracket},sp:'hinoki',cam:{yaw:-2.2,pitch:0.25},build:mPagoda},
+{id:'shosoin',name:'Shōsōin Treasure House',kj:'正倉院正倉',ro:'Shōsōin shōsō',date:'Mid-8th century, Nara period',place:'Tōdai-ji, Nara',status:'National Treasure · UNESCO World Heritage',size:'About 33 m long, 9.4 m deep and 14 m tall',
+ intro:"The storehouse built to keep the treasures of Emperor Shōmu, given to Tōdai-ji after his death in 756. It stands on 40 large posts, raised well above the ground. The north and south rooms are azekura, with walls of triangular logs crossing at the corners; the middle room has board walls. Among the treasures are cabinets, boxes and chests that are some of the oldest Japanese furniture to survive.",
+ look:["The triangular logs (azeki) present a ridged face outside and a flat face inside, and lock together at the corners like a log cabin.","Each log is notched where it crosses the logs of the next wall, so the courses of the two walls sit half a log apart.","A popular story says the logs swell in wet weather to seal the walls and shrink in dry weather to let air in. Modern studies doubt it: the treasures were kept safe mainly by the raised floor, the heavy roof and the wooden chests they were stored in."],
+ model:"Representative model at about 1:10. The number of log courses is reduced, the roof is a plain tiled hip roof without curves, and the floor and doors are left out.",terms:['Azekura','Hinoki','Kigumi'],joint:{title:'Azekura corner',kj:'校木の組み手',text:"At each corner the triangular logs of the two walls cross. Every log is notched halfway into its underside where it crosses, so the courses of one wall sit half a log higher than the other and the corner locks itself under the weight above. The log ends project past the corner.",note:"Close-up of the principle, three courses high, seen from inside the corner. The real logs are much longer and the exact shape of the notches varies.",cam:{yaw:0.75,pitch:0.32},build:dAzekura},sp:'hinoki',cam:{yaw:-2.35,pitch:0.3},build:mShosoin},
+{id:'ise',name:'Ise Grand Shrine, Inner Shrine',kj:'伊勢神宮 内宮 正殿',ro:'Ise Jingū Naikū shōden',date:'Rebuilt every 20 years since about 690; latest 2013',place:'Ise, Mie',status:'The holiest Shinto shrine',size:'Main hall about three bays wide and two deep',
+ intro:"The main hall of the Inner Shrine is the model of the shinmei style. Every 20 years an identical hall is built on the neighbouring site and the old one is taken down, a ceremony called the Shikinen Sengū. This has passed the carpenters’ skills from one generation to the next for well over a thousand years.",
+ look:["Plain, unpainted hinoki, with posts set straight into the ground (hottate-bashira) instead of on stones.","A thick thatched gable roof entered from the long side, with crossed chigi at the gable ends and ten katsuogi logs across the ridge.","Free-standing posts (munamochi-bashira) outside each gable end hold up the ridge beam."],
+ model:"Representative model of the shinmei style based on published descriptions. The public cannot enter the inner enclosure, and the proportions and details here are approximate.",terms:['Shinmei-zukuri','Chigi & katsuogi','Hottate-bashira','Hinoki'],joint:null,nojoint:"The joinery of the Ise halls is not published in enough detail to model it reliably, so there is no close-up for this one.",sp:'hinoki',cam:{yaw:-2.2,pitch:0.3},build:mIse},
+{id:'kiyomizu',name:'Kiyomizu-dera Stage',kj:'清水の舞台',ro:'Kiyomizu no butai',date:'Main hall rebuilt 1633',place:'Higashiyama, Kyoto',status:'National Treasure · UNESCO World Heritage',size:'Stage about 13 m above the ground',
+ intro:"The famous stage in front of Kiyomizu-dera’s main hall juts out over a steep hillside on a tall framework of zelkova (keyaki) posts, a kind of building called kakezukuri. The posts are tied together by nuki that pass right through them and are locked with wedges, with no nails. ‘Jumping off the stage at Kiyomizu’ is a Japanese saying for taking the plunge.",
+ look:["The nuki pass through every post in a row, so the whole frame acts together.","The posts stand on the slope at different heights, so the nuki levels change from row to row.","The hall roof is covered in hinoki bark (hiwada-buki), replaced in a restoration finished in 2020."],
+ model:"Representative model at about 1:20 showing the principle. The real stage has 18 main posts; their spacing, the number of nuki and the shape of the hall are simplified.",terms:['Nuki','Kakezukuri','Kusabi','Keyaki'],joint:{title:'Nuki through a post, locked with wedges',kj:'貫と楔',text:"Each post has a rectangular through mortise. The nuki slides right through, and wedges (kusabi) driven into the gap above it lock it tight. Two nuki at different heights tie the post in both directions. Friction and the bending of the nuki let the frame flex in an earthquake without breaking apart.",note:"Simplified close-up of one post. The real nuki are much longer, run through a whole row of posts and are joined end to end where they meet.",build:dNuki},sp:'keyaki',cam:{yaw:-1.9,pitch:0.2},build:mKiyomizu},
+{id:'dojinsai',name:'Dōjinsai, Ginkaku-ji',kj:'銀閣寺 東求堂 同仁斎',ro:'Tōgudō Dōjinsai',date:'1486, Muromachi period',place:'Jishō-ji (Ginkaku-ji), Kyoto',status:'National Treasure (Tōgudō)',size:'A room of 4½ tatami mats',
+ intro:"A small study in the Tōgudō hall built for the shogun Ashikaga Yoshimasa. It is usually described as the oldest surviving room in the shoin style, with a built-in desk (tsuke-shoin) and staggered shelves (chigaidana) side by side. Its quiet 4½-mat plan became the model for countless tea rooms and studies.",
+ look:["The tsuke-shoin: a desk board in a shallow bay, lit by shōji above it.","The chigaidana: two shelves at different heights, joined by a small post (ebizuka). The studio’s staggered-shelf design comes from this.","The 4½ mats are laid around a half mat in the middle, so no four corners ever meet."],
+ model:"Representative model of the room’s north side, simplified. Only that wall is shown, the ceiling and other walls are left out, and the sizes are approximate.",terms:['Tsuke-shoin','Chigaidana','Shoin-zukuri','Tatami','Shōji'],joint:{title:'Ebizuka tenoned into the shelf',kj:'海老束',text:"The small post between the two staggered shelves is usually joined with tenons into the shelves, so it holds them in line without showing any fixing. This is the same joint the studio draws for its staggered-shelf design.",note:"A typical version of the joint, made by the studio’s own joint generator. It is not measured from the Dōjinsai shelves.",ref:{kind:'case',preset:'chigai',J:{ebizuka:'hira'},conn:'ebizuka'}},sp:'hinoki',cam:{yaw:-2.05,pitch:0.32},build:mDojinsai},
+{id:'kaidan',name:'Kaidan-dansu (staircase chest)',kj:'階段箪笥',ro:'Kaidan-dansu',date:'Mostly 19th century, late Edo to Meiji',place:'Townhouses across Japan',status:'A historical type, not a single piece',size:'Typically about 1.3–1.8 m high',
+ intro:"In crowded townhouses (machiya), a staircase up to the loft could also be the household’s cupboard. Kaidan-dansu were built as separate boxes that stand side by side to form the steps, so they could be moved in pieces. Each step hides drawers and cupboards with sliding doors, and the fronts carry hand-forged iron pulls.",
+ look:["Each box is a complete carcass of its own; together they make the stair.","Drawers run on the dividers between compartments, and the cupboard doors slide in grooves.","Common woods are sugi and hinoki, sometimes with keyaki fronts; well-worn treads show generations of use."],
+ model:"Representative model of the type, not a copy of a particular chest. The number of steps, the layout and the fittings vary from piece to piece.",terms:['Tansu','Kaidan-dansu','Sugi','Takekugi'],joint:{title:'Dovetailed carcass corner',kj:'蟻組',text:"Tansu carcasses were joined at the corners in several ways, from rebates fixed with nails or bamboo pins to dovetails. This shows a through dovetail, one common choice for the corner of a box like one of these steps.",note:"A typical version of the joint, made by the studio’s own joint generator. Chests of this type vary, and many use simpler nailed corners.",ref:{kind:'tansu',preset:'kodansu',J:{caseCorner:'ari'},conn:'caseCorner'}},sp:'sugi',cam:{yaw:-2.3,pitch:0.3},build:mKaidan}
+];
+
+function mTamamushi(){
+  const M=new Model('work',{species:'hinoki',accent:'keyaki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const bx=(w,d,z0,z1)=>BOX(-w/2,w/2,-d/2,d/2,z0,z1);
+  P('Base platform',bx(1300,1050,0,240),{mat:'lacquer',ex:[0,0,-120],note:'The low stand the whole shrine rests on.'});
+  P('Pedestal plinth',bx(1120,900,240,360),{mat:'lacquer',ex:[0,0,-40]});
+  P('Pedestal waist (koshi)',bx(860,660,360,1040),{mat:'lacquer',grain:2,thk:1,note:'Its four panels carry famous lacquer paintings, such as the prince feeding the tigress.'});
+  const g=[];for(const z of [360,1008]){g.push(BOX(-438,438,-338,-330,z,z+32),BOX(-438,438,330,338,z,z+32),BOX(-438,-430,-338,338,z,z+32),BOX(430,438,-338,338,z,z+32));}
+  for(const sx of [-1,1])for(const sy of [-1,1])g.push(BOX(sx>0?414:-438,sx>0?438:-414,sy>0?314:-338,sy>0?338:-314,392,1008));
+  P('Openwork gilt-bronze fittings',g,{mat:'gilt',prio:2,note:'Beetle wings were once set beneath fittings like these.'});
+  P('Pedestal cap',bx(1100,880,1040,1160),{mat:'lacquer',ex:[0,0,70]});
+  P('Sill',bx(760,580,1160,1190),{mat:'lacquer',ex:[0,0,150]});
+  for(const sx of [-1,1])for(const sy of [-1,1])P('Corner post (hashira)',BOX(sx*380-25,sx*380+25,sy*290-25,sy*290+25,1190,1800),{mat:'lacquer',grain:2,thk:0,ex:[sx*150,sy*150,170]});
+  P('Back wall',BOX(-355,355,250,270,1190,1800),{mat:'lacquer',grain:2,thk:1,ex:[0,230,170]});
+  for(const sx of [-1,1])P('Side wall',BOX(sx*380-10,sx*380+10,-265,265,1190,1800),{mat:'lacquer',grain:2,thk:0,ex:[sx*260,0,170]});
+  for(const sx of [-1,1])P('Door',BOX(sx>0?2:-355,sx>0?355:-2,-292,-272,1200,1790),{mat:'lacquer',grain:2,thk:1,ex:[sx*170,-300,190],note:'Hinged doors open the hall to show the image inside.'});
+  P('Head beam',bx(820,640,1800,1830),{mat:'lacquer',ex:[0,0,270]});
+  const br=[bx(860,680,1830,1890)];for(const sx of [-1,1])for(const sy of [-1,1])br.push(BOX(sx*430-30,sx*430+30,sy*340-30,sy*340+30,1840,1880).concat([[sx,sy,0,430+340]]));
+  P('Cloud-shaped brackets (kumo-tokyō)',br,{mat:'lacquer',ex:[0,0,380],note:'Bracket sets that carry the deep eaves, in the same cloud shape as at Hōryū-ji.'});
+  const s=0.75;P('Hip-and-gable roof (irimoya)',[hipRoof(-650,650,-525,525,1890,2140,28,s),hipRoof(-357,357,-525,525,1890,2320,28,s,false).concat([[0,0,-1,-2140]])],{mat:'lacquer',ex:[0,0,560]});
+  return lfinish(M);
+}
+function mPagoda(){
+  const M=new Model('work',{species:'hinoki',accent:'keyaki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const hole=()=>[lcylZ(0,0,15,-10,2000)];
+  P('Stone platform (kidan)',BOX(-280,280,-280,280,0,45),{mat:'stone',neg:hole()});
+  let z=45;const S=125;const ws=[0,1,2,3,4].map(k=>260-k*32);
+  for(let k=0;k<5;k++){
+    const w=ws[k],h=118-k*6,hw=w/2,ek=hw+118-k*6;
+    P(`Storey ${k+1} walls`,BOX(-hw+8,hw-8,-hw+8,hw-8,z,z+h),{mat:'plaster',neg:hole(),ex:[0,0,k*S]});
+    const po=[];for(const sx of [-1,1])for(const sy of [-1,1])po.push(BOX(sx>0?hw-16:-hw,sx>0?hw:-hw+16,sy>0?hw-16:-hw,sy>0?hw:-hw+16,z,z+h));
+    for(const sx of [-1,1])po.push(BOX(sx>0?hw-16:-hw,sx>0?hw:-hw+16,-8,8,z,z+h),BOX(-8,8,sx>0?hw-16:-hw,sx>0?hw:-hw+16,z,z+h));
+    po.push(BOX(-hw,hw,-hw,-hw+16,z+h-14,z+h),BOX(-hw,hw,hw-16,hw,z+h-14,z+h),BOX(-hw,-hw+16,-hw,hw,z+h-14,z+h),BOX(hw-16,hw,-hw,hw,z+h-14,z+h));
+    P(`Storey ${k+1} posts and beams`,po,{grain:2,thk:0,neg:hole(),ex:[0,0,k*S+8]});
+    z+=h;const bw=hw+34;
+    P(`Storey ${k+1} bracket sets (kumo-tokyō)`,[BOX(-bw,bw,-bw,bw,z+12,z+28).concat([[1,1,0,bw*1.7],[1,-1,0,bw*1.7],[-1,1,0,bw*1.7],[-1,-1,0,bw*1.7]]),BOX(-hw-10,hw+10,-hw-10,hw+10,z,z+14)],{neg:hole(),ex:[0,0,k*S+S*0.12]});
+    z+=28;const top=k<4?ws[k+1]/2+10:20,s=0.42,rise=(ek-top)*s+10;
+    P(`Storey ${k+1} roof`,hipRoof(-ek,ek,-ek,ek,z,z+rise,10,s),{mat:'tile',neg:hole(),ex:[0,0,k*S+S*0.3]});
+    z+=rise;
+  }
+  P('Central pillar (shinbashira)',lcylZ(0,0,13,0,z+30),{grain:2,thk:0,ex:[0,0,2.6*S],note:'Runs from below the floor to the finial. The storeys are built around it.'});
+  const sr=[BOX(-26,26,-26,26,z,z+22),lcylZ(0,0,22,z+22,z+40,14),lcylZ(0,0,5,z+40,z+330,8)];
+  for(let i=0;i<9;i++)sr.push(lcylZ(0,0,19-i*0.6,z+70+i*24,z+76+i*24,14));
+  sr.push(lcylZ(0,0,12,z+300,z+322,10),lcylZ(0,0,7,z+322,z+342,10));
+  P('Bronze finial (sōrin) with nine rings',sr,{mat:'bronze',grain:2,thk:0,ex:[0,0,5*S],note:'The finial’s nine rings are called kurin. Hōryū-ji’s finial also carries four iron sickles.'});
+  return lfinish(M);
+}
+function mShosoin(){
+  const M=new Model('work',{species:'hinoki',accent:'keyaki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const Y=940,hl=40,d=40,K=12,zb=300;
+  const xs=[...Array(10)].map((_,i)=>30+i*(3240/9)),ys=[...Array(4)].map((_,i)=>30+i*(880/3));
+  const st=[],po=[];for(const x of xs)for(const y of ys){st.push(BOX(x-45,x+45,y-45,y+45,0,20));po.push(lcylZ(x,y,30,20,270,14));}
+  P('Foundation stones (soseki)',st,{mat:'stone'});
+  P('Posts (40 in all)',po,{grain:2,thk:0,note:'Forty large posts raise the floor about 2.7 m off the ground.'});
+  P('Floor beams',ys.map(y=>BOX(-30,3330,y-30,y+30,270,zb)),{ex:[0,0,40]});
+  const block=(x0,x1,nm)=>{
+    // front/back walls: logs along x; end walls: logs along y, half a log higher
+    for(const [ya,yb,out] of [[0,d,-1],[Y-d,Y,1]])for(let k=0;k<=K;k++){
+      const z0=zb+k*hl,poly=out<0?[[yb,z0],[yb,z0+hl],[ya,z0+hl/2]]:[[ya,z0+hl],[ya,z0],[yb,z0+hl/2]];
+      const neg=k?[BOX(x0,x0+d,ya,yb,z0-1,z0+hl/2),BOX(x1-d,x1,ya,yb,z0-1,z0+hl/2)]:[];
+      P(`${nm}: ${out<0?'front':'back'} wall log`,prismAx(0,poly,x0-34,x1+34),{neg,ex:[0,out*60,(k+1)*26],note:'A triangular log (azeki): ridged face outside, flat face inside.'});}
+    for(const [xa,xb,out] of [[x0,x0+d,-1],[x1-d,x1,1]]){
+      P(`${nm}: end wall sill`,BOX(xa,xb,d,Y-d,zb,zb+hl/2),{ex:[out*60,0,0]});
+      for(let k=1;k<=K;k++){const z0=zb+(k-0.5)*hl,poly=out<0?[[z0,xb],[z0+hl,xb],[z0+hl/2,xa]]:[[z0+hl,xa],[z0,xa],[z0+hl/2,xb]];
+        P(`${nm}: end wall log`,prismAx(1,poly,-34,Y+34),{grain:1,thk:0,neg:[BOX(xa,xb,0,d,z0-1,z0+hl/2),BOX(xa,xb,Y-d,Y,z0-1,z0+hl/2)],ex:[out*60,0,(k+0.5)*26]});}}
+  };
+  block(0,1100,'South room');block(2200,3300,'North room');
+  for(const [ya,yb,out] of [[6,34,-1],[Y-34,Y-6,1]])P('Middle room: board wall (itakura)',BOX(1100,2200,ya,yb,zb,zb+(K+1)*hl),{grain:0,thk:1,ex:[0,out*90,120]});
+  const zt=zb+(K+1)*hl;
+  P('Wall plates',[BOX(-40,3340,-10,d+10,zt,zt+30),BOX(-40,3340,Y-d-10,Y+10,zt,zt+30)],{ex:[0,0,400]});
+  P('Tiled hip roof',hipRoof(-200,3500,-180,Y+180,zt+30,zt+30+(Y/2+180)*0.62+18,18,0.62),{mat:'tile',ex:[0,0,560]});
+  return lfinish(M);
+}
+function mIse(){
+  const M=new Model('work',{species:'hinoki',accent:'keyaki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const W=540,D=290,yc=D/2,zf=130,zw=330;
+  const pts=[];for(const x of [0,180,360,540])pts.push([x,0],[x,D]);pts.push([0,yc],[540,yc]);
+  P('Earth-fast posts (hottate-bashira)',pts.map(([x,y])=>lcylZ(x,y,15,0,zw,14)),{grain:2,thk:0,note:'Set straight into the ground, with no foundation stones.'});
+  P('Floor and veranda',[BOX(-60,W+60,-60,D+60,zf-12,zf)],{neg:pts.map(([x,y])=>lcylZ(x,y,15,0,zw,14)),ex:[0,0,-20]});
+  const rl=[];for(const [a,b,c,e] of [[-60,W+60,-60,-54],[-60,W+60,D+54,D+60]]){rl.push(BOX(a,b,c,e,zf+46,zf+52),BOX(a,b,c,e,zf+20,zf+25));for(let x=a;x<=b;x+=90)rl.push(BOX(x,x+7,c-1,e+1,zf,zf+56));}
+  for(const [a,b] of [[-60,-54],[W+54,W+60]]){rl.push(BOX(a,b,-60,D+60,zf+46,zf+52),BOX(a,b,-60,D+60,zf+20,zf+25));for(let y=-60;y<=D+60;y+=90)rl.push(BOX(a-1,b+1,y,y+7,zf,zf+56));}
+  P('Railing (kōran)',rl.map(r=>r),{ex:[0,0,40],neg:[BOX(220,320,-70,-50,zf,zf+60)]});
+  P('Front wall',[BOX(15,165,-6,6,zf,zw),BOX(375,525,-6,6,zf,zw)],{grain:0,thk:1,ex:[0,-130,0]});
+  P('Doors (tobira)',BOX(195,345,-8,4,zf,zw-30),{grain:2,thk:1,ex:[0,-210,0]});
+  P('Back wall',BOX(15,525,D-6,D+6,zf,zw),{grain:0,thk:1,ex:[0,130,0]});
+  for(const [x,o] of [[0,-1],[W,1]])P('Gable wall',BOX(x-6,x+6,15,D-15,zf,zw),{grain:1,thk:0,ex:[o*130,0,0]});
+  P('Eave beams',[BOX(-20,W+20,-14,14,zw,zw+22),BOX(-20,W+20,D-14,D+14,zw,zw+22)],{ex:[0,0,110]});
+  const oe=120,th=46,s=0.9,zR=zw+22+th+(yc+oe)*s;
+  P('Thatched roof (kaya)',prismAx(0,[[-oe,zw+22],[D+oe,zw+22],[D+oe,zw+22+th],[yc,zR],[-oe,zw+22+th]],-100,W+100),{mat:'thatch',ex:[0,0,300],note:'A thick thatch of miscanthus grass, renewed with each rebuilding.'});
+  P('Ridge cover',BOX(-110,W+110,yc-26,yc+26,zR-22,zR+12),{ex:[0,0,380]});
+  P('Katsuogi (ten ridge logs)',[...Array(10)].map((_,i)=>lcylY(zR+24,10+i*(W-20)/9,12,yc-50,yc+50)),{grain:1,thk:0,ex:[0,0,470]});
+  for(const [x,o] of [[-108,-1],[W+96,1]])P('Chigi (crossed gable finials)',[slab([-oe,zw+22+th],[yc+oe,zR-zw-22-th],(yc+oe)*1.3+130,24,x,x+12),slab([D+oe,zw+22+th],[-(yc+oe),zR-zw-22-th],(yc+oe)*1.3+130,-24,x,x+12)],{grain:1,thk:0,ex:[o*110,0,360],note:'At the Inner Shrine their tips are cut horizontally.'});
+  for(const [x,o] of [[-70,-1],[W+70,1]])P('Ridge-supporting post (munamochi-bashira)',lcylZ(x,yc,14,0,zR-30,14),{grain:2,thk:0,ex:[o*60,0,0],note:'Free-standing posts outside each gable end that carry the ridge beam.'});
+  P('Ridge beam (munagi)',BOX(-84,W+84,yc-14,yc+14,zR-58,zR-30),{ex:[0,0,240]});
+  const sts=[];for(let i=0;i<5;i++)sts.push(BOX(225,315,-60-(i+1)*24,-60,0,zf-12-i*24));
+  P('Stair (kizahashi)',sts,{ex:[0,-110,0]});
+  return lfinish(M);
+}
+function mKiyomizu(){
+  const M=new Model('work',{species:'keyaki',accent:'hinoki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const xs=[0,130,260,390,520,650],ys=[0,150,300],k=560/530,g=y=>(y+150)*k,zt=640,zd=zt+58,r=20,ht=34,top=560;
+  P('Hillside',prismAx(0,[[-150,0],[640,0],[640,top],[380,top]],-60,710),{mat:'earth',note:'The hall stands on the hilltop; the stage reaches out over the slope.'});
+  const holes={};for(const x of xs)for(const y of ys)holes[x+','+y]=[];
+  const yl=[];for(const z of [415,535,600]){const rows=ys.filter(y=>g(y)+40<z);if(rows.length>=2)yl.push([z,rows]);}
+  const xl=[];ys.forEach((y,j)=>{for(let z=g(y)+55;z+ht<zt-28;z+=60){if(yl.some(([zy,rows])=>rows.includes(y)&&Math.abs(zy-z)<ht+6))continue;
+    if(xl.some(([jj,,zz])=>jj===j&&z-zz<110))continue;xl.push([j,y,z]);}});
+  const wedges=[];
+  xl.forEach(([j,y,z])=>{for(const x of xs){holes[x+','+y].push(BOX(x-26,x+26,y-6,y+6,z,z+ht));wedges.push(BOX(x-31,x-21,y-6,y+6,z+27,z+ht),BOX(x+21,x+31,y-6,y+6,z+27,z+ht));}
+    P('Nuki (through tie beam)',BOX(-45,695,y-6,y+6,z,z+27),{note:'Passes right through every post in the row and is locked with wedges.'});});
+  for(const [z,rows] of yl){for(const x of xs){for(const y of rows){holes[x+','+y].push(BOX(x-6,x+6,y-26,y+26,z,z+ht));wedges.push(BOX(x-6,x+6,y-31,y-21,z+27,z+ht),BOX(x-6,x+6,y+21,y+31,z+27,z+ht));}
+    P('Nuki (through tie beam)',BOX(x-6,x+6,rows[0]-45,rows[rows.length-1]+45,z,z+27),{grain:1,thk:0});}}
+  for(const x of xs)for(const y of ys)P('Zelkova post (keyaki)',lcylZ(x,y,r,g(y)-15,zt,14),{grain:2,thk:0,neg:holes[x+','+y],note:'One of the tall keyaki posts. The stage has 18 main posts.'});
+  P('Wedges (kusabi)',wedges,{species:'accent',note:'Driven in beside each nuki to lock it in its post.'});
+  P('Head beams',ys.map(y=>BOX(-45,695,y-14,y+14,zt,zt+28)));
+  const js=[];for(let x=-40;x<=690;x+=73)js.push(BOX(x-9,x+9,-70,380,zt+28,zt+48));
+  P('Floor joists (neda)',js,{grain:1,thk:0});
+  P('Hinoki floorboards',BOX(-55,705,-75,385,zt+48,zd),{species:'accent',grain:1,thk:2});
+  const rl=[BOX(-55,705,-75,-65,zd+50,zd+60),BOX(-55,-45,-75,385,zd+50,zd+60),BOX(695,705,-75,385,zd+50,zd+60)];
+  for(let x=-55;x<=705;x+=95)rl.push(BOX(x,x+10,-75,-65,zd,zd+50));for(let y=-75;y<=385;y+=92)rl.push(BOX(-55,-45,y,y+10,zd,zd+50),BOX(695,705,y,y+10,zd,zd+50));
+  P('Railing (kōran)',rl,{species:'accent'});
+  P('Stone base of the hall',BOX(-50,700,385,600,top,zt+28),{mat:'stone',note:'The main hall rests on the hilltop.'});
+  P('Main hall (Hondō), simplified',BOX(-40,690,385,580,zt+28,zt+250),{species:'accent',grain:0,thk:1});
+  P('Cypress-bark roof (hiwada-buki)',hipRoof(-150,800,300,670,zt+250,zt+250+185*0.6+16,16,0.6),{mat:'bark'});
+  return lfinish(M);
+}
+function mDojinsai(){
+  const M=new Model('work',{species:'hinoki',accent:'keyaki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const N=2865,b=390,zt=55,zk=1760,ps=105;
+  const mats=[[0,1910,0,955,0],[1910,N,0,1910,1],[955,N,1910,N,0],[0,955,955,N,1],[955,1910,955,1910,0]];
+  mats.forEach(([x0,x1,y0,y1,gr],i)=>P(i===4?'Half mat':'Tatami mat',BOX(x0+3,x1-3,y0+3,y1-3,0,zt),{mat:'tatami',grain:gr,thk:2,ex:[((x0+x1)/2-N/2)*0.25,((y0+y1)/2-N/2)*0.25,-160]}));
+  for(const x of [0,1430,N])P('Post (hashira)',BOX(x-ps/2,x+ps/2,N-ps/2,N+ps/2,0,2050),{grain:2,thk:0});
+  P('Head rail (nageshi)',BOX(-ps/2,N+ps/2,N-ps/2-16,N-ps/2,zk,zk+90),{ex:[0,-200,200]});
+  // tsuke-shoin bay, west half
+  const x0=ps/2,x1=1430-ps/2,yo=N+b;
+  P('Desk board (shoin-ita)',BOX(x0,x1,N-40,yo-30,360,395),{species:'accent',ex:[0,-500,60],note:'The built-in desk of the tsuke-shoin, lit by the shōji above.'});
+  P('Lower wall (koshi-kabe)',BOX(x0,x1,yo-30,yo,zt,360),{mat:'plaster',ex:[0,250,0]});
+  const xm=(x0+x1)/2;
+  for(const [a,c,yy,o] of [[x0,xm+20,yo-58,-1],[xm-20,x1,yo-34,1]]){
+    const fr=[BOX(a,a+30,yy,yy+22,395,1400),BOX(c-30,c,yy,yy+22,395,1400),BOX(a,c,yy,yy+22,395,440),BOX(a,c,yy,yy+22,1360,1400)];
+    for(let i=1;i<4;i++){const x=a+30+i*(c-a-60)/4;fr.push(BOX(x-5,x+5,yy+4,yy+18,440,1360));}
+    for(let i=1;i<8;i++){const z=440+i*920/8;fr.push(BOX(a+30,c-30,yy+4,yy+18,z-5,z+5));}
+    P('Shōji',fr,{grain:2,thk:1,ex:[o*180,-760,60],note:'Kumiko lattice covered with washi on the outside.'});
+    P('Washi',BOX(a+30,c-30,yy+22,yy+23,440,1360),{mat:'paper',grain:0,thk:1,ex:[o*180,-640,60]});}
+  P('Lintel (kamoi)',BOX(x0,x1,yo-62,yo,1400,1450),{ex:[0,-300,240]});
+  P('Upper wall (kokabe)',BOX(x0,x1,yo-30,yo,1450,zk),{mat:'plaster',ex:[0,250,200]});
+  // chigaidana bay, east half
+  const c0=1430+ps/2,c1=N-ps/2;
+  P('Back wall',BOX(c0,c1,yo-30,yo,zt,zk),{mat:'plaster',ex:[0,250,0]});
+  for(const [x,o] of [[1430,0],[N,1]])P('Bay side wall',BOX(x-14,x+14,N+ps/2,yo,zt,zk),{mat:'plaster',ex:[o?160:0,250,0]});
+  P('Side wall',BOX(-14,14,N+ps/2,yo,zt,zk),{mat:'plaster',ex:[-160,250,0]});
+  P('Alcove floor board (jiita)',BOX(c0,c1,N-ps/2,yo-30,zt,zt+45),{species:'accent',ex:[0,-300,-40]});
+  P('Upper shelf',BOX(c0,2250,N-30,yo-30,1130,1160),{species:'accent',ex:[0,-620,180],note:'The two shelves of the chigaidana sit at different heights.'});
+  P('Lower shelf',BOX(2050,c1,N-30,yo-30,930,960),{species:'accent',ex:[0,-620,-60]});
+  P('Shelf post (ebizuka)',BOX(2130,2160,N-20,N+10,960,1130),{ex:[0,-860,60],note:'The little post that joins the two shelves.'});
+  P('Wall above the shelves',BOX(c0,c1,N-30,N+30,1450,zk),{mat:'plaster',ex:[0,-200,260]});
+  return lfinish(M);
+}
+function mKaidan(){
+  const M=new Model('work',{species:'sugi',accent:'keyaki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const D=700,t=18,bw=450;
+  const plans=[[['d',198],['d',198]],[['d',200],['d',200],['s',428]],[['d',220],['d',220],['s',600],['d',220]]];
+  plans.forEach((pl,i)=>{
+    const x0=i*bw,x1=x0+bw,H=bw*(i+1),bx=[(i-1)*300,0,i*70],add=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],nm=`Step ${i+1}`;
+    P(`${nm}: tread (top)`,BOX(x0,x1,0,D,H-t,H),{ex:add(bx,[0,0,140])});
+    P(`${nm}: left side`,BOX(x0,x0+t,0,D,0,H-t),{grain:2,thk:0,ex:add(bx,[-70,0,0])});
+    P(`${nm}: right side`,BOX(x1-t,x1,0,D,0,H-t),{grain:2,thk:0,ex:add(bx,[70,0,0])});
+    P(`${nm}: back`,BOX(x0+t,x1-t,D-9,D,t,H-t),{grain:2,thk:1,ex:add(bx,[0,140,0])});
+    let z=0;const divs=[BOX(x0+t,x1-t,0,D-9,0,t)];z=t;
+    pl.forEach(([k,h],j)=>{const za=z,zb=z+h,xc=(x0+x1)/2;
+      if(k==='d'){P(`${nm}: drawer`,[BOX(x0+t+1,x1-t-1,0,18,za+1,zb-1),BOX(x0+t+3,x1-t-3,18,D-24,za+1,zb-18)],{species:'accent',neg:[BOX(x0+t+13,x1-t-13,18,D-34,za+11,zb)],ex:add(bx,[0,-480,0])});
+        const zc=(za+zb)/2;P('Iron pull (warabite)',[BOX(xc-48,xc+48,-3,0,zc-18,zc+18),BOX(xc-36,xc+36,-16,-10,zc-4,zc+4),BOX(xc-36,xc-30,-10,-3,zc-4,zc+4),BOX(xc+30,xc+36,-10,-3,zc-4,zc+4)],{mat:'iron',ex:add(bx,[0,-480,0]),note:'Hand-forged iron pulls and plates protect the edges and lock the drawers on many tansu.'});}
+      else{P(`${nm}: sliding door`,BOX(x0+t,xc+22,4,16,za+1,zb-1),{grain:2,thk:1,species:'accent',ex:add(bx,[-120,-300,0])});P(`${nm}: sliding door`,BOX(xc-22,x1-t,20,32,za+1,zb-1),{grain:2,thk:1,species:'accent',ex:add(bx,[120,-240,0])});}
+      z=zb;if(j<pl.length-1){divs.push(BOX(x0+t,x1-t,0,D-9,z,z+t));z+=t;}});
+    P(`${nm}: bottom and dividers`,divs,{ex:add(bx,[0,-60,0])});
+  });
+  return lfinish(M);
+}
+
+// ----- joint close-ups for the famous works
+function dNuki(){
+  const M=new Model('work',{species:'keyaki',accent:'hinoki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const wx=(z0,x0,x1,th)=>[[z0,x0],[z0+th,x0],[z0,x1]];
+  P('Post',lcylZ(0,0,45,0,520,20),{grain:2,thk:0,neg:[BOX(-50,50,-13,13,150,232),BOX(-13,13,-50,50,330,412)],note:'A round zelkova post with two through mortises.'});
+  P('Nuki, front to back',BOX(-13,13,-260,260,330,400),{grain:1,thk:0,ex:[0,-330,0]});
+  P('Nuki, side to side',BOX(-260,260,-13,13,150,220),{ex:[330,0,0],note:'Passes right through the post.'});
+  P('Wedges (kusabi)',[prismAx(1,[[220,20],[232,20],[220,80]],-13,13),prismAx(1,[[220,-20],[232,-20],[220,-80]],-13,13)],{species:'accent',ex:[0,0,140],note:'Driven in above the nuki to lock it.'});
+  P('Wedges (kusabi)',[prismAx(0,[[20,400],[20,412],[80,400]],-13,13),prismAx(0,[[-20,400],[-20,412],[-80,400]],-13,13)],{species:'accent',ex:[0,0,160]});
+  return lfinish(M).parts;
+}
+function dAzekura(){
+  const M=new Model('work',{species:'hinoki',accent:'keyaki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const d=50,h=50,L=380,ov=60;
+  for(let k=0;k<3;k++){const z0=k*h;
+    P('Front wall log (azeki)',prismAx(0,[[d,z0],[d,z0+h],[0,z0+h/2]],-ov,L),{neg:k?[BOX(0,d,0,d,z0-1,z0+h/2)]:[],ex:[0,-20,(2*k)*48],note:'Ridged face outside, flat face inside.'});
+    const z1=(k+0.5)*h;
+    P('Side wall log (azeki)',prismAx(1,[[z1,d],[z1+h,d],[z1+h/2,0]],-ov,L),{grain:1,thk:0,neg:[BOX(0,d,0,d,z1-1,z1+h/2)],ex:[-20,0,(2*k+1)*48],note:'Notched on its underside where it crosses the other wall.'});}
+  return lfinish(M).parts;
+}
+function dBracket(){
+  const M=new Model('work',{species:'hinoki',accent:'keyaki'}),P=(n,pos,o)=>lpart(M,n,pos,o);
+  const dw=(x,z)=>BOX(x-12,x+12,-12,12,z-30,z+30);
+  P('Post (hashira)',lcylZ(0,0,70,0,300,20),{grain:2,thk:0,neg:[dw(0,300)]});
+  P('Large bearing block (daito)',BOX(-100,100,-100,100,300,390).concat([[1,0,-1.2,100-1.2*330+1.2*0],[-1,0,-1.2,100-1.2*330],[0,1,-1.2,100-1.2*330],[0,-1,-1.2,100-1.2*330]]),{neg:[dw(0,300),BOX(-110,110,-36,36,350,391)],ex:[0,0,130],note:'Sits on the post, located by a hidden dowel.'});
+  P('Cloud-shaped arm (kumo-hijiki)',BOX(-320,320,-36,36,350,450).concat([[1,0,-1.1,320-1.1*380],[-1,0,-1.1,320-1.1*380]]),{grain:0,thk:1,neg:[dw(-230,450),dw(230,450)],ex:[0,0,260],note:'Lies in the slot across the top of the block. At Hōryū-ji it is carved in a cloud-like curve.'});
+  for(const x of [-230,230])P('Small bearing block (makito)',BOX(x-55,x+55,-55,55,450,510).concat([[1,0,-1.4,55+x-1.4*470],[-1,0,-1.4,55-x-1.4*470]]),{neg:[dw(x,450)],ex:[0,0,390]});
+  P('Hidden dowels (dabo)',[dw(0,300),dw(-230,450),dw(230,450)],{species:'accent',grain:2,thk:0,ex:[0,0,200],note:'Short hardwood dowels that stop each part from sliding.'});
+  P('Beam (keta)',BOX(-420,420,-50,50,510,610),{ex:[0,0,520]});
+  return lfinish(M).parts;
+}
+const LEARN=(()=>{
+  const el=$('#learn');let lv=null,gq='',gcat='all',flash=null;const models={};
+  const slug=t=>t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const terms=new Set(GLOSS.map(g=>g[1]));const work=id=>WORKS.find(w=>w.id===id);
+  const termBtn=t=>terms.has(t)?`<button data-gt="${esc(t)}">${esc(t)}</button>`:'';
+  const workBtn=id=>{const w=work(id);return w?`<button class="w" data-w="${id}">3D: ${esc(w.name)}</button>`:'';};
+  let curWork=WORKS[0].id;
+  function syncModes(){const on=document.body.dataset.mode==='learn';document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===(on?'learn':S&&S.mode==='practice'?'practice':'design')));}
+  function nav(sub){return `<nav class="tabs lnav" role="tablist" aria-label="Theory and history">${[['','Glossary'],['history','History'],['works','Famous works']].map(([k,l])=>`<a href="#learn${k?'/'+k:''}" role="tab" aria-selected="${sub===k}">${l}</a>`).join('')}</nav>`;}
+  function card(g){const [c,t,kj,en,d,see,ws]=g;
+    return `<article class="gent" id="g-${slug(t)}"><header><span class="kj" lang="ja">${kj}</span><div><h3>${esc(t)}</h3><div class="en">${esc(en)}</div></div></header><p>${esc(d)}</p>${(see&&see.length)||(ws&&ws.length)?`<div class="gsee">${(ws||[]).map(workBtn).join('')}${(see||[]).map(termBtn).join('')}</div>`:''}</article>`;}
+  function gitems(){
+    const q=gq.trim().toLowerCase(),nq=q.normalize('NFD').replace(/[̀-ͯ]/g,'');
+    const hit=g=>!q||[g[1],g[2],g[3],g[4]].some(s=>{const l=s.toLowerCase();return l.includes(q)||l.normalize('NFD').replace(/[̀-ͯ]/g,'').includes(nq);});
+    let h='',n=0;for(const [c,l] of GLOSS_CATS){if(gcat!=='all'&&gcat!==c)continue;const L=GLOSS.filter(g=>g[0]===c&&hit(g));if(!L.length)continue;n+=L.length;h+=`<h3 class="ghead">${l}</h3>`+L.map(card).join('');}
+    return n?h:`<p class="hint">No terms match “${esc(gq)}”.</p>`;
+  }
+  function glossary(){
+    return `<div class="lwrap"><h2 class="lh">Glossary</h2><p class="lintro">The Japanese words behind the craft: ideas and trades, joints, tools, woods and finishes, and the furniture and buildings they make. Buttons marked 3D open a famous work in the 3D viewer.</p>
+    <div class="gtools"><input type="search" id="gq" placeholder="Search, e.g. nuki, plane or 継手" value="${esc(gq)}" aria-label="Search the glossary"><div class="gchips" role="group" aria-label="Show">${[['all','All'],...GLOSS_CATS].map(([k,l])=>`<button class="pill" data-gc="${k}" aria-pressed="${gcat===k}">${l}</button>`).join('')}</div></div>
+    <div class="ggrid" id="ggrid">${gitems()}</div></div>`;
+  }
+  function history(){
+    return `<div class="lwrap narrow"><h2 class="lh">History</h2><p class="lintro">How Japanese joinery grew from temple building to fine cabinetmaking, in a dozen moments. Dates before the modern era are approximate, and some are traditional rather than proven.</p>
+    <ol class="tline">${HISTORY.map(([d,h,t,ws])=>`<li><div class="d">${esc(d)}</div><h3>${esc(h)}</h3><p>${esc(t)}</p>${ws.length?`<div class="gsee">${ws.map(workBtn).join('')}</div>`:''}</li>`).join('')}</ol></div>`;
+  }
+  function works(id){
+    const w=work(id)||WORKS[0];curWork=w.id;
+    return `<div class="lwrap"><div class="wgrid"><div class="wlist" role="list">${WORKS.map(x=>`<button role="listitem" data-w="${x.id}" aria-current="${x.id===w.id}"><span class="wn">${esc(x.name)}</span><span class="wd">${esc(x.date)}</span></button>`).join('')}</div>
+    <div class="wdet"><div class="whead"><div class="big kj" lang="ja">${w.kj}</div><div><h2>${esc(w.name)}</h2><div class="wfacts"><span>${esc(w.date)}</span><span>${esc(w.place)}</span><span>${esc(w.status)}</span><span>${esc(w.size)}</span></div></div></div>
+    <div class="wstage"><canvas aria-label="3D model of the ${esc(w.name)}. Drag to orbit, scroll or pinch to zoom, tap a part to see what it is."></canvas>
+      <div class="ov tl"><div class="seg lviews" role="group" aria-label="Camera"><button data-lv="iso" aria-pressed="true">3D</button><button data-lv="front">Front</button><button data-lv="side">Side</button><button data-lv="top">Top</button></div></div>
+      <div class="ov bl"><div class="info" hidden></div></div></div>
+    <p class="wnote">${esc(w.model)}</p>
+    <p>${esc(w.intro)}</p><h3>What to look for</h3><ul class="wlook">${w.look.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
+    ${w.joint?`<h3>Joint up close: ${esc(w.joint.title)} <span class="kj" lang="ja">${w.joint.kj}</span></h3><p>${esc(w.joint.text)}</p>
+    <div class="wstage jstage"><canvas aria-label="3D close-up of the ${esc(w.joint.title.toLowerCase())}. Drag to turn it, tap a part to see what it is."></canvas>
+      <div class="ov bl"><div class="info" hidden></div><div class="explode"><button class="pill lx" aria-pressed="true">Exploded</button><label class="hint" for="lxr">Spread</label><input type="range" id="lxr" min="0" max="100" value="100"></div></div></div>
+    <p class="wnote">${esc(w.joint.note)}</p>`:`<p class="hint">${esc(w.nojoint||'')}</p>`}
+    <h3>Terms</h3><div class="gsee">${w.terms.map(termBtn).join('')}</div></div></div></div>`;
+  }
+  const views=[];
+  function viewerIn(box,parts,cam,ex,fitK){
+    const v=new Viewer(box.querySelector('canvas'),{fitK:fitK||1.02});v.setColors(viewer.bgCol,viewer.inkCol);v.accent=viewer.accent;
+    v.cam.yaw=cam.yaw;v.cam.pitch=cam.pitch;v.explode=ex;v.setScene(parts);const rec={v,dead:false};views.push(rec);
+    new ResizeObserver(()=>{if(!rec.dead)v.request(1);}).observe(box);
+    const info=box.querySelector('.info');
+    v.onPick=p=>{v.sel=p?p.id:-1;v.request(1);if(!p){info.hidden=true;return;}const mat=p.wood&&p.wood.name;
+      info.innerHTML=`<b>${esc(p.name)}</b>${mat?esc(mat):''}${p.note?`<br>${esc(p.note)}`:''}`;info.hidden=false;};
+    return v;
+  }
+  const details={};
+  function detailOf(w){
+    if(details[w.id])return details[w.id];const j=w.joint;let parts=null;
+    if(j.build)parts=j.build();
+    else{const mm=exModel({ref:j.ref});if(mm)parts=detailParts(mm.I,mm.m);}
+    return details[w.id]=parts;
+  }
+  function mount(w){
+    for(const r of views)r.dead=true;views.length=0;
+    const box=el.querySelector('.wstage');if(!box)return;
+    let M0=models[w.id];if(!M0){try{M0=models[w.id]=w.build();}catch(e){console.error(e);box.innerHTML='<div class="busy">This model could not be built.</div>';return;}}
+    const v=viewerIn(box,M0.parts,w.cam,0);lv={v,dead:false};
+    box.querySelector('.lviews').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;box.querySelectorAll('.lviews button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      if(b.dataset.lv==='iso'){v.cam.yaw=w.cam.yaw;v.cam.pitch=w.cam.pitch;v.fit();v.request(1);}else v.view(b.dataset.lv);});
+    const jb=el.querySelector('.jstage');if(!jb||!w.joint)return;
+    let parts=null;try{parts=detailOf(w);}catch(e){console.error(e);}
+    if(!parts||!parts.length){jb.innerHTML='<div class="busy">This close-up could not be built.</div>';return;}
+    const jv=viewerIn(jb,parts,w.joint.cam||{yaw:-2.25,pitch:0.45},1,0.95);
+    const xb=jb.querySelector('.lx'),xr=jb.querySelector('#lxr');
+    xb.addEventListener('click',()=>{const to=jv.explode>0.5?0:1;xb.setAttribute('aria-pressed',to===1);xb.textContent=to?'Exploded':'Assembled';animateExplode(jv,to,()=>{xr.value=Math.round(jv.explode*100);});});
+    xr.addEventListener('input',()=>{jv.explode=xr.value/100;const on=jv.explode>0.5;xb.setAttribute('aria-pressed',on);xb.textContent=on?'Exploded':'Assembled';jv.render(0.5);clearTimeout(jv.idleT);jv.idleT=setTimeout(()=>jv.request(1),150);});
+  }
+  function jumpTerm(t){
+    if(!location.hash.match(/^#learn\/?$/)){gq='';gcat='all';flash=t;location.hash='#learn';return;}
+    let n=el.querySelector('#g-'+slug(t));if(!n){gq='';gcat='all';render('');n=el.querySelector('#g-'+slug(t));}
+    if(!n)return;n.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
+    n.classList.remove('flash');void n.offsetWidth;n.classList.add('flash');
+  }
+  function render(sub){
+    const [a,b]=sub.split('/');const key=a==='works'||a==='history'?a:'';
+    if(lv){lv.dead=true;lv=null;}for(const r of views)r.dead=true;views.length=0;
+    el.innerHTML=nav(key)+(key==='works'?works(b||curWork):key==='history'?history():glossary());
+    if(key==='works')mount(work(curWork));
+    if(!key&&flash){const t=flash;flash=null;requestAnimationFrame(()=>jumpTerm(t));}
+  }
+  el.addEventListener('click',e=>{
+    const gc=e.target.closest('[data-gc]');if(gc){gcat=gc.dataset.gc;el.querySelectorAll('[data-gc]').forEach(x=>x.setAttribute('aria-pressed',x===gc));$('#ggrid').innerHTML=gitems();return;}
+    const gt=e.target.closest('[data-gt]');if(gt){jumpTerm(gt.dataset.gt);return;}
+    const w=e.target.closest('[data-w]');if(w){location.hash='#learn/works/'+w.dataset.w;el.scrollTop=0;if(innerWidth<900)window.scrollTo(0,0);}
+  });
+  el.addEventListener('input',e=>{if(e.target.id==='gq'){gq=e.target.value;$('#ggrid').innerHTML=gitems();}});
+  const recolor=()=>{for(const r of views)if(!r.dead){r.v.setColors(viewer.bgCol,viewer.inkCol);r.v.accent=viewer.accent;r.v.foot=null;r.v.request(1);}};
+  new MutationObserver(()=>setTimeout(recolor,0)).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>setTimeout(recolor,0));
+  return {
+    show(sub){const was=document.body.dataset.mode==='learn';document.body.dataset.mode='learn';el.hidden=false;syncModes();render(sub||'');if(!was||!sub.startsWith('works/')){el.scrollTop=0;}},
+    hide(){if(document.body.dataset.mode!=='learn')return;delete document.body.dataset.mode;el.hidden=true;if(lv){lv.dead=true;lv=null;}for(const r of views)r.dead=true;views.length=0;el.innerHTML='';syncModes();},
+    syncModes,models,details,detailOf:id=>detailOf(work(id)),build:id=>work(id).build()
+  };
+})();
 // ---------- boot
 function boot(){
   let saved=null;try{saved=JSON.parse(localStorage.getItem('sashimono-v1')||'null');}catch(e){}
@@ -3535,7 +4251,7 @@ function boot(){
   S.tab='model';renderSide();themeColors();rebuild(false);route();
 }
 boot();
-window.__ss={viewer,get M(){return M},get S(){return S},set S(v){S=v},rebuild,getSheet,sheetList,renderTab,renderSide,newState,jointGroups,partGroups,buildSteps,jointDoc,ctxDoc};
+window.__ss={viewer,LEARN,WORKS,get M(){return M},get S(){return S},set S(v){S=v},rebuild,getSheet,sheetList,renderTab,renderSide,newState,jointGroups,partGroups,buildSteps,jointDoc,ctxDoc};
 
 }
 </script>
