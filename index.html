@@ -293,12 +293,68 @@ body[data-mode=learn] .app,body[data-mode=learn] .summary{display:none}
   .gtools{top:45px}
   .modes button{padding:0 11px}
 }
+
+/* joint designer */
+body[data-mode=jd] .app,body[data-mode=jd] .summary{display:none}
+.jd{flex:1;min-height:0;background:var(--bg)}
+.jd[hidden]{display:none}
+.jdapp{display:grid;grid-template-columns:360px minmax(0,1fr);grid-template-areas:"aside main";height:100%;min-height:0}
+.jdside{grid-area:aside;border-right:1px solid var(--line);background:var(--panel);overflow-y:auto;padding:6px 16px 40px}
+.jdmain{grid-area:main;display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0}
+.jdpane{display:none;overflow:auto;min-height:0}
+.jdpane.on{display:block}
+.jdpane[data-pane=model].on{display:grid;grid-template-rows:minmax(0,1fr)}
+.jdfams{display:flex;flex-wrap:wrap;gap:6px}
+.jdfams .pill{font-size:13px;min-height:34px;padding:0 10px;gap:6px}
+.jdfams .kj{font-size:13px;opacity:.75}
+.jdlist{display:grid;gap:6px}
+.jdlist button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 10px;cursor:pointer;min-height:48px}
+.jdlist button[aria-current=true]{border-color:var(--shu);box-shadow:inset 0 0 0 1px var(--shu)}
+.jdlist .kj{font-size:17px;color:var(--shu);min-width:3.2em;line-height:1.15}
+.jdlist b{display:block;font-weight:500;line-height:1.25}
+.jdlist .en{display:block;font-size:12.5px;color:var(--mute);line-height:1.3}
+.jdpips{font-size:9px;letter-spacing:1px;color:var(--mute);white-space:nowrap}
+.jdauto{font-size:10.5px;background:var(--chip);color:var(--mute);border-radius:4px;padding:0 5px;margin-left:4px;vertical-align:1px}
+.jdreset{border:0;background:none;color:var(--shu);cursor:pointer;padding:0 4px;font-size:14px;line-height:1;min-height:0}
+input.isauto{color:var(--mute)}
+.jdang .jdangrow{display:grid;grid-template-columns:minmax(0,1fr) 6.5em;gap:10px;align-items:center}
+.jdang input[type=range]{width:100%}
+.jdquick{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.jdquick .pill{min-height:30px;padding:0 9px;font-size:13px}
+.jdbeam{border:1px solid var(--line);border-radius:10px;background:var(--bg);margin:6px 0;padding:0 10px}
+.jdbeam summary{cursor:pointer;padding:10px 0;font-size:14px;min-height:40px}
+.jdbeam[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+.jdbeam .fields{padding-bottom:4px}
+.jdbeam>.btns{padding-bottom:10px}
+.jdstage{min-height:360px}
+.ov.tr{right:12px;top:12px}
+.jdtitle{display:flex;gap:10px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 12px;max-width:min(520px,calc(100% - 250px))}
+.jdtitle .kj{font-size:20px;color:var(--shu);line-height:1.1}
+.jdtitle b{display:block;line-height:1.2}
+.jdtitle span:not(.kj):not(.jdpips){display:block;font-size:13px;color:var(--mute);line-height:1.3}
+.jdbl{display:grid;gap:6px;justify-items:start;max-width:460px}
+.jdjson{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow:auto;font-size:13px;line-height:1.45;max-height:420px}
+#jdCut code,#jdFileTab code{background:var(--chip);border-radius:4px;padding:0 4px;font-size:13px}
+@media(max-width:899px){
+  .jdapp{display:flex;flex-direction:column;height:auto}
+  .jdmain{display:contents}
+  .jdmain>.tabs{order:1;position:sticky;top:0;z-index:6}
+  .jdpane{order:2;overflow:visible}
+  .jdpane[data-pane=model].on{display:contents}
+  .jdstage{order:2;position:sticky;top:45px;z-index:5;height:50svh;min-height:300px;border-bottom:1px solid var(--line)}
+  .jdside{order:3;border-right:0;display:none}
+  .jd:has([data-pane=model].on) .jdside{display:block}
+  .jdtitle{max-width:calc(100% - 20px)}
+  .ov.tr{top:auto;bottom:auto;right:12px;top:64px}
+  .jdbl{max-width:none}
+  .modes button{padding:0 9px;font-size:14px}
+}
 </style>
 </head>
 <body data-tab="model">
 <header class="top">
   <div class="brand"><div class="seal kj" aria-hidden="true">指物</div><div><h1>Sashimono Studio</h1><p>Japanese joinery furniture, drawn to size</p></div></div>
-  <nav class="modes" aria-label="Mode"><button data-m="design" aria-pressed="true">Design</button><button data-m="practice" aria-pressed="false">Practice</button><button data-m="learn" aria-pressed="false">Theory &amp; history</button></nav>
+  <nav class="modes" aria-label="Mode"><button data-m="design" aria-pressed="true">Design</button><button data-m="practice" aria-pressed="false">Practice</button><button data-m="jd" aria-pressed="false">Joint designer</button><button data-m="learn" aria-pressed="false">Theory &amp; history</button></nav>
   <div class="summary" id="summary" aria-live="polite"></div>
 </header>
 <div class="app">
@@ -379,6 +435,7 @@ body[data-mode=learn] .app,body[data-mode=learn] .summary{display:none}
   </aside>
 </div>
 <div class="learn" id="learn" hidden></div>
+<div class="jd" id="jdesigner" hidden></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
 {
@@ -2963,7 +3020,7 @@ function renderSide(){
   const opt=([k,v])=>`<option value="${k}" ${k===S.preset?'selected':''}>${esc(v.label)}</option>`,ents=Object.entries(PRESETS[S.kind]);
   const fe=ents.filter(([,v])=>!v.practice),cpr=PRESETS[S.kind][S.preset],pm=S.mode==='practice';
   $('#preset').innerHTML=fe.map(opt).join('')+(cpr&&!cpr.practice?'':'<option selected>Custom</option>');
-  document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===(document.body.dataset.mode==='learn'?'learn':pm?'practice':'design')));
+  document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===(document.body.dataset.mode||(pm?'practice':'design'))));
   $('#secPiece').hidden=pm;$('#secLevel').hidden=pm;$('#secPractice').hidden=!pm;if(!pm)delete document.body.dataset.pview;$('#t-exercise').hidden=!pm;if(!pm&&location.hash==='#exercise')location.hash='#model';$('#customHint').hidden=S.kind!=='custom';
   if(pm)renderPractice();
   renderShape();
@@ -3047,7 +3104,8 @@ function setMode(m){
 }
 document.querySelector('.modes').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;
   if(b.dataset.m==='learn'){if(!location.hash.startsWith('#learn'))location.hash='#learn';return;}
-  if(location.hash.startsWith('#learn'))location.hash='#model';setMode(b.dataset.m);});
+  if(b.dataset.m==='jd'){if(!location.hash.startsWith('#jd'))location.hash='#jd';return;}
+  if(location.hash.startsWith('#learn')||location.hash.startsWith('#jd'))location.hash='#model';setMode(b.dataset.m);});
 
 // ---------- joint exercises (practice mode)
 // Short bench exercises on offcuts: one joint (or skill) each, with a twist that makes it a real test.
@@ -3584,7 +3642,8 @@ let pendingCard=null;
 // ---------- tabs
 const TABS=['model','drawings','joints','cutlist','steps','exercise'];const done={};
 function route(){
-  if(location.hash.startsWith('#learn')){LEARN.show(location.hash.slice(7));return;}LEARN.hide();
+  if(location.hash.startsWith('#learn')){JD.hide();LEARN.show(location.hash.slice(7));return;}LEARN.hide();
+  if(location.hash.startsWith('#jd')){JD.show(location.hash.slice(4));return;}JD.hide();
   let t=location.hash.slice(1);if(!TABS.includes(t)||(t==='exercise'&&S.mode!=='practice'))t='model';S.tab=t;document.body.dataset.tab=t;
   for(const k of TABS){const on=k===t;document.getElementById('tab-'+k).classList.toggle('on',on);document.getElementById('t-'+k).setAttribute('aria-selected',on);}
   if(t==='model')viewer.request(1);else renderTab(t);
@@ -4272,7 +4331,7 @@ const LEARN=(()=>{
   const termBtn=t=>terms.has(t)?`<button data-gt="${esc(t)}">${esc(t)}</button>`:'';
   const workBtn=id=>{const w=work(id);return w?`<button class="w" data-w="${id}">3D: ${esc(w.name)}</button>`:'';};
   let curWork=WORKS[0].id;
-  function syncModes(){const on=document.body.dataset.mode==='learn';document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===(on?'learn':S&&S.mode==='practice'?'practice':'design')));}
+  function syncModes(){const on=document.body.dataset.mode==='learn';document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===(on?'learn':document.body.dataset.mode||(S&&S.mode==='practice'?'practice':'design'))));}
   function nav(sub){return `<nav class="tabs lnav" role="tablist" aria-label="Theory and history">${[['','Glossary'],['history','History'],['works','Famous works']].map(([k,l])=>`<a href="#learn${k?'/'+k:''}" role="tab" aria-selected="${sub===k}">${l}</a>`).join('')}</nav>`;}
   function card(g){const [c,t,kj,en,d,see,ws]=g;
     return `<article class="gent" id="g-${slug(t)}"><header><span class="kj" lang="ja">${kj}</span><div><h3>${esc(t)}</h3><div class="en">${esc(en)}</div></div></header><p>${esc(d)}</p>${(see&&see.length)||(ws&&ws.length)?`<div class="gsee">${(ws||[]).map(workBtn).join('')}${(see||[]).map(termBtn).join('')}</div>`:''}</article>`;}
@@ -4366,6 +4425,655 @@ const LEARN=(()=>{
     syncModes,models,details,detailOf:id=>detailOf(work(id)),build:id=>work(id).build()
   };
 })();
+// ===================== JOINT DESIGNER =====================
+// A self-contained module: joint catalogue, the design file format, geometry and its own UI.
+// It uses only the shared engine (convex solids, Viewer), finalizeModel, the drawing composer and saveFile/toast,
+// so it can be lifted out into its own app later. Route: #jd (or #jd/<shared design>).
+//
+// Design file (JSON, version 1):
+// { format:'sashimono-joint', version:1, joint:'<id>', name:'', units:'mm'|'in',
+//   wood:{main,accent}, timbers:{A:{w,h,l},B:{w,h,l}}, angles:{theta}, params:{only the values the maker changed},
+//   beams:[{face,ang,skew,z,off,w,h,l,jt,params:{}}] (post family only), meta:{app,created} }
+// Every dimension is in millimetres, every angle in degrees. A parameter left out follows the joint's proportions.
+const JD_FORMAT='sashimono-joint',JD_VERSION=1,JD_DEG=Math.PI/180;
+const JD_FAMS=[
+  ['splice','Splices','継手','Two timbers joined end to end to make a longer one.'],
+  ['corner','Corners at any angle','仕口','Two timbers meeting at a corner, from 30° to 150°.'],
+  ['post','Post and beams','柱','A post with one to four beams at any angle and skew, or a through tie.'],
+  ['cross','Crossings and housings','渡り','Beams crossing each other, or landing on another beam, at any angle.'],
+  ['board','Board corners','箱','Box and chest corners in boards.']
+];
+const jdR=x=>Math.round(x),jdR5=x=>Math.round(x*2)/2,jdCl=(v,a,b)=>Math.max(a,Math.min(b,v));
+const jdBand=(n,c,half)=>[[n[0],n[1],n[2],c+half],[-n[0],-n[1],-n[2],-(c-half)]];
+const jdZ=(z0,z1)=>[[0,0,1,z1],[0,0,-1,-z0]];
+const jdLE=(n,d)=>[n[0],n[1],n[2],d];            // n·x <= d
+const jdGE=(n,d)=>[-n[0],-n[1],-n[2],-d];         // n·x >= d
+const jdXY=(P,z0,z1)=>polyPlanes(P,0,1,2,z0,z1);  // polygon in plan, extruded up
+const jdXZ=(P,y0,y1)=>polyPlanes(P,0,2,1,y0,y1);  // polygon in side view, extruded across
+function jdRod(axis,c,d,a0,a1,round){ // rod along a world axis through point c
+  const ca=c[(axis+1)%3],cb=c[(axis+2)%3];
+  if(round)return cylAx(axis,[ca,cb],d/2,a0,a1,10);
+  const lo=[0,0,0],hi=[0,0,0];lo[axis]=a0;hi[axis]=a1;lo[(axis+1)%3]=ca-d/2;hi[(axis+1)%3]=ca+d/2;lo[(axis+2)%3]=cb-d/2;hi[(axis+2)%3]=cb+d/2;
+  return BOX(lo[0],hi[0],lo[1],hi[1],lo[2],hi[2]);
+}
+const jdOB=(F,u0,u1,v0,v1,w0,w1)=>F.planes(BOX(u0,u1,v0,v1,w0,w1));
+const JD_BX=[[1,0,0],[0,0,1],[0,1,0]],JD_BY=[[0,1,0],[0,0,1],[1,0,0]],JD_BZ=[[0,0,1],[1,0,0],[0,1,0]];
+const jdSec=d=>d.timbers.A;
+const jdAng=(a,b)=>{const c=Math.abs(a[0]*b[0]+a[1]*b[1])/(Math.hypot(a[0],a[1])*Math.hypot(b[0],b[1])||1);return Math.acos(jdCl(c,0,1))/JD_DEG;};
+const jdFa=a=>{const r=Math.round(a*10)/10;return (Math.abs(r-Math.round(r))<0.05?Math.round(r):r.toFixed(1))+'°';};
+// ---------- shared pieces of geometry
+function jdPegs(c,n,at,d,round,A,B,ex,name){
+  if(!(n>0))return;const raws=[];for(let i=0;i<n;i++){const r=at(i,n);raws.push(r);A.neg.push(r);B.neg.push(r);}
+  c.part({name:name||'Peg (dabo)',role:'peg',species:'accent',small:true,pos:raws,count:n,basis:JD_BZ,ex});
+}
+// side profile of the oblique scarf family (kanawa, okkake): A keeps the lower profile, B the upper
+function jdScarf(h,L,e,s){
+  const m=L/2,zt=h/2+s/2,zb=h/2-s/2;
+  return {A:[[[0,0],[m,0],[m,zt],[0,h-e]],[[m,0],[L,0],[L,e],[m,zb]]],B:[[[0,h-e],[m,zt],[m,h],[0,h]],[[m,zb],[L,e],[L,h],[m,h]]],
+    zAt:x=>x<=m?(h-e)+(zt-(h-e))*x/m:zb+(e-zb)*(x-m)/m};
+}
+function jdCorner(d,mode){ // corner geometry: A along +X, B along u at angle theta; outer side is away from the angle
+  const th=jdCl(d.angles.theta,30,150)*JD_DEG,cs=Math.cos(th),sn=Math.sin(th);
+  const wA=d.timbers.A.w,wB=d.timbers.B.w,h=d.timbers.A.h;
+  const u=[cs,sn,0],nB=[-sn,cs,0],X=(y,k)=>[(cs*y-k)/sn,y];
+  const Po=X(-wA/2,wB/2),Pi=X(wA/2,-wB/2);
+  let aNear,bNear;
+  if(mode==='mitre'){aNear=Math.min(Po[0],Pi[0]);bNear=Math.min(Po[0]*cs+Po[1]*sn,Pi[0]*cs+Pi[1]*sn);}
+  else{aNear=Math.min(X(-wA/2,wB/2)[0],X(wA/2,wB/2)[0]);bNear=Math.min(...[-wB/2,wB/2].map(v=>(-wA/2-v*cs)/sn));}
+  const aFar=aNear+d.timbers.A.l,bFar=bNear+d.timbers.B.l;
+  const FB=frame([0,0,0],u,nB,[0,0,1]);
+  const Astrip=[[0,1,0,wA/2],[0,-1,0,wA/2],...jdZ(0,h),[1,0,0,aFar],[-1,0,0,1e4]];
+  const Bstrip=jdOB(FB,-1e4,bFar,-wB/2,wB/2,0,h);
+  return {th,cs,sn,wA,wB,h,u,nB,Po,Pi,FB,Astrip,Bstrip,BbasisXY:[u,[0,0,1],nB]};
+}
+// ---------- the post family: a beam entering one face of a post
+const JD_FACES=['Front (+X)','Right (+Y)','Back (−X)','Left (−Y)'];
+const JD_JT={hira:['Hira-hozo','Stub tenon'],komisen:['Komisen','Draw-pinned tenon'],kusabi:['Wari-kusabi','Wedged through tenon'],hanasen:['Hanasen','Through tenon, nose pin']};
+function jdBeamFrame(d,b){
+  const aX=d.timbers.A.w,aY=d.timbers.A.h,f=((b.face|0)%4+4)%4;
+  const nf=[[1,0,0],[0,1,0],[-1,0,0],[0,-1,0]][f],tf=vcross([0,0,1],nf);
+  const hd=f%2?aY/2:aX/2,fw=f%2?aX:aY;
+  const al=jdCl(b.ang,30,150)*JD_DEG,be=jdCl(b.skew,-60,60)*JD_DEG;
+  const u=vnorm(vadd(vsc(vadd(vsc(nf,Math.cos(be)),vsc(tf,Math.sin(be))),Math.sin(al)),[0,0,Math.cos(al)]));
+  const V=vnorm(vcross([0,0,1],u)),W=vcross(u,V);
+  const P0=vadd(vadd(vsc(nf,hd),vsc(tf,b.off||0)),[0,0,b.z]);
+  return {f,nf,tf,hd,fw,u,V,W,P0,F:frame(P0,u,V,W),cosN:vdot(u,nf)};
+}
+function jdBeamParams(d,b){
+  const g=jdBeamFrame(d,b),dep=2*g.hd,jt=b.jt,thr=jt==='kusabi'||jt==='hanasen';
+  const L=[
+    {k:'tt',l:'Tenon thickness',u:'mm',auto:()=>tenonThk(b.w),min:3,max:b.w-4},
+    {k:'th',l:'Tenon height',u:'mm',auto:()=>jdR(b.h-2*Math.max(6,b.h*0.12)),min:8,max:b.h},
+    {k:'tz',l:'Tenon offset up',u:'mm',auto:()=>0,min:-b.h/2,max:b.h/2}];
+  if(!thr)L.push({k:'td',l:'Tenon depth',u:'mm',auto:()=>jdR(Math.min(dep*0.75,dep-8)),min:6,max:dep});
+  if(jt==='komisen')L.push({k:'ps',l:'Peg size',u:'mm',auto:V=>jdCl(jdR(V.tt*0.8),5,15),min:3,max:30},
+    {k:'pa',l:'Peg from post face',u:'mm',auto:V=>jdR(V.td*0.45),min:4,max:dep},
+    {k:'draw',l:'Draw-bore offset',u:'mm',auto:()=>1.5,min:0,max:4},
+    {k:'round',l:'Peg shape',u:'sel',opts:[['0','Square, riven'],['1','Round dowel']],auto:()=>'0'});
+  if(jt==='kusabi')L.push({k:'nk',l:'Wedges',u:'n',auto:V=>V.th>=50?2:1,min:1,max:4},
+    {k:'wl',l:'Wedge length',u:'mm',auto:()=>jdR(Math.min(dep*0.6,45)),min:8,max:dep},
+    {k:'kw',l:'Wedge thickness',u:'mm',auto:()=>4,min:1.5,max:12},
+    {k:'fl',l:'Mortise flare each side',u:'mm',auto:V=>jdR5(jdCl(V.th*0.04,1.5,4)),min:0,max:10});
+  if(jt==='hanasen')L.push({k:'pw',l:'Pin width',u:'mm',auto:V=>jdCl(jdR(V.tt*0.7),5,12),min:3,max:30},
+    {k:'ph',l:'Pin height',u:'mm',auto:V=>jdCl(jdR(V.th*0.45),10,30),min:5,max:80},
+    {k:'pr',l:'Tenon projection',u:'mm',auto:V=>jdR(V.pw+Math.max(14,dep*0.3)),min:8,max:200});
+  return L;
+}
+function jdBuildBeam(c,d,b,i,post,P){
+  const g=jdBeamFrame(d,b),{nf,hd,fw,u,V,W,P0,F}=g,name=`Beam ${i+1}`;
+  const bw=b.w,bh=b.h,jt=b.jt,LP=d.timbers.A.l;
+  const body=jdOB(F,-1e4,b.l,-bw/2,bw/2,-bh/2,bh/2).concat([jdGE(nf,hd)]);
+  const ten=jdOB(F,-1e4,1e4,-P.tt/2,P.tt/2,P.tz-P.th/2,P.tz+P.th/2).concat([jdLE(nf,hd)]);
+  const through=jt==='kusabi'||jt==='hanasen';
+  const depthPl=jt==='hanasen'?jdGE(nf,-hd-P.pr):through?jdGE(nf,-hd):jdGE(nf,hd-P.td);
+  const tenon=ten.concat([depthPl]);
+  const beam=c.part({name:`${name} · ${JD_FACES[g.f].split(' ')[0].toLowerCase()} face`,key:'beam'+i,pos:[body,tenon],neg:[],basis:[u,W,V],
+    ex:vsc(u,(through?2*hd:P.td)+Math.max(40,bh*0.5))});
+  post.neg.push(through?ten.concat([jdGE(nf,-hd-1)]):ten.concat([jdGE(nf,hd-P.td-2)]));
+  const exB=beam.ex;
+  if(jt==='komisen'){
+    const t=-P.pa/g.cosN,C=vadd(vadd(P0,vsc(u,t)),vsc(W,P.tz));const ax=g.f%2?0:1;
+    const span=[C[ax]-fw/2-3,C[ax]+fw/2+3];const ctr=C.slice();ctr[ax]=0;const sp=[-fw/2-3,fw/2+3];
+    const peg=jdRod(ax,ctr,P.ps,sp[0],sp[1],P.round==='1');post.neg.push(peg);
+    const hole=jdRod(ax,vadd(ctr,vsc(nf,P.draw)),P.ps,sp[0],sp[1],P.round==='1');beam.neg.push(hole);
+    c.part({name:`Peg (komisen) for beam ${i+1}`,role:'peg',species:'accent',small:true,pos:[peg],basis:ax===0?JD_BX:JD_BY,ex:vsc(g.tf,fw+50)});
+    if(P.pa+P.ps/2>P.td-P.ps*0.8)c.warn(`Beam ${i+1}: the peg is too close to the end of the tenon and could split it out. Move it toward the post face or deepen the tenon.`);
+    if(P.ps>P.th*0.5)c.warn(`Beam ${i+1}: the peg is large for this tenon. Keep it under half the tenon height.`);
+    void span;
+  }
+  if(jt==='kusabi'){
+    const k=P.kw/(2*P.wl),WP=vdot(W,P0),band=jdOB(F,-1e4,1e4,-P.tt/2,P.tt/2,-1e4,1e4);
+    const raws=[];
+    for(let j=0;j<P.nk;j++){const wc=P.tz-P.th/2+P.th*(j+0.5)/P.nk;
+      const wd=band.concat([jdLE(vadd(W,vsc(nf,k)),P.kw/2+WP+wc-k*hd),jdLE(vadd(vsc(W,-1),vsc(nf,k)),P.kw/2-WP-wc-k*hd),jdLE(vsc(nf,-1),hd+3)]);
+      raws.push(wd);beam.neg.push(wd);}
+    if(P.fl>0){const kf=P.fl/P.wl;
+      const fl=band.concat([jdLE(vadd(W,vsc(nf,kf)),P.th/2+P.fl+WP+P.tz-kf*hd),jdLE(vadd(vsc(W,-1),vsc(nf,kf)),P.th/2+P.fl-WP-P.tz-kf*hd),jdLE(nf,-hd+P.wl),jdLE(vsc(nf,-1),hd)]);
+      beam.pos.push(fl);post.neg.push(fl);}
+    c.part({name:`Wedge (kusabi) for beam ${i+1}`,role:'wedge',species:'accent',small:true,pos:raws,count:P.nk,basis:[vsc(nf,-1),V,W],ex:vadd(vsc(nf,-(P.wl+60)),[0,0,0])});
+  }
+  if(jt==='hanasen'){
+    const WP=vdot(W,P0);
+    const pin=jdOB(F,-1e4,1e4,-P.tt/2-10,P.tt/2+10,-1e4,1e4).concat([jdLE(nf,-hd-0.5),jdGE(nf,-hd-0.5-P.pw),jdLE(W,WP+P.tz+P.ph/2),jdGE(W,WP+P.tz-P.ph/2)]);
+    beam.neg.push(pin);
+    c.part({name:`Nose pin (hanasen) for beam ${i+1}`,role:'pin',species:'accent',small:true,pos:[pin],basis:[V,W,vsc(nf,-1)],ex:vadd(exB,vsc(V,P.tt+50))});
+    if(P.pr<P.pw+8)c.warn(`Beam ${i+1}: the tenon does not stand far enough past the post for its pin. Give it at least ${jdR(P.pw+8)} mm of projection.`);
+  }
+  // checks
+  if(P.th>bh)c.warn(`Beam ${i+1}: the tenon is taller than the beam.`);
+  if(P.tt>bw*0.55)c.warn(`Beam ${i+1}: the tenon is more than half the beam's width, so its cheeks are thin. About a third is usual.`);
+  if(P.tt<bw*0.2)c.warn(`Beam ${i+1}: the tenon is under a fifth of the beam's width and will be weak.`);
+  if(P.tt>fw*0.45)c.warn(`Beam ${i+1}: the mortise takes more than ${jdR(P.tt/fw*100)}% of the post face and weakens the post.`);
+  if(!through&&P.td>2*hd-6)c.warn(`Beam ${i+1}: the tenon is almost as deep as the post. Make it a through tenon or shorten it.`);
+  // break-out: the mortise must stay inside the face
+  const mp=mkPrim(ten.concat([jdGE(nf,-hd),jdLE(nf,hd)]));
+  if(mp.ok){const tf=g.tf;let out=false,top=false;for(const v of mp.V){if(Math.abs(vdot(v,tf))>fw/2-3)out=true;if(v[2]<4||v[2]>LP-4)top=true;}
+    if(out)c.warn(`Beam ${i+1}: its mortise breaks out of the side of the post. Reduce the skew, move the beam or use a thinner tenon.`);
+    if(top)c.warn(`Beam ${i+1}: its mortise runs out of the end of the post. Move the beam or make the post longer.`);}
+  return {ten:mp,beam,g};
+}
+// ---------- catalogue
+const jdNum=(k,l,auto,min,max,u)=>({k,l,u:u||'mm',auto,min,max});
+const JD_CAT=[
+// ===== splices
+{id:'aigaki-tsugi',fam:'splice',ro:'Ai-gaki-tsugi',kj:'相欠き継ぎ',en:'Half-lap splice',lv:1,
+ about:'The simplest splice. Each end is cut away to half its height so the two overlap and lie flush. Pegs or a pair of bolts hold it. It needs support underneath, so it is used where the joint sits on a post or wall.',
+ assemble:'Lay B onto A from above and drive the pegs.',
+ timbers:[['A','w','Width (both)'],['A','h','Height (both)'],['A','l','Length of A'],['B','l','Length of B']],
+ def:{timbers:{A:{w:105,h:105,l:450},B:{l:450}}},
+ params:d=>{const {w,h}=jdSec(d);return [jdNum('lapL','Lap length',()=>jdR(Math.max(2*h,1.5*w)),h*0.5,h*10),jdNum('split','Lap split, from the bottom',()=>jdR(h/2),h*0.15,h*0.85),
+   jdNum('pegs','Pegs',()=>2,0,4,'n'),jdNum('pegD','Peg size',()=>jdCl(jdR(w*0.14),6,24),3,40),{k:'round',l:'Peg shape',u:'sel',opts:[['1','Round dowel'],['0','Square']],auto:()=>'1'}];},
+ build(c,d,P){const {w,h}=jdSec(d),L=P.lapL,s=P.split,LA=d.timbers.A.l,LB=d.timbers.B.l;
+   const A=c.part({name:'Timber A',key:'A',pos:[BOX(L-LA,0,-w/2,w/2,0,h),BOX(0,L,-w/2,w/2,0,s)],basis:JD_BX,ex:[0,0,0]});
+   const B=c.part({name:'Timber B',key:'B',pos:[BOX(0,L,-w/2,w/2,s,h),BOX(L,LB,-w/2,w/2,0,h)],basis:JD_BX,ex:[0,0,h*1.5]});
+   jdPegs(c,P.pegs,(i,n)=>jdRod(2,[L*(i+1)/(n+1),0,0],P.pegD,-2,h+2,P.round==='1'),P.pegD,P.round==='1',A,B,[0,0,h*3]);
+   if(LA<L+20||LB<L+20)c.warn('One timber is barely longer than the lap. Make the timbers longer.');
+   if(P.pegs&&P.pegD>w*0.35)c.warn('The pegs are large for the width of the timber.');
+   c.set('Lap shoulders','Square across, 90°');c.set('Lap length',c.f(L));c.set('Split line',c.f(s)+' up from the bottom face');}},
+{id:'koshikake-ari-tsugi',fam:'splice',ro:'Koshikake-ari-tsugi',kj:'腰掛蟻継ぎ',en:'Seated dovetail splice',lv:2,
+ about:'The male end carries a dovetail that drops into a socket in the female end. The female end also has a seat (koshikake) that the male end rests on, so the joint carries load while the dovetail stops it pulling apart. The everyday splice for sills and floor beams. Set the seat height to 0 for a plain dovetail splice (ari-tsugi).',
+ assemble:'Drop B (the male end) straight down into A until it sits on the seat.',
+ timbers:[['A','w','Width (both)'],['A','h','Height (both)'],['A','l','Length of A'],['B','l','Length of B']],
+ def:{timbers:{A:{w:105,h:105,l:450},B:{l:450}}},
+ params:d=>{const {w,h}=jdSec(d);return [jdNum('seatL','Seat length',()=>jdR(h*0.35),0,h*1.5),jdNum('seatH','Seat height',()=>jdR(h*0.3),0,h*0.7),
+   jdNum('dvL','Dovetail length',()=>jdR(w*0.5),8,h*2),jdNum('neck','Neck width',()=>jdR(w*0.3),4,w-6),jdNum('head','Head width',()=>jdR(w*0.5),5,w-4)];},
+ build(c,d,P){const {w,h}=jdSec(d),LA=d.timbers.A.l,LB=d.timbers.B.l,sl=P.seatL,sh=P.seatH;
+   const dv=[[0,-P.neck/2],[0,P.neck/2],[-P.dvL,P.head/2],[-P.dvL,-P.head/2]];
+   const A=c.part({name:'Timber A (female end)',key:'A',pos:[BOX(sl-LA,0,-w/2,w/2,0,h)].concat(sl>0&&sh>0?[BOX(0,sl,-w/2,w/2,0,sh)]:[]),neg:[jdXY(dv,sh,h+1)],basis:JD_BX,ex:[0,0,0]});
+   c.part({name:'Timber B (male end)',key:'B',pos:[BOX(0,LB-P.dvL,-w/2,w/2,sh,h),BOX(sl,LB-P.dvL,-w/2,w/2,0,sh),jdXY(dv,sh,h)],basis:JD_BX,ex:[0,0,h*1.6]});
+   void A;const fa=Math.atan2((P.head-P.neck)/2,P.dvL)/JD_DEG;
+   if(P.head<=P.neck)c.warn('The dovetail head is not wider than its neck, so nothing stops the joint pulling apart.');
+   else if(fa<5)c.warn(`The dovetail flares only ${jdFa(fa)}, which holds poorly. Aim for 8° to 15°.`);
+   else if(fa>20)c.warn(`The dovetail flares ${jdFa(fa)}. Above about 18° the corners of the socket split off.`);
+   if(P.head>w-12)c.warn('The dovetail head leaves thin walls on the socket. Keep at least 6 mm each side.');
+   if(sh>h*0.5)c.warn('The seat is more than half the height of the timber, which leaves little dovetail.');
+   c.set('Dovetail flare',jdFa(fa)+' each side (slope 1 in '+(1/Math.tan(fa*JD_DEG)).toFixed(1)+')');c.set('Seat',`${c.f(sl)} long × ${c.f(sh)} high`);}},
+{id:'koshikake-kama-tsugi',fam:'splice',ro:'Koshikake-kama-tsugi',kj:'腰掛鎌継ぎ',en:'Seated gooseneck splice',lv:3,
+ about:'Like the seated dovetail, but the male end has a narrow neck and a wide, sickle-shaped head (kama). The long neck puts more wood behind the head, so it resists pulling apart better than a dovetail. Used for sills, purlins and beams.',
+ assemble:'Drop B down into A until it sits on the seat.',
+ timbers:[['A','w','Width (both)'],['A','h','Height (both)'],['A','l','Length of A'],['B','l','Length of B']],
+ def:{timbers:{A:{w:105,h:105,l:450},B:{l:450}}},
+ params:d=>{const {w,h}=jdSec(d);return [jdNum('seatL','Seat length',()=>jdR(h*0.3),0,h*1.5),jdNum('seatH','Seat height',()=>jdR(h*0.3),0,h*0.7),
+   jdNum('neckL','Neck length',()=>jdR(h*0.4),6,h*2),jdNum('neck','Neck width',()=>jdR(w*0.26),4,w-10),
+   jdNum('headL','Head length',()=>jdR(h*0.45),8,h*2),jdNum('head','Head width',()=>jdR(w*0.6),6,w-4)];},
+ build(c,d,P){const {w,h}=jdSec(d),LA=d.timbers.A.l,LB=d.timbers.B.l,sl=P.seatL,sh=P.seatH,nl=P.neckL,hl=P.headL,n=P.neck,hw=P.head;
+   const neck=[[0,-n/2],[0,n/2],[-nl,n/2],[-nl,-n/2]];
+   const head=[[-nl,-n/2],[-nl-hl*0.22,-hw/2],[-nl-hl,-hw*0.42],[-nl-hl,hw*0.42],[-nl-hl*0.22,hw/2],[-nl,n/2]];
+   c.part({name:'Timber A (female end)',key:'A',pos:[BOX(sl-LA,0,-w/2,w/2,0,h)].concat(sl>0&&sh>0?[BOX(0,sl,-w/2,w/2,0,sh)]:[]),neg:[jdXY(neck,sh,h+1),jdXY(head,sh,h+1)],basis:JD_BX,ex:[0,0,0]});
+   c.part({name:'Timber B (male end)',key:'B',pos:[BOX(0,LB-nl-hl,-w/2,w/2,sh,h),BOX(sl,LB-nl-hl,-w/2,w/2,0,sh),jdXY(neck,sh,h),jdXY(head,sh,h)],basis:JD_BX,ex:[0,0,h*1.6]});
+   if(hw<=n+4)c.warn('The head must be clearly wider than the neck to hold.');
+   if(n<w*0.18)c.warn('The neck is very thin and could snap across the grain.');
+   if(hw>w-12)c.warn('The head leaves thin walls on the socket. Keep at least 6 mm each side.');
+   c.set('Head shoulders','Angled back about '+jdFa(Math.atan2(hl*0.22,(hw-n)/2)/JD_DEG)+' from square');c.set('Seat',`${c.f(sl)} long × ${c.f(sh)} high`);}},
+{id:'kanawa-tsugi',fam:'splice',ro:'Kanawa-tsugi',kj:'金輪継ぎ',en:'Rabbeted oblique scarf with key',lv:4,
+ about:'Two identical stepped, oblique ends slide together from the side. A square key (sen) driven through the step draws them tight. It resists bending, twisting and pulling, so it can splice a beam between supports and is used to repair the feet of temple posts. Real ones also have small stub tenons on the end faces; this model leaves them out.',
+ assemble:'Slide B onto A sideways, then drive the key through the slot at the step.',
+ timbers:[['A','w','Width (both)'],['A','h','Height (both)'],['A','l','Length of A'],['B','l','Length of B']],
+ def:{timbers:{A:{w:120,h:120,l:600},B:{l:600}}},
+ params:d=>{const {h}=jdSec(d);return [jdNum('L','Scarf length',()=>jdR(h*3),h*1.2,h*8),jdNum('e','End height',()=>jdR(h*0.2),3,h*0.45),
+   jdNum('s','Step height',()=>jdR(h*0.2),3,h*0.6),jdNum('kw','Key width',()=>jdCl(jdR(h*0.15),9,40),4,h)];},
+ build(c,d,P){const {w,h}=jdSec(d),L=P.L,LA=d.timbers.A.l,LB=d.timbers.B.l,S=jdScarf(h,L,P.e,P.s);
+   const key=BOX(L/2-P.kw/2,L/2+P.kw/2,-w/2-10,w/2+10,h/2-P.s/2,h/2+P.s/2);
+   c.part({name:'Timber A',key:'A',pos:[BOX(L-LA,0,-w/2,w/2,0,h),...S.A.map(q=>jdXZ(q,-w/2,w/2))],neg:[key],basis:JD_BX,ex:[0,0,0]});
+   c.part({name:'Timber B',key:'B',pos:[...S.B.map(q=>jdXZ(q,-w/2,w/2)),BOX(L,LB,-w/2,w/2,0,h)],neg:[key],basis:JD_BX,ex:[0,w*1.6,0]});
+   c.part({name:'Key (sen)',role:'key',species:'accent',small:true,pos:[key],basis:JD_BY,ex:[0,-w*1.7,0]});
+   if(P.e+P.s/2>h/2-4)c.warn('The end height and step are too big for this timber: the oblique faces vanish. Reduce them.');
+   const sl=Math.atan2(h-P.e-P.s,L)/JD_DEG;c.set('Scarf slope',jdFa(sl)+' to the length ('+`about 1 in ${(1/Math.tan(sl*JD_DEG)).toFixed(1)})`);c.set('Key',`${c.f(P.kw)} × ${c.f(P.s)}, ${c.f(w+20)} long`);}},
+{id:'okkake-daisen-tsugi',fam:'splice',ro:'Okkake-daisen-tsugi',kj:'追掛大栓継ぎ',en:'Stepped scarf with large pegs',lv:4,
+ about:'A long oblique scarf with a step in the middle. The two halves are slid together along the scarf ("chasing" each other, okkake) and locked by two large pegs (daisen). One of the strongest splices, used for beams that span between posts.',
+ assemble:'Slide B along the scarf onto A, then drive the two pegs.',
+ timbers:[['A','w','Width (both)'],['A','h','Height (both)'],['A','l','Length of A'],['B','l','Length of B']],
+ def:{timbers:{A:{w:120,h:150,l:800},B:{l:800}}},
+ params:d=>{const {h}=jdSec(d);return [jdNum('L','Scarf length',()=>jdR(h*3.2),h*1.5,h*8),jdNum('e','End height',()=>jdR(h*0.15),3,h*0.45),
+   jdNum('s','Step height',()=>jdR(h*0.12),3,h*0.6),jdNum('ps','Peg size',()=>jdCl(jdR(h*0.16),9,36),4,h*0.4)];},
+ build(c,d,P){const {w,h}=jdSec(d),L=P.L,LA=d.timbers.A.l,LB=d.timbers.B.l,S=jdScarf(h,L,P.e,P.s);
+   const A=c.part({name:'Timber A',key:'A',pos:[BOX(L-LA,0,-w/2,w/2,0,h),...S.A.map(q=>jdXZ(q,-w/2,w/2))],basis:JD_BX,ex:[0,0,0]});
+   const B=c.part({name:'Timber B',key:'B',pos:[...S.B.map(q=>jdXZ(q,-w/2,w/2)),BOX(L,LB,-w/2,w/2,0,h)],basis:JD_BX,ex:[L*0.35,0,h*1.0]});
+   jdPegs(c,2,i=>{const x=L*(i?0.8:0.2);return jdRod(1,[x,0,S.zAt(x)],P.ps,-w/2-8,w/2+8,false);},P.ps,false,A,B,[0,-w*1.6,0],'Peg (daisen)');
+   if(P.e+P.s/2>h/2-4)c.warn('The end height and step are too big for this timber. Reduce them.');
+   const sl=Math.atan2(h-P.e-P.s,L)/JD_DEG;c.set('Scarf slope',jdFa(sl)+' to the length');c.set('Pegs',`2 × ${c.f(P.ps)} square, ${c.f(w+16)} long, at a fifth of the scarf from each end`);}},
+// ===== corners
+{id:'tome',fam:'corner',ro:'Tome',kj:'留め',en:'Mitre, plain, splined or keyed',lv:2,
+ about:'The two timbers are cut at matching angles so the end grain is hidden and the figure turns the corner. The mitre line runs from the outer corner to the inner corner, so it works for any angle and for timbers of different widths. A plain mitre is weak; a hidden spline (yatoi-zane) or keys across the corner make it strong.',
+ assemble:'Glue the spline into one groove, then bring the mitres together. Keys go into saw kerfs after glue-up and are planed flush.',
+ timbers:[['A','w','Width of A, in the plane'],['B','w','Width of B, in the plane'],['A','h','Thickness (both)'],['A','l','Length of A'],['B','l','Length of B']],
+ angles:[{k:'theta',l:'Angle between the timbers',min:30,max:150}],
+ def:{timbers:{A:{w:60,h:30,l:400},B:{w:60,l:400}},angles:{theta:90}},
+ params:d=>{const h=d.timbers.A.h,mw=Math.min(d.timbers.A.w,d.timbers.B.w);return [{k:'rf',l:'Reinforcement',u:'sel',opts:[['none','None (glued only)'],['spline','Hidden spline'],['keys','Keys across the corner']],auto:()=>'spline'},
+   {...jdNum('st','Spline thickness',()=>jdCl(jdR(h*0.25),3,12),1.5,h*0.6),show:V=>V.rf==='spline'},{...jdNum('sw','Spline width',()=>jdR(mw*0.55),6,mw*2),show:V=>V.rf==='spline'},
+   {...jdNum('so','Spline stops short of outside',()=>jdR(Math.min(8,mw*0.12)),0,mw),show:V=>V.rf==='spline'},
+   {...jdNum('nk','Number of keys',()=>jdCl(jdR(h/22),1,4),1,8,'n'),show:V=>V.rf==='keys'},{...jdNum('kt','Key thickness',()=>jdCl(jdR(h*0.1),2,6),1,h*0.3),show:V=>V.rf==='keys'},
+   {...jdNum('kd','Key depth along the mitre',()=>jdR(mw*0.5),4,mw*3),show:V=>V.rf==='keys'}];},
+ build(c,d,P){const G=jdCorner(d,'mitre'),{h,Po,Pi}=G;
+   const farA=[G.Astrip[4][3],0];const mp=linePl(Po,Pi,farA),mB=[-mp[0],-mp[1],0,-mp[3]];
+   const A=c.part({name:'Timber A',key:'A',pos:[G.Astrip.concat([mp])],basis:JD_BX,ex:[0,0,0]});
+   const mN=[mp[0],mp[1],0],ml=Math.hypot(Po[0]-Pi[0],Po[1]-Pi[1]),e=[(Po[0]-Pi[0])/ml,(Po[1]-Pi[1])/ml,0];
+   const B=c.part({name:'Timber B',key:'B',pos:[G.Bstrip.concat([mB])],basis:G.BbasisXY,ex:vsc(mN,G.wB+40)});
+   if(P.rf==='spline'){const a=vadd([Pi[0],Pi[1],0],vsc(e,Math.min(4,ml*0.1))),b=vadd([Po[0],Po[1],0],vsc(e,-P.so)),s2=P.sw/2;
+     const poly=[vadd(a,vsc(mN,-s2)),vadd(b,vsc(mN,-s2)),vadd(b,vsc(mN,s2)),vadd(a,vsc(mN,s2))].map(p=>[p[0],p[1]]);
+     const sp=jdXY(poly,h/2-P.st/2,h/2+P.st/2);A.neg.push(sp);B.neg.push(sp);
+     c.part({name:'Spline (yatoi-zane)',role:'spline',species:'accent',small:true,pos:[sp],basis:[mN,e,[0,0,1]],ex:vadd(vsc(mN,(G.wB+40)/2),[0,0,h*1.6])});
+     if(P.st>h*0.4)c.warn('The spline groove takes too much of the thickness. Keep the spline under a third of it.');
+     if(ml-P.so-4<6)c.warn('The spline is too short to help. Reduce the stop or widen the timbers.');}
+   if(P.rf==='keys'){const ei=vsc(e,-1),raws=[];
+     for(let i=0;i<P.nk;i++){const zc=h*(i+1)/(P.nk+1);
+       const k=[jdLE(ei,vdot(ei,[Po[0],Po[1],0])+P.kd),[0,-1,0,G.wA/2],jdLE(G.nB,G.wB/2),...jdZ(zc-P.kt/2,zc+P.kt/2)];raws.push(k);A.neg.push(k);B.neg.push(k);}
+     c.part({name:'Key across the corner',role:'key',species:'accent',small:true,pos:raws,count:P.nk,basis:[mN,e,[0,0,1]],ex:vsc(e,P.kd+60)});
+     if(P.kd>ml*0.85)c.warn('The keys reach almost to the inside corner. Make them shallower.');}
+   const aA=jdAng([e[0],e[1]],[1,0]),aB=jdAng([e[0],e[1]],[G.u[0],G.u[1]]);
+   if(d.angles.theta<50)c.warn('A very sharp corner leaves long, fragile points on the mitres. A spline or keys are strongly advised.');
+   if(P.rf==='none')c.warn('A plain glued mitre joins end grain to end grain and is weak. Add a spline or keys unless it is small.');
+   c.set('Mitre on A',jdFa(aA)+' to its long edge (set the bevel to this)');c.set('Mitre on B',jdFa(aB)+' to its long edge');c.set('Mitre length',c.f(ml));}},
+{id:'aigaki-kado',fam:'corner',ro:'Ai-gaki (corner)',kj:'相欠き',en:'Corner half-lap at any angle',lv:1,
+ about:'Each timber is cut to half its thickness where they overlap, so the corner lies flush. Quick, strong in glue and easy to cut at any angle. A peg through the middle makes it hold without glue.',
+ assemble:'Lay B onto A from above, glue and peg.',
+ timbers:[['A','w','Width of A, in the plane'],['B','w','Width of B, in the plane'],['A','h','Thickness (both)'],['A','l','Length of A'],['B','l','Length of B']],
+ angles:[{k:'theta',l:'Angle between the timbers',min:30,max:150}],
+ def:{timbers:{A:{w:60,h:40,l:400},B:{w:60,l:400}},angles:{theta:90}},
+ params:d=>{const h=d.timbers.A.h,mw=Math.min(d.timbers.A.w,d.timbers.B.w);return [jdNum('split','Lap split, from the bottom',()=>jdR(h/2),h*0.15,h*0.85),jdNum('pegs','Pegs',()=>1,0,2,'n'),jdNum('pegD','Peg size',()=>jdCl(jdR(mw*0.16),5,20),3,40)];},
+ build(c,d,P){const G=jdCorner(d,'lap'),{h,nB}=G;
+   const A=c.part({name:'Timber A',key:'A',pos:[G.Astrip.concat([jdLE(nB,G.wB/2)])],neg:[[...jdBand(nB,0,G.wB/2),...jdZ(P.split,h+1)]],basis:JD_BX,ex:[0,0,0]});
+   const B=c.part({name:'Timber B',key:'B',pos:[G.Bstrip.concat([jdGE([0,1,0],-G.wA/2)])],neg:[[...jdBand([0,1,0],0,G.wA/2),...jdZ(-1,P.split)]],basis:G.BbasisXY,ex:[0,0,h*1.6]});
+   const dg=vnorm(vadd([1,0,0],G.u)),r=Math.min(G.wA,G.wB)*0.22;
+   jdPegs(c,P.pegs,(i,n)=>{const o=n===1?0:(i?1:-1)*r;return jdRod(2,vsc(dg,o),P.pegD,-2,h+2,true);},P.pegD,true,A,B,[0,0,h*3.2]);
+   c.set('Lap shoulders',jdFa(d.angles.theta)+' to the edge (set the bevel to the angle between the timbers)');c.set('Split line',c.f(P.split)+' up from the bottom face');}},
+{id:'sanmai-gumi',fam:'corner',ro:'Sanmai-gumi',kj:'三枚組',en:'Bridle joint at any angle',lv:2,
+ about:'A slot, three layers thick, in the end of A takes a tongue on the end of B. The large glue area and the cheeks on both sides make it stiff, so it is common at the corners of frames, doors and screens.',
+ assemble:'Slide the tongue of B into the slot of A along B\'s length, glue and peg.',
+ timbers:[['A','w','Width of A, in the plane'],['B','w','Width of B, in the plane'],['A','h','Thickness (both)'],['A','l','Length of A'],['B','l','Length of B']],
+ angles:[{k:'theta',l:'Angle between the timbers',min:30,max:150}],
+ def:{timbers:{A:{w:60,h:36,l:400},B:{w:60,l:400}},angles:{theta:90}},
+ params:d=>{const h=d.timbers.A.h,mw=Math.min(d.timbers.A.w,d.timbers.B.w);return [jdNum('tt','Tongue thickness',()=>tenonThk(h),2,h-4),jdNum('tz','Tongue offset up',()=>0,-h/2,h/2),jdNum('pegs','Pegs',()=>1,0,2,'n'),jdNum('pegD','Peg size',()=>jdCl(jdR(mw*0.12),4,15),3,30)];},
+ build(c,d,P){const G=jdCorner(d,'lap'),{h,nB}=G,z0=h/2+P.tz-P.tt/2,z1=h/2+P.tz+P.tt/2;
+   const A=c.part({name:'Timber A (slot)',key:'A',pos:[G.Astrip.concat([jdLE(nB,G.wB/2)])],neg:[[...jdBand(nB,0,G.wB/2),...jdZ(z0,z1)]],basis:JD_BX,ex:[0,0,0]});
+   const B=c.part({name:'Timber B (tongue)',key:'B',pos:[G.Bstrip.concat([jdGE([0,1,0],-G.wA/2)])],neg:[[...jdBand([0,1,0],0,G.wA/2),...jdZ(-1,z0)],[...jdBand([0,1,0],0,G.wA/2),...jdZ(z1,h+1)]],basis:G.BbasisXY,ex:vsc(G.u,G.wA*1.2+50)});
+   const dg=vnorm(vadd([1,0,0],G.u)),r=Math.min(G.wA,G.wB)*0.22;
+   jdPegs(c,P.pegs,(i,n)=>{const o=n===1?0:(i?1:-1)*r;return jdRod(2,vsc(dg,o),P.pegD,-2,h+2,true);},P.pegD,true,A,B,[0,0,h*3]);
+   if(z0<4||z1>h-4)c.warn('The tongue leaves the cheeks of the slot too thin.');
+   if(P.tt<h*0.25)c.warn('The tongue is thin. About a third of the thickness is usual.');
+   c.set('Shoulders',jdFa(d.angles.theta)+' to the edge on both timbers');c.set('Tongue',`${c.f(P.tt)} thick, from ${c.f(z0)} to ${c.f(z1)} up`);}},
+// ===== post and beams
+{id:'hozo',fam:'post',ro:'Hozo-sashi',kj:'枘差し',en:'Post with tenoned beams',lv:2,multi:true,
+ about:'One to four beams tenoned into a post. Each beam can enter any face, slope up or down (a brace), be skewed in plan, and use its own joint: a stub tenon (hira-hozo), a draw-pinned tenon (komisen), a wedged through tenon (wari-kusabi) or a through tenon locked by a nose pin (hanasen). Shoulders follow the face of the post, so every angle is cut true.',
+ assemble:'Fit each beam into its mortise, then drive pegs, wedges or pins. Where tenons meet inside the post, stagger them in height.',
+ timbers:[['A','w','Post width (front face)'],['A','h','Post depth (side face)'],['A','l','Post height']],
+ def:{timbers:{A:{w:120,h:120,l:700}},beams:[{face:0,ang:90,skew:0,z:420,off:0,w:105,h:150,l:450,jt:'komisen',params:{}},{face:1,ang:90,skew:0,z:250,off:0,w:105,h:120,l:450,jt:'kusabi',params:{}}]},
+ params:()=>[],
+ build(c,d){const aX=d.timbers.A.w,aY=d.timbers.A.h,LP=d.timbers.A.l;
+   const post=c.part({name:'Post',key:'A',pos:[BOX(-aX/2,aX/2,-aY/2,aY/2,0,LP)],basis:JD_BZ,ex:[0,0,0]});
+   const out=[];
+   (d.beams||[]).forEach((b,i)=>{const P=jdResolve(jdBeamParams(d,b),b.params||{});const r=jdBuildBeam(c,d,b,i,post,P);out.push(r);
+     c.set(`Beam ${i+1}`,`${JD_FACES[r.g.f].split(' ')[0]} face, ${JD_JT[b.jt][0].toLowerCase()} · shoulder ${jdFa(b.ang)} to the post${b.skew?`, skewed ${jdFa(Math.abs(b.skew))} in plan`:''} · tenon ${c.f(P.tt)} × ${c.f(P.th)}${P.td&&b.jt!=='kusabi'&&b.jt!=='hanasen'?` × ${c.f(P.td)} deep`:''}`);});
+   for(let i=0;i<out.length;i++)for(let j=i+1;j<out.length;j++){const a=out[i].ten,b=out[j].ten;if(!a.ok||!b.ok)continue;
+     const bb=[Math.max(a.bb[0],b.bb[0]),Math.min(a.bb[1],b.bb[1]),Math.max(a.bb[2],b.bb[2]),Math.min(a.bb[3],b.bb[3]),Math.max(a.bb[4],b.bb[4]),Math.min(a.bb[5],b.bb[5])];
+     if(bb[0]>=bb[1]||bb[2]>=bb[3]||bb[4]>=bb[5])continue;let hit=false;const N=7;
+     for(let x=0;x<N&&!hit;x++)for(let y=0;y<N&&!hit;y++)for(let z=0;z<N&&!hit;z++){const p=[bb[0]+(bb[1]-bb[0])*(x+0.5)/N,bb[2]+(bb[3]-bb[2])*(y+0.5)/N,bb[4]+(bb[5]-bb[4])*(z+0.5)/N];if(pointInPrim(a,p)&&pointInPrim(b,p))hit=true;}
+     if(hit)c.warn(`The tenons of beams ${i+1} and ${j+1} run into each other inside the post. Stagger their heights, shorten them, or use stub tenons.`);}
+   if(!(d.beams||[]).length)c.warn('Add a beam to make a joint.');}},
+{id:'nuki',fam:'post',ro:'Nuki',kj:'貫',en:'Through tie beam with wedge',lv:3,
+ about:'A flat tie beam passes right through a mortise in the post and is locked by a wedge (kusabi) driven in beside it. Rows of nuki brace temple and house frames against earthquakes: the joint is not glued, so it can flex and recover. The tie can pass at an angle and with a skew.',
+ assemble:'Slide the nuki through the mortise, then drive the wedge in from the front above it.',
+ timbers:[['A','w','Post width (front face)'],['A','h','Post depth (side face)'],['A','l','Post height'],['B','w','Nuki thickness'],['B','h','Nuki height'],['B','l','Nuki length']],
+ angles:[{k:'theta',l:'Angle of the nuki to the post',min:45,max:135},{k:'skew',l:'Skew in plan',min:-40,max:40}],
+ def:{timbers:{A:{w:150,h:150,l:900},B:{w:30,h:105,l:900}},angles:{theta:90,skew:0}},
+ params:d=>{const b=d.timbers.B;return [{k:'face',l:'Passes through',u:'sel',opts:[['0','Front to back'],['1','Side to side']],auto:()=>'0'},jdNum('z','Height of the nuki',()=>jdR(d.timbers.A.l*0.55),0,d.timbers.A.l),
+   jdNum('wt','Wedge thickness',()=>jdR(b.h*0.18),3,b.h*0.6),jdNum('wp','Wedge stands proud',()=>20,0,100)];},
+ build(c,d,P){const aX=d.timbers.A.w,aY=d.timbers.A.h,LP=d.timbers.A.l,B=d.timbers.B;
+   const post=c.part({name:'Post',key:'A',pos:[BOX(-aX/2,aX/2,-aY/2,aY/2,0,LP)],basis:JD_BZ,ex:[0,0,0]});
+   const g=jdBeamFrame(d,{face:+P.face,ang:d.angles.theta,skew:d.angles.skew||0,z:P.z,off:0});const {nf,hd,u,V,W}=g;
+   const P0=[0,0,P.z],F=frame(P0,u,V,W);
+   c.part({name:'Nuki (tie beam)',key:'B',pos:[jdOB(F,-B.l/2,B.l/2,-B.w/2,B.w/2,-B.h/2,B.h/2)],basis:[u,W,V],ex:vsc(u,-(hd*2+60))});
+   post.neg.push(jdOB(F,-1e4,1e4,-B.w/2,B.w/2,-B.h/2,B.h/2));
+   const WP=vdot(W,P0),k=0.2*P.wt/hd;
+   const gap=jdOB(F,-1e4,1e4,-B.w/2,B.w/2,-1e4,1e4).concat([jdGE(W,WP+B.h/2),jdLE(vadd(W,vsc(nf,-k)),WP+B.h/2+0.6*P.wt+k*hd)]);
+   post.neg.push(gap);
+   c.part({name:'Wedge (kusabi)',role:'wedge',species:'accent',small:true,pos:[gap.concat([jdLE(nf,hd+P.wp),jdGE(nf,-hd-6)])],basis:[vsc(nf,-1),W,V],ex:vsc(nf,hd+P.wp+80)});
+   if(B.w>(+P.face%2?aX:aY)*0.35)c.warn('The nuki is thick for this post: the mortise takes more than a third of the face.');
+   if(B.h+P.wt>LP-20)c.warn('The mortise is taller than the post allows.');
+   if(P.z-B.h/2<20||P.z+B.h/2+P.wt>LP-20)c.warn('The nuki is too close to the end of the post.');
+   c.set('Mortise',`${c.f(B.w)} wide × ${c.f(B.h+P.wt)} high at the wedge face, tapering to ${c.f(B.h+0.6*P.wt)} at the far face`);
+   c.set('Nuki through the post',`at ${jdFa(d.angles.theta)} to the post${d.angles.skew?`, skewed ${jdFa(Math.abs(d.angles.skew))}`:''}`);}},
+// ===== crossings
+{id:'aigaki-juji',fam:'cross',ro:'Ai-gaki (crossing)',kj:'相欠き',en:'Cross half-lap at any angle',lv:1,
+ about:'Two timbers cross, each notched so they interlock. Set how deep each is cut: half and half makes them flush; shallower cuts leave one standing proud. The basic joint of kumiko lattice and of crossing sills and ties.',
+ assemble:'Drop B down into A.',
+ timbers:[['A','w','Width of A'],['A','h','Height of A'],['A','l','Length of A'],['B','w','Width of B'],['B','h','Height of B'],['B','l','Length of B']],
+ angles:[{k:'theta',l:'Crossing angle',min:20,max:160}],
+ def:{timbers:{A:{w:90,h:90,l:600},B:{w:90,h:90,l:600}},angles:{theta:90}},
+ params:d=>{const a=d.timbers.A,b=d.timbers.B;return [jdNum('dA','Cut into A',()=>jdR(a.h/2),0,a.h-3),jdNum('dB','Cut into B',()=>jdR(b.h/2),0,b.h-3)];},
+ build(c,d,P){const a=d.timbers.A,b=d.timbers.B,th=d.angles.theta*JD_DEG,u=[Math.cos(th),Math.sin(th),0],nB=[-u[1],u[0],0];
+   const zc=a.h-P.dA,zb=zc-P.dB,FB=frame([0,0,0],u,nB,[0,0,1]);
+   c.part({name:'Timber A',key:'A',pos:[BOX(-a.l/2,a.l/2,-a.w/2,a.w/2,0,a.h)],neg:[[...jdBand(nB,0,b.w/2),...jdZ(zc,1e4)]],basis:JD_BX,ex:[0,0,0]});
+   c.part({name:'Timber B',key:'B',pos:[jdOB(FB,-b.l/2,b.l/2,-b.w/2,b.w/2,zb,zb+b.h)],neg:[[...jdBand([0,1,0],0,a.w/2),...jdZ(-1e4,zc)]],basis:[u,[0,0,1],nB],ex:[0,0,Math.max(a.h,b.h)*1.7]});
+   if(P.dA>a.h*0.6||P.dB>b.h*0.6)c.warn('Cutting more than about 60% out of a timber leaves it weak at the crossing.');
+   c.set('Notch walls',jdFa(d.angles.theta)+' to the edge, both timbers');c.set('Depths',`${c.f(P.dA)} into A, ${c.f(P.dB)} into B`);}},
+{id:'watari-ago',fam:'cross',ro:'Watari-ago',kj:'渡り腮',en:'Cogged crossing',lv:3,
+ about:'An upper beam crosses a lower one. The lower beam is cut down at both sides, leaving a central cog (ago), and the upper beam is notched to sit over it. The cog locks the beams in both directions while removing far less wood than a half-lap, so both keep their strength. Used where floor and roof beams cross.',
+ assemble:'Lower B onto A so the cog drops into its slot.',
+ timbers:[['A','w','Width of A (lower)'],['A','h','Height of A'],['A','l','Length of A'],['B','w','Width of B (upper)'],['B','h','Height of B'],['B','l','Length of B']],
+ angles:[{k:'theta',l:'Crossing angle',min:30,max:150}],
+ def:{timbers:{A:{w:120,h:150,l:700},B:{w:120,h:180,l:700}},angles:{theta:90}},
+ params:d=>{const a=d.timbers.A,b=d.timbers.B;return [jdNum('dA','Side cuts in A',()=>jdR(a.h*0.15),3,a.h*0.5),jdNum('cog','Cog width',()=>jdR(a.w*0.4),6,a.w-6),jdNum('dB','Notch in B',()=>jdR(b.h*0.2),0,b.h*0.5)];},
+ build(c,d,P){const a=d.timbers.A,b=d.timbers.B,th=d.angles.theta*JD_DEG,u=[Math.cos(th),Math.sin(th),0],nB=[-u[1],u[0],0];
+   const seat=a.h-P.dA,zb=seat-P.dB,FB=frame([0,0,0],u,nB,[0,0,1]),Bb=jdBand(nB,0,b.w/2);
+   c.part({name:'Timber A (lower, with cog)',key:'A',pos:[BOX(-a.l/2,a.l/2,-a.w/2,a.w/2,0,a.h)],neg:[[...Bb,...jdZ(seat,1e4),[0,-1,0,-P.cog/2]],[...Bb,...jdZ(seat,1e4),[0,1,0,-P.cog/2]]],basis:JD_BX,ex:[0,0,0]});
+   c.part({name:'Timber B (upper, notched)',key:'B',pos:[jdOB(FB,-b.l/2,b.l/2,-b.w/2,b.w/2,zb,zb+b.h)],neg:[[...jdBand([0,1,0],0,a.w/2),...jdZ(-1e4,seat)],[...jdBand([0,1,0],0,P.cog/2),...jdZ(-1e4,a.h)]],basis:[u,[0,0,1],nB],ex:[0,0,Math.max(a.h,b.h)*1.6]});
+   if(P.cog>a.w*0.7)c.warn('The cog is nearly as wide as the beam, which leaves narrow shoulders to bear on.');
+   if(P.cog<a.w*0.2)c.warn('A narrow cog is easily crushed or sheared off.');
+   if(P.dA+P.dB>b.h*0.55)c.warn('The slot over the cog takes a lot out of the upper beam.');
+   c.set('Notch walls',jdFa(d.angles.theta)+' to the edge');c.set('Cog',`${c.f(P.cog)} wide × ${c.f(P.dA)} high`);}},
+{id:'ari-kake',fam:'cross',ro:'Ari-kake',kj:'蟻掛け',en:'Dovetail housing, beam onto beam',lv:2,
+ about:'The end of B has a dovetail that drops into a socket in the side of A, tops flush, so B cannot pull away. The lower part of B is housed a little into A (koshikake) to carry the load. Used to hang joists and ties on beams, square or at an angle.',
+ assemble:'Drop B down into the socket from above.',
+ timbers:[['A','w','Width of A (carrying)'],['A','h','Height of A'],['A','l','Length of A'],['B','w','Width of B'],['B','h','Height of B'],['B','l','Length of B']],
+ angles:[{k:'theta',l:'Angle of B to A',min:45,max:135}],
+ def:{timbers:{A:{w:120,h:180,l:600},B:{w:105,h:150,l:450}},angles:{theta:90}},
+ params:d=>{const a=d.timbers.A,b=d.timbers.B;return [jdNum('dd','Dovetail depth',()=>jdR(a.w*0.4),6,a.w-10),jdNum('neck','Neck width',()=>jdR(b.w*0.45),5,b.w),jdNum('head','Head width',()=>jdR(b.w*0.7),6,b.w*1.4),
+   jdNum('dh','Dovetail height, from the top',()=>jdR(Math.min(a.h,b.h)*0.7),10,Math.min(a.h,b.h)),jdNum('hs','Seat housing depth',()=>jdR(Math.min(15,a.w*0.12)),0,a.w*0.4)];},
+ build(c,d,P){const a=d.timbers.A,b=d.timbers.B,th=d.angles.theta*JD_DEG,u=[Math.cos(th),Math.sin(th),0],nB=[-u[1],u[0],0];
+   const P0=[0,a.w/2,0],FB=frame(P0,u,nB,[0,0,1]),zb=a.h-b.h;
+   const at=(v,yT)=>{const t=(yT-a.w/2-v*nB[1])/u[1];return [P0[0]+v*nB[0]+t*u[0],P0[1]+v*nB[1]+t*u[1]];};
+   const dv=[at(-P.neck/2,a.w/2),at(P.neck/2,a.w/2),at(P.head/2,a.w/2-P.dd),at(-P.head/2,a.w/2-P.dd)];
+   const dvp=jdXY(dv,a.h-P.dh,a.h);
+   const A=c.part({name:'Timber A (carrying)',key:'A',pos:[BOX(-a.l/2,a.l/2,-a.w/2,a.w/2,0,a.h)],neg:[jdXY(dv,a.h-P.dh,a.h+1)],basis:JD_BX,ex:[0,0,0]});
+   const Bp=c.part({name:'Timber B (dovetailed end)',key:'B',pos:[jdOB(FB,-1e4,b.l,-b.w/2,b.w/2,zb,a.h).concat([jdGE([0,1,0],a.w/2)]),dvp],basis:[u,[0,0,1],nB],ex:[0,0,a.h*1.7]});
+   if(P.hs>0&&P.dh<b.h){const hs=jdOB(FB,-1e4,1e4,-b.w/2,b.w/2,zb,a.h-P.dh).concat([jdGE([0,1,0],a.w/2-P.hs),jdLE([0,1,0],a.w/2)]);Bp.pos.push(hs);A.neg.push(hs);}
+   const fa=Math.atan2((P.head-P.neck)/2,P.dd)/JD_DEG;
+   if(P.head<=P.neck)c.warn('The dovetail head is not wider than its neck, so it will not hold.');
+   else if(fa<6)c.warn(`The dovetail flares only ${jdFa(fa)}. Aim for 8° to 15°.`);else if(fa>20)c.warn(`The dovetail flares ${jdFa(fa)}, which can split the socket.`);
+   if(P.dd>a.w*0.55)c.warn('The socket goes more than half way into A and weakens it.');
+   if(b.h>a.h)c.warn('B is deeper than A, so it hangs below it.');
+   c.set('Dovetail flare',jdFa(fa)+' each side');c.set('B meets A at',jdFa(d.angles.theta)+' (set the bevel to this for the shoulders)');}},
+// ===== board corners
+{id:'arare-gumi',fam:'board',ro:'Arare-gumi',kj:'霰組',en:'Box joint (finger joint)',lv:2,square:true,
+ about:'Square fingers interlock at a board corner. The pattern of end grain gave it its name, ‘hailstones’. Easy to lay out, with lots of glue surface.',
+ assemble:'Slide the fingers together and glue.',
+ timbers:[['A','w','Board thickness (both)'],['A','h','Board width (box height)'],['A','l','Length of A'],['B','l','Length of B']],
+ def:{timbers:{A:{w:15,h:120,l:300},B:{l:220}}},
+ params:d=>{const t=d.timbers.A.w,H=d.timbers.A.h;return [jdNum('n','Number of fingers',()=>{let n=Math.max(3,jdR(H/(t*1.5)));if(n%2===0)n++;return n;},2,61,'n')];},
+ build(c,d,P){const t=d.timbers.A.w,H=d.timbers.A.h,LA=d.timbers.A.l,LB=d.timbers.B.l,n=Math.max(2,P.n|0);
+   const fa=[],fb=[];for(let i=0;i<n;i++)(i%2?fb:fa).push(BOX(0,t,0,t,H*i/n,H*(i+1)/n));
+   c.part({name:'Board A',key:'A',pos:[BOX(t,LA,0,t,0,H),...fa],basis:[[1,0,0],[0,0,1],[0,1,0]],ex:[0,-(t+50),0]});
+   c.part({name:'Board B',key:'B',pos:[BOX(0,t,t,LB,0,H),...fb],basis:[[0,1,0],[0,0,1],[1,0,0]],ex:[0,0,0]});
+   if(H/n<4)c.warn('The fingers are under 4 mm and will break off.');if(H/n>t*3)c.warn('Few, wide fingers give little glue surface. Add fingers.');
+   c.set('Finger width',c.f(H/n)+(n%2?'':' (an even count leaves different fingers at the two edges)'));c.set('Finger depth',c.f(t)+' (the board thickness)');}},
+{id:'ari-gumi',fam:'board',ro:'Ari-gumi',kj:'蟻組',en:'Through dovetail',lv:3,square:true,
+ about:'Tails on board A interlock with pins on board B. The tails flare, so the corner cannot be pulled apart along A. The classic corner for boxes, chests and drawers.',
+ assemble:'Tap A down onto B so the tails slide between the pins.',
+ timbers:[['A','w','Board thickness (both)'],['A','h','Board width (box height)'],['A','l','Length of A (tail board)'],['B','l','Length of B (pin board)']],
+ def:{timbers:{A:{w:15,h:120,l:300},B:{l:220}}},
+ params:d=>{const t=d.timbers.A.w,H=d.timbers.A.h;return [jdNum('nt','Number of tails',()=>Math.max(1,jdR(H/(t*3.2))),1,30,'n'),jdNum('slope','Slope, 1 in',()=>7,3,14,'n'),
+   jdNum('pn','Pin width at the narrow end',()=>Math.max(4,jdR(t*0.5)),2,H),jdNum('hp','Half-pin width at the edges',()=>Math.max(5,jdR(t*0.6)),2,H)];},
+ build(c,d,P){const t=d.timbers.A.w,H=d.timbers.A.h,LA=d.timbers.A.l,LB=d.timbers.B.l,N=Math.max(1,P.nt|0),k=1/P.slope;
+   const tw=(H-2*P.hp-(N-1)*P.pn)/N,kt=k*t;
+   const tails=[],pins=[];
+   for(let j=0;j<N;j++){const cc=P.hp+tw/2+j*(tw+P.pn);tails.push([[0,cc-tw/2],[0,cc+tw/2],[t,cc+tw/2-kt],[t,cc-tw/2+kt]]);}
+   pins.push([[0,0],[0,P.hp],[t,P.hp+kt],[t,0]]);
+   for(let j=0;j+1<N;j++){const c0=P.hp+tw/2+j*(tw+P.pn),c1=c0+tw+P.pn;pins.push([[0,c0+tw/2],[0,c1-tw/2],[t,c1-tw/2+kt],[t,c0+tw/2-kt]]);}
+   pins.push([[0,H-P.hp],[0,H],[t,H],[t,H-P.hp-kt]]);
+   c.part({name:'Board A (tails)',key:'A',pos:[BOX(t,LA,0,t,0,H),...tails.map(q=>jdXZ(q,0,t))],basis:[[1,0,0],[0,0,1],[0,1,0]],ex:[0,-(t+60),0]});
+   c.part({name:'Board B (pins)',key:'B',pos:[BOX(0,t,t,LB,0,H),...pins.map(q=>jdXZ(q,0,t))],basis:[[0,1,0],[0,0,1],[1,0,0]],ex:[0,0,0]});
+   if(tw-2*kt<3)c.warn('The tails come out too narrow at their base. Use fewer tails or narrower pins.');
+   if(P.pn<3)c.warn('Pins under 3 mm are very hard to chop.');
+   const fa=Math.atan(k)/JD_DEG;c.set('Dovetail angle',jdFa(fa)+` (slope 1 in ${P.slope})`);c.set('Tails',`${N} × ${c.f(tw)} wide at the end grain, ${c.f(tw-2*kt)} at the base line`);}}
+];
+const JD_BY_ID=Object.fromEntries(JD_CAT.map(j=>[j.id,j]));
+// ---------- design helpers
+function jdResolve(defs,over){const V={};for(const f of defs){let v=over&&over[f.k]!=null&&over[f.k]!==''?over[f.k]:null;const a=typeof f.auto==='function'?f.auto(V):f.auto;
+  if(f.u==='sel'){V[f.k]=v!=null&&f.opts.some(o=>o[0]===String(v))?String(v):a;continue;}
+  v=v==null||!isFinite(+v)?a:+v;if(f.min!=null)v=Math.max(f.min,v);if(f.max!=null&&f.max>=(f.min||0))v=Math.min(f.max,v);if(f.u==='n')v=Math.round(v);V[f.k]=v;}return V;}
+function jdDefault(id){const J=JD_BY_ID[id]||JD_CAT[1];const d={format:JD_FORMAT,version:JD_VERSION,joint:J.id,name:'',units:'mm',wood:{main:'hinoki',accent:'keyaki'},
+  timbers:JSON.parse(JSON.stringify(J.def.timbers)),angles:Object.assign({theta:90},J.def.angles||{}),params:{}};
+  if(J.multi)d.beams=JSON.parse(JSON.stringify(J.def.beams));return d;}
+function jdSanitize(o){
+  if(!o||typeof o!=='object')throw new Error('Not a joint design file.');
+  if(o.format&&o.format!==JD_FORMAT)throw new Error('This is not a Sashimono Studio joint design.');
+  const J=JD_BY_ID[o.joint];if(!J)throw new Error('Unknown joint: '+o.joint);
+  const d=jdDefault(J.id);d.name=String(o.name||'').slice(0,80);d.units=o.units==='in'?'in':'mm';
+  if(o.wood){if(SPECIES[o.wood.main])d.wood.main=o.wood.main;if(SPECIES[o.wood.accent])d.wood.accent=o.wood.accent;}
+  const num=(v,a,b,def)=>isFinite(+v)?jdCl(+v,a,b):def;
+  for(const k of ['A','B'])if(d.timbers[k]&&o.timbers&&o.timbers[k])for(const q of ['w','h','l'])if(q in d.timbers[k])d.timbers[k][q]=num(o.timbers[k][q],2,20000,d.timbers[k][q]);
+  if(o.angles)for(const k in d.angles)d.angles[k]=num(o.angles[k],-180,180,d.angles[k]);
+  if(o.params&&typeof o.params==='object')for(const k in o.params){const v=o.params[k];if(typeof v==='number'||typeof v==='string')d.params[k]=v;}
+  if(J.multi&&Array.isArray(o.beams))d.beams=o.beams.slice(0,4).map(b=>({face:num(b.face,0,3,0)|0,ang:num(b.ang,30,150,90),skew:num(b.skew,-60,60,0),z:num(b.z,0,20000,300),off:num(b.off,-2000,2000,0),
+    w:num(b.w,6,2000,90),h:num(b.h,6,2000,120),l:num(b.l,20,20000,400),jt:JD_JT[b.jt]?b.jt:'hira',params:b.params&&typeof b.params==='object'?Object.fromEntries(Object.entries(b.params).filter(([,v])=>typeof v==='number'||typeof v==='string')):{}}));
+  return d;
+}
+function jdClean(d){const J=JD_BY_ID[d.joint];const o={format:JD_FORMAT,version:JD_VERSION,joint:d.joint,name:d.name||'',units:d.units,wood:d.wood,timbers:{}};
+  for(const k in d.timbers){o.timbers[k]={};for(const [tk,q] of J.timbers.map(x=>[x[0],x[1]]))if(tk===k)o.timbers[k][q]=d.timbers[k][q];if(!Object.keys(o.timbers[k]).length)delete o.timbers[k];}
+  if(J.angles){o.angles={};for(const a of J.angles)o.angles[a.k]=d.angles[a.k];}
+  o.params=d.params;if(J.multi)o.beams=d.beams;o.meta={app:'Sashimono Studio',created:new Date().toISOString().slice(0,10)};return o;}
+// ---------- build a design into finished parts
+function jdBuild(d,fmtLen){
+  const J=JD_BY_ID[d.joint];const M=new Model('jd',{species:d.wood.main,accent:d.wood.accent});
+  const warn=[],setout=[];
+  const c={part:o=>M.add(Object.assign({neg:[],grain:0,thk:2},o)),warn:m=>{if(!warn.includes(m))warn.push(m);},set:(k,v)=>setout.push([k,v]),f:fmtLen||(v=>jdR(v*10)/10+' mm')};
+  const P=jdResolve(J.params(d),d.params);
+  J.build(c,d,P);
+  // sit the assembly on the floor
+  let zmin=1e30;for(const p of M.parts){const prims=p.pos.map(mkPrim);for(const q of prims)if(q.ok)zmin=Math.min(zmin,q.bb[4]);}
+  if(isFinite(zmin)&&Math.abs(zmin)>1e-6){const sh=r=>r.map(pl=>[pl[0],pl[1],pl[2],pl[3]-pl[2]*zmin]);for(const p of M.parts){p.pos=p.pos.map(sh);p.neg=p.neg.map(sh);}}
+  finalizeModel(M);
+  for(const p of M.parts){const pr=p.count>1?[p.pos[0]]:p.pos;
+    const ext=v=>{let lo=1e30,hi=-1e30;for(const q of pr)for(const x of q.V){const t=vdot(x,v);if(t<lo)lo=t;if(t>hi)hi=t;}return hi-lo;};
+    p.lwt=[ext(p.B[0]),ext(p.B[1]),ext(p.B[2])];p.count=p.count||1;
+    if(p.lwt[2]>p.lwt[1]&&!p.small){}}
+  for(const p of M.parts)if(!p.pos.length)warn.push(`${p.name} came out empty with these sizes.`);
+  return {M,warn,setout,P,J};
+}
+// ---------- the UI
+const JD=(()=>{
+  const el=$('#jdesigner');const KEY='sashimono-jd-v1';
+  let d=null,res=null,v=null,tab='model',sheet=0,hid=true,ro=null,ver=0,cacheSheets={},fam=null,openBeam=0;
+  try{d=jdSanitize(JSON.parse(localStorage.getItem(KEY)));}catch(e){d=jdDefault('koshikake-ari-tsugi');}
+  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(jdClean(d)));}catch(e){}};
+  const isIn=()=>d.units==='in',unit=()=>isIn()?'in':'mm';
+  const toU=mm=>isIn()?+(mm/25.4).toFixed(3):Math.round(mm*10)/10,fromU=x=>isIn()?x*25.4:x;
+  const fN=mm=>{if(isIn()){const v=mm/25.4;return (Math.round(v*16)/16).toString().replace(/^0\./,'.')+'″';}const r=Math.round(mm*10)/10;return Math.abs(r-Math.round(r))<0.05?String(Math.round(r)):r.toFixed(1);};
+  const fL=mm=>isIn()?fN(mm):fN(mm)+' mm';
+  const J=()=>JD_BY_ID[d.joint];
+  function pips(l){return `<span class="jdpips" aria-label="Level ${l} of 4">${'●'.repeat(l)}${'○'.repeat(4-l)}</span>`;}
+  function numField(path,label,val,o){o=o||{};const isAuto=o.auto,u=o.u||'mm';
+    const shown=u==='mm'?toU(val):u==='deg'?Math.round(val*10)/10:val;const st=u==='mm'?(isIn()?0.0625:1):u==='deg'?0.5:1;
+    return `<div class="field${o.wide?' wide':''}"><label for="jd-${path}">${esc(label)}${isAuto?' <span class="jdauto" title="Follows the proportions until you type a value">auto</span>':o.reset?` <button class="jdreset" data-reset="${path}" title="Back to proportions" aria-label="Back to the automatic value">↺</button>`:''}</label>
+      <div class="in"><input type="number" id="jd-${path}" data-p="${path}" data-u="${u}" value="${shown}" step="${st}" inputmode="decimal" class="${isAuto?'isauto':''}">${u==='n'?'':`<i>${u==='mm'?unit():'°'}</i>`}</div></div>`;}
+  function selField(path,label,val,opts,o){o=o||{};return `<div class="field${o.wide?' wide':''}"><label for="jd-${path}">${esc(label)}${o.auto?' <span class="jdauto">auto</span>':''}</label><select id="jd-${path}" data-p="${path}" data-u="sel">${opts.map(([k,l])=>`<option value="${k}" ${String(k)===String(val)?'selected':''}>${esc(l)}</option>`).join('')}</select></div>`;}
+  function angField(path,a,val){return `<div class="field wide jdang"><label for="jd-${path}">${esc(a.l)}</label><div class="jdangrow"><input type="range" min="${a.min}" max="${a.max}" step="1" value="${val}" data-p="${path}" data-u="deg" data-live="1" aria-label="${esc(a.l)}"><div class="in"><input type="number" id="jd-${path}" data-p="${path}" data-u="deg" value="${val}" step="0.5" min="${a.min}" max="${a.max}" inputmode="decimal"><i>°</i></div></div></div>`;}
+  function paramFields(defs,over,prefix){const V=jdResolve(defs,over);let h='';
+    for(const f of defs){if(f.show&&!f.show(V))continue;const has=over[f.k]!=null&&over[f.k]!=='';
+      h+=f.u==='sel'?selField(prefix+f.k,f.l,V[f.k],f.opts,{auto:!has}):numField(prefix+f.k,f.l,V[f.k],{auto:!has,reset:has,u:f.u==='n'?'n':'mm'});}
+    return h;}
+  function sideHTML(){
+    const j=J(),fm=fam||j.fam;
+    let h=`<div class="sec"><h2>Joint</h2><div class="jdfams" role="group" aria-label="Family">${JD_FAMS.map(([k,l,kj])=>`<button class="pill" data-fam="${k}" aria-pressed="${k===fm}"><span class="kj" lang="ja">${kj}</span>${esc(l)}</button>`).join('')}</div>
+      <p class="hint" style="margin:8px 0 6px">${esc(JD_FAMS.find(f=>f[0]===fm)[3])}</p>
+      <div class="jdlist" role="list">${JD_CAT.filter(x=>x.fam===fm).map(x=>`<button role="listitem" data-joint="${x.id}" aria-current="${x.id===d.joint}"><span class="kj" lang="ja">${x.kj}</span><span><b>${esc(x.ro)}</b><span class="en">${esc(x.en)}</span></span>${pips(x.lv)}</button>`).join('')}</div></div>`;
+    h+=`<div class="sec"><h2>Timbers</h2><div class="fields">${j.timbers.map(([t,q,l])=>numField(`t.${t}.${q}`,l,d.timbers[t][q])).join('')}</div>${j.square?'<p class="hint" style="margin:8px 0 0">Board corners are cut square (90°). For angled box corners use a mitre under Corners.</p>':''}</div>`;
+    if(j.multi){h+=`<div class="sec"><h2>Beams <span class="hint">· ${d.beams.length} of 4</span></h2>`;
+      d.beams.forEach((b,i)=>{const defs=jdBeamParams(d,b);
+        h+=`<details class="jdbeam" data-bi="${i}" ${i===openBeam?'open':''}><summary><b>Beam ${i+1}</b> · ${esc(JD_FACES[b.face].split(' ')[0].toLowerCase())} face · ${esc(JD_JT[b.jt][0])}${b.ang!==90?` · ${jdFa(b.ang)}`:''}${b.skew?` · skew ${jdFa(b.skew)}`:''}</summary>
+        <div class="fields">${selField(`b.${i}.jt`,'Joint',b.jt,Object.entries(JD_JT).map(([k,v])=>[k,`${v[0]} · ${v[1]}`]),{wide:true})}
+        ${selField(`b.${i}.face`,'Enters the post on the',b.face,JD_FACES.map((f,k)=>[k,f]))}${numField(`b.${i}.z`,'Height of beam centre',b.z)}
+        ${angField(`b.${i}.ang`,{l:'Angle to the post (90° = level)',min:30,max:150},b.ang)}${angField(`b.${i}.skew`,{l:'Skew in plan',min:-45,max:45},b.skew)}
+        ${numField(`b.${i}.off`,'Offset along the face',b.off||0)}${numField(`b.${i}.l`,'Length',b.l)}${numField(`b.${i}.w`,'Width',b.w)}${numField(`b.${i}.h`,'Height',b.h)}
+        ${paramFields(defs,b.params,`b.${i}.p.`)}</div>
+        <div class="btns" style="margin-top:8px"><button class="btn" data-rmbeam="${i}">Remove beam ${i+1}</button></div></details>`;});
+      h+=`<div class="btns" style="margin-top:10px">${d.beams.length<4?'<button class="btn" id="jdAddBeam">+ Add a beam</button>':''}</div></div>`;}
+    if(j.angles){h+=`<div class="sec"><h2>Angles</h2><div class="fields">${j.angles.map(a=>angField(`a.${a.k}`,a,d.angles[a.k]??0)).join('')}</div>
+      <div class="jdquick">${(j.angles[0].k==='theta'?[45,60,72,90,108,120,135].filter(x=>x>=j.angles[0].min&&x<=j.angles[0].max):[]).map(x=>`<button class="pill" data-qa="${x}" aria-pressed="${d.angles.theta===x}">${x}°</button>`).join('')}</div>
+      ${j.fam==='corner'?'<p class="hint" style="margin:6px 0 0">90° is a square corner. 120° closes a hexagon, 135° an octagon, 108° a pentagon.</p>':''}</div>`;}
+    const defs=j.params(d);
+    if(defs.length)h+=`<div class="sec"><h2>Joint dimensions</h2><div class="fields">${paramFields(defs,d.params,'p.')}</div>
+      <p class="hint" style="margin:8px 0 0">Values marked <span class="jdauto">auto</span> follow the timber sizes. Type a value to fix it; ↺ hands it back.</p>${Object.keys(d.params).length?'<div class="btns" style="margin-top:8px"><button class="btn" id="jdAuto">Back to proportions</button></div>':''}</div>`;
+    const sp=SP_ORDER.filter(k=>!SPECIES[k].ply).map(k=>[k,SPECIES[k].name]);
+    h+=`<div class="sec"><h2>Wood &amp; units</h2><div class="fields">${selField('w.main','Timber',d.wood.main,sp,{wide:true})}${selField('w.accent','Pegs, keys &amp; wedges'.replace('&amp;','&'),d.wood.accent,sp,{wide:true})}</div>
+      <div class="row"><div class="seg" role="group" aria-label="Units"><button data-ju="mm" aria-pressed="${!isIn()}">mm</button><button data-ju="in" aria-pressed="${isIn()}">inches</button></div></div></div>`;
+    h+=`<div class="sec"><h2>Your design</h2><div class="field wide"><label for="jd-name">Name</label><input type="text" id="jd-name" value="${esc(d.name||'')}" placeholder="${esc(j.ro)}" maxlength="80"></div>
+      <div class="btns" style="margin-top:10px"><button class="btn" id="jdSave">Save design</button><button class="btn" id="jdOpen">Open design</button><button class="btn" id="jdLink">Copy share link</button><button class="btn" id="jdReset">Start again</button><input type="file" id="jdFile" accept=".json,application/json" hidden></div></div>`;
+    return h;
+  }
+  function shell(){
+    el.innerHTML=`<div class="jdapp"><aside class="jdside" id="jdSide" aria-label="Joint designer settings"></aside>
+      <main class="jdmain"><nav class="tabs" role="tablist" aria-label="Joint designer views">${[['model','3D model'],['drawings','Drawings'],['cut','Cut list & setting out'],['file','Design file']].map(([k,l])=>`<a href="#" role="tab" data-jt="${k}" aria-selected="${k===tab}">${l}</a>`).join('')}</nav>
+      <section class="jdpane" data-pane="model"><div class="stage jdstage"><canvas aria-label="3D model of the joint. Drag to orbit, scroll or pinch to zoom, tap a part to see what it is."></canvas>
+        <div class="ov tl"><div class="jdtitle" id="jdTitle"></div></div>
+        <div class="ov tr"><div class="seg" id="jdViews" role="group" aria-label="Camera"><button data-v="iso" aria-pressed="true">3D</button><button data-v="front">Front</button><button data-v="side">Side</button><button data-v="top">Top</button></div></div>
+        <div class="ov bl"><div class="jdbl"><details class="checks" id="jdChecks"><summary></summary><ul></ul></details><div class="info" id="jdInfo" hidden></div></div>
+          <div class="explode"><button class="pill" id="jdEx" aria-pressed="true">Exploded</button><label for="jdExR" class="hint">Spread</label><input type="range" id="jdExR" min="0" max="100" value="100"></div></div></div></section>
+      <section class="jdpane" data-pane="drawings"><div class="toolbar"><select id="jdSheet" aria-label="Sheet"></select><button class="pill" id="jdHid" aria-pressed="true">Hidden lines</button><button class="btn" id="jdDlSheet">Download SVG</button><button class="btn primary" id="jdDlAll">Download all sheets</button></div><div class="sheetwrap" id="jdSheetBox"><div class="busy">Drawing…</div></div></section>
+      <section class="jdpane" data-pane="cut"><div class="doc" id="jdCut"></div></section>
+      <section class="jdpane" data-pane="file"><div class="doc" id="jdFileTab"></div></section></main></div>`;
+    v=new Viewer(el.querySelector('.jdstage canvas'),{fitK:0.95,exFit:0.9});v.cam.yaw=-2.3;v.cam.pitch=0.5;v.explode=1;
+    recolor();
+    ro=new ResizeObserver(()=>{if(v)v.request(1);});ro.observe(el.querySelector('.jdstage'));
+    v.onPick=p=>{v.sel=p?p.id:-1;v.request(1);const info=$('#jdInfo');if(!p){info.hidden=true;return;}const L=p.lwt;
+      info.innerHTML=`<b>${esc(p.name)}${p.count>1?' ×'+p.count:''}</b>${fL(L[0])} long · ${fN(L[1])} × ${fL(L[2])} · ${esc((p.wood.name||'Bamboo').split(' (')[0])}`;info.hidden=false;};
+  }
+  function recolor(){if(!v)return;v.setColors(viewer.bgCol,viewer.inkCol);v.accent=viewer.accent;v.foot=null;v.request(1);}
+  function renderSide(){const side=$('#jdSide');const a=document.activeElement,ap=a&&a.dataset&&a.dataset.p,st=side.scrollTop;side.innerHTML=sideHTML();side.scrollTop=st;
+    if(ap){const n=side.querySelector(`input[type=number][data-p="${ap}"],select[data-p="${ap}"]`);if(n)n.focus();}}
+  function title(){const j=J();return `<span class="kj" lang="ja">${j.kj}</span><div><b>${esc(d.name||j.ro)}</b><span>${esc(j.en)} ${pips(j.lv)}</span></div>`;}
+  function checks(){const w=res.warn;const det=$('#jdChecks');det.querySelector('summary').innerHTML=w.length?`<span class="dot"></span>${w.length} thing${w.length>1?'s':''} to check`:`<span class="dot ok"></span>The joint checks out`;
+    det.querySelector('ul').innerHTML=w.map(t=>`<li>${esc(t)}</li>`).join('')||'<li>Proportions and fit are within the usual limits.</li>';if(!w.length)det.open=false;}
+  function rebuild(opts){opts=opts||{};
+    try{res=jdBuild(d,fL);}catch(e){console.error(e);res={M:{parts:[]},warn:['These sizes do not make a valid joint. '+(e.message||'')],setout:[],P:{},J:J()};}
+    ver++;cacheSheets={};
+    if(v){v.sel=-1;$('#jdInfo').hidden=true;if(res.M.parts.length){v.setScene(res.M.parts,!!opts.keepCam);const cv=v.cv,a=cv.clientWidth/(cv.clientHeight||1);if(!opts.keepCam&&a<1)v.cam.dist/=Math.max(0.55,a);}v.request(opts.fast?0.5:1);if(opts.fast){clearTimeout(v.idleT);v.idleT=setTimeout(()=>v.request(1),180);}}
+    $('#jdTitle').innerHTML=title();checks();save();
+    if(tab!=='model')renderTab();
+  }
+  function renderTab(){
+    el.querySelectorAll('[data-jt]').forEach(a=>a.setAttribute('aria-selected',a.dataset.jt===tab));
+    el.querySelectorAll('.jdpane').forEach(p=>p.classList.toggle('on',p.dataset.pane===tab));
+    if(tab==='model'){v&&v.request(1);return;}
+    if(tab==='drawings')renderDrawings();else if(tab==='cut')renderCut();else renderFile();
+  }
+  // ----- drawings
+  function sheets(){const L=[{n:'Assembly',kind:'ga'}];for(const p of res.M.parts)if(!p.small)L.push({n:p.name,kind:'part',p});
+    const sm=res.M.parts.filter(p=>p.small);if(sm.length)L.push({n:'Pegs, keys and wedges',kind:'small',ps:sm});return L;}
+  function getSheet(i){const k=ver+'|'+i+'|'+hid;if(cacheSheets[k])return cacheSheets[k];const L=sheets(),s=L[i],j=J(),date=new Date().toISOString().slice(0,10);
+    const ttl=d.name||j.ro,units=isIn()?'inches':'mm',sh=`${i+1} / ${L.length}`;let svg;
+    if(s.kind==='ga'){const parts=res.M.parts,views={front:VIEWS.front,top:VIEWS.top,side:VIEWS.side};
+      svg=composeSheet({views,parts,lines:linesFor(parts,views),dims:[],fmt:fN,title:ttl,subtitle:`${j.en} · assembly`,material:`${SPECIES[d.wood.main].name}; pegs, keys and wedges ${SPECIES[d.wood.accent].name.split(' (')[0].toLowerCase()}`,units,sheet:sh,
+        iso:isoImage(parts,1000,700,0.6,{yaw:-2.3,pitch:0.5}),hidden:hid,date,notes:res.setout.slice(0,4).map(([a,b])=>`${a}: ${b}`)}).svg;}
+    else if(s.kind==='part'){const p=s.p,views=viewsFrom(p.B[0],p.B[1]),parts=[p];
+      svg=composeSheet({views,parts,lines:linesFor(parts,views),dims:partDims(p,views),fmt:fN,title:p.name,subtitle:`Finished ${fN(p.lwt[0])} × ${fN(p.lwt[1])} × ${fN(p.lwt[2])}${isIn()?'':' mm'} · ${ttl}`,
+        material:`${p.wood.name||''} · grain runs left to right in the face view`,units,sheet:sh,hidden:hid,date,notes:['Lengths are overall, long point to long point.','Mark every joint from the same reference faces.']}).svg;}
+    else{const ps=s.ps.map(p=>Object.assign(Object.create(Object.getPrototypeOf(p)),p));let x=0;const parts=[];
+      for(const p of ps){parts.push(p);}const views={front:VIEWS.front,top:VIEWS.top,side:VIEWS.side};
+      svg=composeSheet({views,parts,lines:linesFor(parts,views),dims:[],fmt:fN,title:'Pegs, keys and wedges',subtitle:ttl,material:SPECIES[d.wood.accent].name,units,sheet:sh,hidden:hid,date,notes:s.ps.map(p=>`${p.name}${p.count>1?' ×'+p.count:''}: ${fN(p.lwt[0])} × ${fN(p.lwt[1])} × ${fN(p.lwt[2])}${isIn()?'':' mm'}`).slice(0,4)}).svg;void x;}
+    return cacheSheets[k]=svg;}
+  function renderDrawings(){const L=sheets();if(sheet>=L.length)sheet=0;$('#jdSheet').innerHTML=L.map((s,i)=>`<option value="${i}" ${i===sheet?'selected':''}>${i+1}. ${esc(s.n)}</option>`).join('');
+    $('#jdHid').setAttribute('aria-pressed',hid);const box=$('#jdSheetBox');box.innerHTML='<div class="busy">Drawing the sheet…</div>';const myVer=ver;
+    setTimeout(()=>{if(myVer!==ver||tab!=='drawings')return;try{box.innerHTML=getSheet(sheet);const s=box.querySelector('svg');if(s)s.style.width=Math.max(300,box.clientWidth-32)+'px';}catch(e){console.error(e);box.innerHTML='<div class="busy">This sheet could not be drawn.</div>';}},30);}
+  // ----- cut list
+  function rows(){return res.M.parts.map(p=>({p,name:p.name,n:p.count||1,L:p.lwt[0],W:p.lwt[1],T:p.lwt[2],sp:p.wood.name||'',small:p.small}));}
+  function renderCut(){const j=J(),R=rows();const vol=R.filter(r=>!r.small).reduce((a,r)=>a+r.L*r.W*r.T*r.n,0);
+    const P=res.P,defs=j.params(d).filter(f=>!f.show||f.show(P));
+    $('#jdCut').innerHTML=`<h2>${esc(d.name||j.ro)} <span class="kj" lang="ja" style="color:var(--shu);font-weight:500">${j.kj}</span></h2><p class="hint" style="margin:0 0 6px">${esc(j.en)} · ${esc(SPECIES[d.wood.main].name)}</p>
+      <p>${esc(j.about)}</p><p><b>Assembly.</b> ${esc(j.assemble)}</p>
+      ${res.warn.length?`<div class="wnote"><b>Check before cutting</b><ul style="margin:4px 0 0;padding-left:20px">${res.warn.map(w=>`<li>${esc(w)}</li>`).join('')}</ul></div>`:''}
+      <h3>Cut list</h3><div class="scroll"><table><thead><tr><th>Part</th><th class="n">Qty</th><th class="n">Length</th><th class="n">Width</th><th class="n">Thickness</th><th>Wood</th></tr></thead><tbody>
+      ${R.map(r=>`<tr><td>${esc(r.name)}</td><td class="n">${r.n}</td><td class="n">${fN(r.L)}</td><td class="n">${fN(r.W)}</td><td class="n">${fN(r.T)}</td><td>${esc(r.sp.split(' (')[0])}</td></tr>`).join('')}</tbody></table></div>
+      <p class="hint">Finished sizes${isIn()?' in inches':' in mm'}. Lengths are overall, long point to long point; add about 20 mm to each timber for trimming. Timber volume ${(vol/1e9).toFixed(4)} m³.</p>
+      <div class="btns"><button class="btn" id="jdCSV">Download cut list (CSV)</button></div>
+      <h3>Setting out</h3><table class="dt"><tbody>${res.setout.map(([a,b])=>`<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('')||'<tr><td colspan="2">Square cuts only.</td></tr>'}</tbody></table>
+      ${defs.length?`<h3>Joint dimensions</h3><table class="dt"><tbody>${defs.map(f=>`<tr><td>${esc(f.l)}</td><td>${f.u==='sel'?esc((f.opts.find(o=>o[0]===String(P[f.k]))||['',''])[1]):f.u==='n'?P[f.k]:fL(P[f.k])}${d.params[f.k]!=null?'':' <span class="jdauto">auto</span>'}</td></tr>`).join('')}</tbody></table>`:''}
+      <p class="hint" style="margin-top:18px">These models show the joint's proportions and how it goes together. For structural timbers in a building, check sizes against local practice or an engineer.</p>`;
+    $('#jdCSV').addEventListener('click',()=>{const c=x=>isIn()?(x/25.4).toFixed(3):x.toFixed(1),q=s=>`"${String(s).replace(/"/g,'""')}"`;
+      const csv=['Part,Qty,Length ('+unit()+'),Width ('+unit()+'),Thickness ('+unit()+'),Wood',...R.map(r=>[q(r.name),r.n,c(r.L),c(r.W),c(r.T),q(r.sp)].join(','))].join('\n');saveFile(fileBase()+'-cut-list.csv',csv);});}
+  // ----- design file
+  const fileBase=()=>(d.name||J().ro).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'joint';
+  function b64(s){return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+  function unb64(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return decodeURIComponent(escape(atob(s)));}
+  function link(){const o=jdClean(d);delete o.meta;return location.href.split('#')[0]+'#jd/'+b64(JSON.stringify(o));}
+  function renderFile(){const json=JSON.stringify(jdClean(d),null,2);
+    $('#jdFileTab').innerHTML=`<h2>Design file</h2><p>Everything about this joint is in one small file: the joint, the timber sizes, the angles and only the dimensions you changed. Everything else follows the joint's proportions, so the file stays short and readable. Save it to come back later, send it to someone, or open it on another device. The share link carries the same design inside the address.</p>
+      <div class="btns"><button class="btn primary" id="jdSave2">Download .json</button><button class="btn" id="jdLink2">Copy share link</button><button class="btn" id="jdOpen2">Open a design file</button></div>
+      <h3>This design</h3><pre class="jdjson" tabindex="0">${esc(json)}</pre>
+      <h3>Format</h3><table class="dt"><tbody>
+      <tr><td>format, version</td><td>Always <code>sashimono-joint</code>, version 1</td></tr><tr><td>joint</td><td>The joint's id: ${JD_CAT.map(x=>`<code>${x.id}</code>`).join(', ')}</td></tr>
+      <tr><td>timbers</td><td>A and B with width <code>w</code>, height <code>h</code> and length <code>l</code>, in millimetres</td></tr><tr><td>angles</td><td>In degrees. <code>theta</code> is the angle between the timbers</td></tr>
+      <tr><td>params</td><td>Only the joint dimensions you typed, in millimetres. Leave one out and it follows the proportions</td></tr><tr><td>beams</td><td>Post and beams only: each beam's face (0–3), angle, skew, height, size, joint (<code>hira</code>, <code>komisen</code>, <code>kusabi</code>, <code>hanasen</code>) and its own params</td></tr>
+      <tr><td>units</td><td>How sizes are shown; the file always stores millimetres</td></tr></tbody></table>`;}
+  // ----- events
+  function setPath(path,raw,u){const k=path.split('.');let val=raw;
+    if(u==='sel'){}else{val=parseFloat(String(raw).replace(',','.'));if(!isFinite(val))return false;if(u==='mm')val=fromU(val);if(u==='mm')val=Math.round(val*10)/10;}
+    if(k[0]==='t'){if(!(val>=2))return false;d.timbers[k[1]][k[2]]=val;}
+    else if(k[0]==='a')d.angles[k[1]]=val;
+    else if(k[0]==='p')d.params[k[1]]=u==='sel'?val:val;
+    else if(k[0]==='w')d.wood[k[1]]=val;
+    else if(k[0]==='b'){const b=d.beams[+k[1]];if(!b)return false;if(k[2]==='p'){b.params[k[3]]=val;}else if(k[2]==='jt'){b.jt=val;b.params={};}else if(k[2]==='face'){b.face=+val;}else b[k[2]]=val;openBeam=+k[1];}
+    return true;}
+  el.addEventListener('click',e=>{
+    const t=e.target.closest('[data-jt]');if(t){e.preventDefault();tab=t.dataset.jt;renderTab();return;}
+    const f=e.target.closest('[data-fam]');if(f){fam=f.dataset.fam;renderSide();return;}
+    const jb=e.target.closest('[data-joint]');if(jb){if(jb.dataset.joint!==d.joint){const keep={units:d.units,wood:d.wood};d=jdDefault(jb.dataset.joint);Object.assign(d,keep);fam=null;openBeam=0;v&&(v.explode=1);syncEx();renderSide();rebuild();}return;}
+    const qa=e.target.closest('[data-qa]');if(qa){d.angles.theta=+qa.dataset.qa;renderSide();rebuild({keepCam:true});return;}
+    const rs=e.target.closest('[data-reset]');if(rs){const k=rs.dataset.reset.split('.');if(k[0]==='p')delete d.params[k[1]];else if(k[0]==='b')delete d.beams[+k[1]].params[k[3]];renderSide();rebuild({keepCam:true});return;}
+    const ju=e.target.closest('[data-ju]');if(ju){d.units=ju.dataset.ju;renderSide();rebuild({keepCam:true});return;}
+    const vw=e.target.closest('#jdViews button');if(vw){el.querySelectorAll('#jdViews button').forEach(x=>x.setAttribute('aria-pressed',x===vw));if(vw.dataset.v==='iso'){v.cam.yaw=-2.3;v.cam.pitch=0.5;v.fit();v.request(1);}else v.view(vw.dataset.v);return;}
+    const rb=e.target.closest('[data-rmbeam]');if(rb){d.beams.splice(+rb.dataset.rmbeam,1);openBeam=Math.max(0,openBeam-1);renderSide();rebuild();return;}
+    const id=e.target.closest('button')&&e.target.closest('button').id;
+    if(id==='jdAddBeam'){const used=new Set(d.beams.map(b=>b.face));const face=[0,1,2,3].find(x=>!used.has(x));const last=d.beams[d.beams.length-1];
+      const LP=d.timbers.A.l;let z=LP/2,best=-1;for(let k=2;k<9;k++){const c=LP*k/10,m=Math.min(...d.beams.map(b=>Math.abs(b.z-c)),1e9);if(m>best+1){best=m;z=c;}}
+      d.beams.push({face:face==null?0:face,ang:90,skew:0,z:jdR(z),off:0,w:last?last.w:90,h:last?last.h:120,l:last?last.l:400,jt:'hira',params:{}});openBeam=d.beams.length-1;renderSide();rebuild();return;}
+    if(id==='jdAuto'){d.params={};renderSide();rebuild({keepCam:true});return;}
+    if(id==='jdSave'||id==='jdSave2'){saveFile(fileBase()+'.json',JSON.stringify(jdClean(d),null,2));return;}
+    if(id==='jdOpen'||id==='jdOpen2'){$('#jdFile').click();return;}
+    if(id==='jdLink'||id==='jdLink2'){const l=link();(navigator.clipboard?navigator.clipboard.writeText(l):Promise.reject()).then(()=>toast('Share link copied'),()=>{prompt?toast('Could not copy. The link is in the address bar now.'):0;history.replaceState(null,'',l);});return;}
+    if(id==='jdReset'){d=jdDefault(d.joint);renderSide();rebuild();toast('Back to the starting proportions');return;}
+    if(id==='jdEx'){const to=v.explode>0.5?0:1;animateExplode(v,to,()=>{$('#jdExR').value=Math.round(v.explode*100);syncEx();});return;}
+    if(id==='jdHid'){hid=!hid;renderDrawings();return;}
+    if(id==='jdDlSheet'){saveFile(`${fileBase()}-sheet-${sheet+1}.svg`,getSheet(sheet));return;}
+    if(id==='jdDlAll'){toast('Preparing the drawings…');setTimeout(()=>{const L=sheets();const all=L.map((s,i)=>getSheet(i));
+      saveFile(fileBase()+'-drawings.html',`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(d.name||J().ro)} · drawings</title><style>body{margin:0;background:#eee}svg{display:block;width:100%;max-width:1400px;height:auto;margin:16px auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}@page{size:A3 landscape;margin:0}@media print{body{background:#fff}svg{margin:0;box-shadow:none;page-break-after:always;width:100%;max-width:none}}</style></head><body>${all.join('')}</body></html>`);},40);return;}
+  });
+  function syncEx(){const b=$('#jdEx');if(!b)return;const on=v.explode>0.5;b.setAttribute('aria-pressed',on);b.textContent=on?'Exploded':'Assembled';}
+  el.addEventListener('input',e=>{const n=e.target;
+    if(n.id==='jdExR'){v.explode=n.value/100;syncEx();v.render(0.5);clearTimeout(v.idleT);v.idleT=setTimeout(()=>v.request(1),150);return;}
+    if(n.dataset.live){if(setPath(n.dataset.p,n.value,'deg')){const twin=el.querySelector(`input[type=number][data-p="${n.dataset.p}"]`);if(twin)twin.value=n.value;rebuild({keepCam:true,fast:true});}}
+  });
+  el.addEventListener('change',e=>{const n=e.target;
+    if(n.id==='jdFile'){const f=n.files[0];if(!f)return;f.text().then(t=>{d=jdSanitize(JSON.parse(t));fam=null;renderSide();rebuild();toast('Opened '+f.name);}).catch(err=>toast(err.message||'Could not open that file'));n.value='';return;}
+    if(n.id==='jd-name'){d.name=n.value.trim().slice(0,80);rebuild({keepCam:true});return;}
+    if(n.id==='jdSheet'){sheet=+n.value;renderDrawings();return;}
+    if(!n.dataset.p)return;const later=f=>setTimeout(f,0);if(n.dataset.live)return later(renderSide);
+    const path=n.dataset.p,refit=/^(t\.|b\.\d+\.(l|w|h|z|off|face)$)/.test(path);
+    if(setPath(path,n.value,n.dataset.u)){later(renderSide);rebuild({keepCam:!refit});}else{later(renderSide);toast('Type a number');}
+  });
+  el.addEventListener('toggle',e=>{const dt=e.target.closest&&e.target.closest('.jdbeam');if(dt&&dt.open)openBeam=+dt.dataset.bi;},true);
+  new MutationObserver(()=>setTimeout(recolor,0)).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>setTimeout(recolor,0));
+  return {
+    show(sub){const was=document.body.dataset.mode==='jd';document.body.dataset.mode='jd';el.hidden=false;
+      document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m==='jd'));
+      if(sub){try{d=jdSanitize(JSON.parse(unb64(sub)));fam=null;history.replaceState(null,'','#jd');toast('Opened the shared design');}catch(e){toast('That share link could not be read');}}
+      if(!v)shell();if(!was||sub){renderSide();rebuild();}renderTab();},
+    hide(){if(document.body.dataset.mode!=='jd')return;delete document.body.dataset.mode;el.hidden=true;LEARN.syncModes();},
+    get design(){return d;},set(o){d=jdSanitize(o);if(v){renderSide();rebuild();}},build:jdBuild,catalogue:JD_CAT,res:()=>res,viewer:()=>v
+  };
+})();
 // ---------- boot
 function boot(){
   let saved=null;try{saved=JSON.parse(localStorage.getItem('sashimono-v1')||'null');}catch(e){}
@@ -4375,7 +5083,7 @@ function boot(){
   S.tab='model';renderSide();themeColors();rebuild(false);route();
 }
 boot();
-window.__ss={viewer,LEARN,WORKS,get M(){return M},get S(){return S},set S(v){S=v},rebuild,getSheet,sheetList,renderTab,renderSide,newState,jointGroups,partGroups,buildSteps,jointDoc,ctxDoc};
+window.__ss={viewer,LEARN,WORKS,JD,jdDefault,get M(){return M},get S(){return S},set S(v){S=v},rebuild,getSheet,sheetList,renderTab,renderSide,newState,jointGroups,partGroups,buildSteps,jointDoc,ctxDoc};
 
 }
 </script>
